@@ -6,7 +6,7 @@ Warehouse.findByIdCompany = (idCompany, user, only_own, connection, next) => {
 
     let query = '';
     let keys = [];
-    query = `SELECT warehouse.*, _company_idcompany. as company_company_idcompany 
+    query = `SELECT warehouse.*, _company_idcompany.name as company_company_idcompany 
              FROM warehouse 
              INNER JOIN company as _company_idcompany ON _company_idcompany.idcompany = warehouse.company_idcompany 
               
@@ -36,7 +36,7 @@ Warehouse.findFromTo = (fechaDesde, fechaHasta, user, only_own, connection, next
 
     let query = '';
     let keys = [];
-    query = `SELECT warehouse.*, _company_idcompany. as company_company_idcompany 
+    query = `SELECT warehouse.*, _company_idcompany.name as company_company_idcompany 
              FROM warehouse 
              INNER JOIN company as _company_idcompany ON _company_idcompany.idcompany = warehouse.company_idcompany 
               
@@ -65,7 +65,7 @@ Warehouse.all = (user, only_own, connection, next) => {
 
     let query = '';
     let keys = [];
-    query = `SELECT warehouse.*, _company_idcompany. as company_company_idcompany 
+    query = `SELECT warehouse.*, _company_idcompany.name as company_company_idcompany 
              FROM warehouse 
              INNER JOIN company as _company_idcompany ON _company_idcompany.idcompany = warehouse.company_idcompany 
               
@@ -94,7 +94,7 @@ Warehouse.findById = (idWarehouse, user, only_own, connection, next) => {
 
     let query = '';
     let keys = [];
-    query = `SELECT warehouse.*, _company_idcompany. as company_company_idcompany 
+    query = `SELECT warehouse.*, _company_idcompany.name as company_company_idcompany 
              FROM warehouse 
              INNER JOIN company as _company_idcompany ON _company_idcompany.idcompany = warehouse.company_idcompany 
               
