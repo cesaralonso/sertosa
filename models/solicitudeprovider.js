@@ -6,18 +6,22 @@ Solicitudeprovider.findByIdProject_service = (idProject_service, user, only_own,
 
     let query = '';
     let keys = [];
-    query = `SELECT solicitudeprovider.*, _provider_idprovider.name as provider_provider_idprovider , _project_service_idproject_service.idproject_service as project_service_project_service_idproject_service 
+    query = `SELECT solicitudeprovider.*, _provider_idprovider.name as provider_provider_idprovider , CONCAT(_project_service_idproject_service.idproject_service, ' - ', _project_idproject.name, ' - ', _service_idservice.name) as project_service_project_service_idproject_service 
              FROM solicitudeprovider 
-             INNER JOIN provider as _provider_idprovider ON _provider_idprovider.idprovider = solicitudeprovider.provider_idprovider INNER JOIN project_service as _project_service_idproject_service ON _project_service_idproject_service.idproject_service = solicitudeprovider.project_service_idproject_service 
+             INNER JOIN provider as _provider_idprovider ON _provider_idprovider.idprovider = solicitudeprovider.provider_idprovider 
+             INNER JOIN project_service as _project_service_idproject_service ON _project_service_idproject_service.idproject_service = solicitudeprovider.project_service_idproject_service
+
+             INNER JOIN project as _project_idproject ON _project_idproject.idproject = _project_service_idproject_service.project_idproject 
+             INNER JOIN service as _service_idservice ON _service_idservice.idservice = _project_service_idproject_service.service_idservice 
+             
               
-              
-             ${user.estado_idestado ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = solicitudeprovider.created_by ` : ""} 
+             ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = solicitudeprovider.created_by ` : ""} 
              WHERE solicitudeprovider.is_deleted = false 
                   AND solicitudeprovider.project_service_idproject_service = ? 
-                  ${user.estado_idestado ? `AND _si_user.estado_idestado = ? ` : ""}
+                  ${user.companyunits_idcompanyunits ? `AND _si_user.companyunits_idcompanyunits = ? ` : ""}
                   ${only_own ? `AND solicitudeprovider.created_by = ?` : ""}`
         keys = [idProject_service];
-        user.estado_idestado ? keys.push(user.estado_idestado) : null;
+        user.companyunits_idcompanyunits ? keys.push(user.companyunits_idcompanyunits) : null;
         only_own ? keys.push(user.idsi_user) : null;
 
     connection.query(query, keys, (error, result) => {
@@ -36,18 +40,24 @@ Solicitudeprovider.findByIdProvider = (idProvider, user, only_own, connection, n
 
     let query = '';
     let keys = [];
-    query = `SELECT solicitudeprovider.*, _provider_idprovider.name as provider_provider_idprovider , _project_service_idproject_service.idproject_service as project_service_project_service_idproject_service 
+    query = `SELECT solicitudeprovider.*, _provider_idprovider.name as provider_provider_idprovider , CONCAT(_project_service_idproject_service.idproject_service, ' - ', _project_idproject.name, ' - ', _service_idservice.name) as project_service_project_service_idproject_service 
              FROM solicitudeprovider 
-             INNER JOIN provider as _provider_idprovider ON _provider_idprovider.idprovider = solicitudeprovider.provider_idprovider INNER JOIN project_service as _project_service_idproject_service ON _project_service_idproject_service.idproject_service = solicitudeprovider.project_service_idproject_service 
+             INNER JOIN provider as _provider_idprovider ON _provider_idprovider.idprovider = solicitudeprovider.provider_idprovider 
+             INNER JOIN project_service as _project_service_idproject_service ON _project_service_idproject_service.idproject_service = solicitudeprovider.project_service_idproject_service
+
+             INNER JOIN project as _project_idproject ON _project_idproject.idproject = _project_service_idproject_service.project_idproject 
+             INNER JOIN service as _service_idservice ON _service_idservice.idservice = _project_service_idproject_service.service_idservice 
               
               
-             ${user.estado_idestado ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = solicitudeprovider.created_by ` : ""} 
+              
+              
+             ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = solicitudeprovider.created_by ` : ""} 
              WHERE solicitudeprovider.is_deleted = false 
                   AND solicitudeprovider.provider_idprovider = ? 
-                  ${user.estado_idestado ? `AND _si_user.estado_idestado = ? ` : ""}
+                  ${user.companyunits_idcompanyunits ? `AND _si_user.companyunits_idcompanyunits = ? ` : ""}
                   ${only_own ? `AND solicitudeprovider.created_by = ?` : ""}`
         keys = [idProvider];
-        user.estado_idestado ? keys.push(user.estado_idestado) : null;
+        user.companyunits_idcompanyunits ? keys.push(user.companyunits_idcompanyunits) : null;
         only_own ? keys.push(user.idsi_user) : null;
 
     connection.query(query, keys, (error, result) => {
@@ -66,18 +76,24 @@ Solicitudeprovider.findFromTo = (fechaDesde, fechaHasta, user, only_own, connect
 
     let query = '';
     let keys = [];
-    query = `SELECT solicitudeprovider.*, _provider_idprovider.name as provider_provider_idprovider , _project_service_idproject_service.idproject_service as project_service_project_service_idproject_service 
+    query = `SELECT solicitudeprovider.*, _provider_idprovider.name as provider_provider_idprovider , CONCAT(_project_service_idproject_service.idproject_service, ' - ', _project_idproject.name, ' - ', _service_idservice.name) as project_service_project_service_idproject_service 
              FROM solicitudeprovider 
-             INNER JOIN provider as _provider_idprovider ON _provider_idprovider.idprovider = solicitudeprovider.provider_idprovider INNER JOIN project_service as _project_service_idproject_service ON _project_service_idproject_service.idproject_service = solicitudeprovider.project_service_idproject_service 
+             INNER JOIN provider as _provider_idprovider ON _provider_idprovider.idprovider = solicitudeprovider.provider_idprovider 
+             INNER JOIN project_service as _project_service_idproject_service ON _project_service_idproject_service.idproject_service = solicitudeprovider.project_service_idproject_service
+
+             INNER JOIN project as _project_idproject ON _project_idproject.idproject = _project_service_idproject_service.project_idproject 
+             INNER JOIN service as _service_idservice ON _service_idservice.idservice = _project_service_idproject_service.service_idservice 
               
               
-             ${user.estado_idestado ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = solicitudeprovider.created_by ` : ""} 
+              
+              
+             ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = solicitudeprovider.created_by ` : ""} 
              WHERE solicitudeprovider.is_deleted = false 
                   AND solicitudeprovider.created_at BETWEEN ? AND ? 
-                  ${user.estado_idestado ? `AND _si_user.estado_idestado = ? ` : ""}
+                  ${user.companyunits_idcompanyunits ? `AND _si_user.companyunits_idcompanyunits = ? ` : ""}
                   ${only_own ? `AND solicitudeprovider.created_by = ?` : ""}`
         keys = [fechaDesde, fechaHasta];
-        user.estado_idestado ? keys.push(user.estado_idestado) : null;
+        user.companyunits_idcompanyunits ? keys.push(user.companyunits_idcompanyunits) : null;
         only_own ? keys.push(user.idsi_user) : null;
     connection.query(query, keys, (error, result) => {
         if(error) 
@@ -95,17 +111,23 @@ Solicitudeprovider.all = (user, only_own, connection, next) => {
 
     let query = '';
     let keys = [];
-    query = `SELECT solicitudeprovider.*, _provider_idprovider.name as provider_provider_idprovider , _project_service_idproject_service.idproject_service as project_service_project_service_idproject_service 
+    query = `SELECT solicitudeprovider.*, _provider_idprovider.name as provider_provider_idprovider , CONCAT(_project_service_idproject_service.idproject_service, ' - ', _project_idproject.name, ' - ', _service_idservice.name) as project_service_project_service_idproject_service 
              FROM solicitudeprovider 
-             INNER JOIN provider as _provider_idprovider ON _provider_idprovider.idprovider = solicitudeprovider.provider_idprovider INNER JOIN project_service as _project_service_idproject_service ON _project_service_idproject_service.idproject_service = solicitudeprovider.project_service_idproject_service 
+             INNER JOIN provider as _provider_idprovider ON _provider_idprovider.idprovider = solicitudeprovider.provider_idprovider 
+             INNER JOIN project_service as _project_service_idproject_service ON _project_service_idproject_service.idproject_service = solicitudeprovider.project_service_idproject_service
+
+             INNER JOIN project as _project_idproject ON _project_idproject.idproject = _project_service_idproject_service.project_idproject 
+             INNER JOIN service as _service_idservice ON _service_idservice.idservice = _project_service_idproject_service.service_idservice 
               
               
-             ${user.estado_idestado ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = solicitudeprovider.created_by ` : ""} 
+              
+              
+             ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = solicitudeprovider.created_by ` : ""} 
              WHERE solicitudeprovider.is_deleted = false 
-                  ${user.estado_idestado ? `AND _si_user.estado_idestado = ? ` : ""}
+                  ${user.companyunits_idcompanyunits ? `AND _si_user.companyunits_idcompanyunits = ? ` : ""}
                   ${only_own ? `AND solicitudeprovider.created_by = ?` : ""}`
         keys = [];
-        user.estado_idestado ? keys.push(user.estado_idestado) : null;
+        user.companyunits_idcompanyunits ? keys.push(user.companyunits_idcompanyunits) : null;
         only_own ? keys.push(user.idsi_user) : null;
 
     connection.query(query, keys, (error, result) => {
@@ -124,18 +146,24 @@ Solicitudeprovider.findById = (idSolicitudeprovider, user, only_own, connection,
 
     let query = '';
     let keys = [];
-    query = `SELECT solicitudeprovider.*, _provider_idprovider.name as provider_provider_idprovider , _project_service_idproject_service.idproject_service as project_service_project_service_idproject_service 
+    query = `SELECT solicitudeprovider.*, _provider_idprovider.name as provider_provider_idprovider , CONCAT(_project_service_idproject_service.idproject_service, ' - ', _project_idproject.name, ' - ', _service_idservice.name) as project_service_project_service_idproject_service 
              FROM solicitudeprovider 
-             INNER JOIN provider as _provider_idprovider ON _provider_idprovider.idprovider = solicitudeprovider.provider_idprovider INNER JOIN project_service as _project_service_idproject_service ON _project_service_idproject_service.idproject_service = solicitudeprovider.project_service_idproject_service 
+             INNER JOIN provider as _provider_idprovider ON _provider_idprovider.idprovider = solicitudeprovider.provider_idprovider 
+             INNER JOIN project_service as _project_service_idproject_service ON _project_service_idproject_service.idproject_service = solicitudeprovider.project_service_idproject_service
+
+             INNER JOIN project as _project_idproject ON _project_idproject.idproject = _project_service_idproject_service.project_idproject 
+             INNER JOIN service as _service_idservice ON _service_idservice.idservice = _project_service_idproject_service.service_idservice 
               
               
-             ${user.estado_idestado ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = solicitudeprovider.created_by ` : ""} 
+              
+              
+             ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = solicitudeprovider.created_by ` : ""} 
              WHERE solicitudeprovider.is_deleted = false 
                   AND idsolicitudeprovider = ? 
-                  ${user.estado_idestado ? `AND _si_user.estado_idestado = ? ` : ""}
+                  ${user.companyunits_idcompanyunits ? `AND _si_user.companyunits_idcompanyunits = ? ` : ""}
                   ${only_own ? `AND solicitudeprovider.created_by = ?` : ""}`
         keys = [idSolicitudeprovider];
-        user.estado_idestado ? keys.push(user.estado_idestado) : null;
+        user.companyunits_idcompanyunits ? keys.push(user.companyunits_idcompanyunits) : null;
         only_own ? keys.push(user.idsi_user) : null;
 
     connection.query(query, keys, (error, result) => {

@@ -11,13 +11,13 @@ Si_permiso.findByIdSi_modulo = (idSi_modulo, user, only_own, connection, next) =
              INNER JOIN si_rol as _si_rol_idsi_rol ON _si_rol_idsi_rol.idsi_rol = si_permiso.si_rol_idsi_rol INNER JOIN si_modulo as _si_modulo_idsi_modulo ON _si_modulo_idsi_modulo.idsi_modulo = si_permiso.si_modulo_idsi_modulo 
               
               
-             ${user.estado_idestado ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = si_permiso.created_by ` : ""} 
+             ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = si_permiso.created_by ` : ""} 
              WHERE si_permiso.is_deleted = false 
                   AND si_permiso.si_modulo_idsi_modulo = ? 
-                  ${user.estado_idestado ? `AND _si_user.estado_idestado = ? ` : ""}
+                  ${user.companyunits_idcompanyunits ? `AND _si_user.companyunits_idcompanyunits = ? ` : ""}
                   ${only_own ? `AND si_permiso.created_by = ?` : ""}`
         keys = [idSi_modulo];
-        user.estado_idestado ? keys.push(user.estado_idestado) : null;
+        user.companyunits_idcompanyunits ? keys.push(user.companyunits_idcompanyunits) : null;
         only_own ? keys.push(user.idsi_user) : null;
 
     connection.query(query, keys, (error, result) => {
@@ -41,13 +41,13 @@ Si_permiso.findByIdSi_rol = (idSi_rol, user, only_own, connection, next) => {
              INNER JOIN si_rol as _si_rol_idsi_rol ON _si_rol_idsi_rol.idsi_rol = si_permiso.si_rol_idsi_rol INNER JOIN si_modulo as _si_modulo_idsi_modulo ON _si_modulo_idsi_modulo.idsi_modulo = si_permiso.si_modulo_idsi_modulo 
               
               
-             ${user.estado_idestado ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = si_permiso.created_by ` : ""} 
+             ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = si_permiso.created_by ` : ""} 
              WHERE si_permiso.is_deleted = false 
                   AND si_permiso.si_rol_idsi_rol = ? 
-                  ${user.estado_idestado ? `AND _si_user.estado_idestado = ? ` : ""}
+                  ${user.companyunits_idcompanyunits ? `AND _si_user.companyunits_idcompanyunits = ? ` : ""}
                   ${only_own ? `AND si_permiso.created_by = ?` : ""}`
         keys = [idSi_rol];
-        user.estado_idestado ? keys.push(user.estado_idestado) : null;
+        user.companyunits_idcompanyunits ? keys.push(user.companyunits_idcompanyunits) : null;
         only_own ? keys.push(user.idsi_user) : null;
 
     connection.query(query, keys, (error, result) => {
@@ -71,13 +71,13 @@ Si_permiso.findFromTo = (fechaDesde, fechaHasta, user, only_own, connection, nex
              INNER JOIN si_rol as _si_rol_idsi_rol ON _si_rol_idsi_rol.idsi_rol = si_permiso.si_rol_idsi_rol INNER JOIN si_modulo as _si_modulo_idsi_modulo ON _si_modulo_idsi_modulo.idsi_modulo = si_permiso.si_modulo_idsi_modulo 
               
               
-             ${user.estado_idestado ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = si_permiso.created_by ` : ""} 
+             ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = si_permiso.created_by ` : ""} 
              WHERE si_permiso.is_deleted = false 
                   AND si_permiso.created_at BETWEEN ? AND ? 
-                  ${user.estado_idestado ? `AND _si_user.estado_idestado = ? ` : ""}
+                  ${user.companyunits_idcompanyunits ? `AND _si_user.companyunits_idcompanyunits = ? ` : ""}
                   ${only_own ? `AND si_permiso.created_by = ?` : ""}`
         keys = [fechaDesde, fechaHasta];
-        user.estado_idestado ? keys.push(user.estado_idestado) : null;
+        user.companyunits_idcompanyunits ? keys.push(user.companyunits_idcompanyunits) : null;
         only_own ? keys.push(user.idsi_user) : null;
     connection.query(query, keys, (error, result) => {
         if(error) 
@@ -100,12 +100,12 @@ Si_permiso.all = (user, only_own, connection, next) => {
              INNER JOIN si_rol as _si_rol_idsi_rol ON _si_rol_idsi_rol.idsi_rol = si_permiso.si_rol_idsi_rol INNER JOIN si_modulo as _si_modulo_idsi_modulo ON _si_modulo_idsi_modulo.idsi_modulo = si_permiso.si_modulo_idsi_modulo 
               
               
-             ${user.estado_idestado ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = si_permiso.created_by ` : ""} 
+             ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = si_permiso.created_by ` : ""} 
              WHERE si_permiso.is_deleted = false 
-                  ${user.estado_idestado ? `AND _si_user.estado_idestado = ? ` : ""}
+                  ${user.companyunits_idcompanyunits ? `AND _si_user.companyunits_idcompanyunits = ? ` : ""}
                   ${only_own ? `AND si_permiso.created_by = ?` : ""}`
         keys = [];
-        user.estado_idestado ? keys.push(user.estado_idestado) : null;
+        user.companyunits_idcompanyunits ? keys.push(user.companyunits_idcompanyunits) : null;
         only_own ? keys.push(user.idsi_user) : null;
 
     connection.query(query, keys, (error, result) => {
@@ -129,13 +129,13 @@ Si_permiso.findById = (idSi_permiso, user, only_own, connection, next) => {
              INNER JOIN si_rol as _si_rol_idsi_rol ON _si_rol_idsi_rol.idsi_rol = si_permiso.si_rol_idsi_rol INNER JOIN si_modulo as _si_modulo_idsi_modulo ON _si_modulo_idsi_modulo.idsi_modulo = si_permiso.si_modulo_idsi_modulo 
               
               
-             ${user.estado_idestado ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = si_permiso.created_by ` : ""} 
+             ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = si_permiso.created_by ` : ""} 
              WHERE si_permiso.is_deleted = false 
                   AND idsi_permiso = ? 
-                  ${user.estado_idestado ? `AND _si_user.estado_idestado = ? ` : ""}
+                  ${user.companyunits_idcompanyunits ? `AND _si_user.companyunits_idcompanyunits = ? ` : ""}
                   ${only_own ? `AND si_permiso.created_by = ?` : ""}`
         keys = [idSi_permiso];
-        user.estado_idestado ? keys.push(user.estado_idestado) : null;
+        user.companyunits_idcompanyunits ? keys.push(user.companyunits_idcompanyunits) : null;
         only_own ? keys.push(user.idsi_user) : null;
 
     connection.query(query, keys, (error, result) => {

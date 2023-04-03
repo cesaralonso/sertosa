@@ -11,13 +11,13 @@ Family.findFromTo = (fechaDesde, fechaHasta, user, only_own, connection, next) =
               
               
               
-             ${user.estado_idestado ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = family.created_by ` : ""} 
+             ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = family.created_by ` : ""} 
              WHERE family.is_deleted = false 
                   AND family.created_at BETWEEN ? AND ? 
-                  ${user.estado_idestado ? `AND _si_user.estado_idestado = ? ` : ""}
+                  ${user.companyunits_idcompanyunits ? `AND _si_user.companyunits_idcompanyunits = ? ` : ""}
                   ${only_own ? `AND family.created_by = ?` : ""}`
         keys = [fechaDesde, fechaHasta];
-        user.estado_idestado ? keys.push(user.estado_idestado) : null;
+        user.companyunits_idcompanyunits ? keys.push(user.companyunits_idcompanyunits) : null;
         only_own ? keys.push(user.idsi_user) : null;
     connection.query(query, keys, (error, result) => {
         if(error) 
@@ -40,12 +40,12 @@ Family.all = (user, only_own, connection, next) => {
               
               
               
-             ${user.estado_idestado ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = family.created_by ` : ""} 
+             ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = family.created_by ` : ""} 
              WHERE family.is_deleted = false 
-                  ${user.estado_idestado ? `AND _si_user.estado_idestado = ? ` : ""}
+                  ${user.companyunits_idcompanyunits ? `AND _si_user.companyunits_idcompanyunits = ? ` : ""}
                   ${only_own ? `AND family.created_by = ?` : ""}`
         keys = [];
-        user.estado_idestado ? keys.push(user.estado_idestado) : null;
+        user.companyunits_idcompanyunits ? keys.push(user.companyunits_idcompanyunits) : null;
         only_own ? keys.push(user.idsi_user) : null;
 
     connection.query(query, keys, (error, result) => {
@@ -69,13 +69,13 @@ Family.findById = (idFamily, user, only_own, connection, next) => {
               
               
               
-             ${user.estado_idestado ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = family.created_by ` : ""} 
+             ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = family.created_by ` : ""} 
              WHERE family.is_deleted = false 
                   AND idfamily = ? 
-                  ${user.estado_idestado ? `AND _si_user.estado_idestado = ? ` : ""}
+                  ${user.companyunits_idcompanyunits ? `AND _si_user.companyunits_idcompanyunits = ? ` : ""}
                   ${only_own ? `AND family.created_by = ?` : ""}`
         keys = [idFamily];
-        user.estado_idestado ? keys.push(user.estado_idestado) : null;
+        user.companyunits_idcompanyunits ? keys.push(user.companyunits_idcompanyunits) : null;
         only_own ? keys.push(user.idsi_user) : null;
 
     connection.query(query, keys, (error, result) => {

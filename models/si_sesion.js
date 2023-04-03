@@ -11,13 +11,13 @@ Si_sesion.findByIdSi_user = (idSi_user, user, only_own, connection, next) => {
              INNER JOIN si_user as _si_user_idsi_user ON _si_user_idsi_user.idsi_user = si_sesion.si_user_idsi_user 
               
               
-             ${user.estado_idestado ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = si_sesion.created_by ` : ""} 
+             ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = si_sesion.created_by ` : ""} 
              WHERE si_sesion.is_deleted = false 
                   AND si_sesion.si_user_idsi_user = ? 
-                  ${user.estado_idestado ? `AND _si_user.estado_idestado = ? ` : ""}
+                  ${user.companyunits_idcompanyunits ? `AND _si_user.companyunits_idcompanyunits = ? ` : ""}
                   ${only_own ? `AND si_sesion.created_by = ?` : ""}`
         keys = [idSi_user];
-        user.estado_idestado ? keys.push(user.estado_idestado) : null;
+        user.companyunits_idcompanyunits ? keys.push(user.companyunits_idcompanyunits) : null;
         only_own ? keys.push(user.idsi_user) : null;
 
     connection.query(query, keys, (error, result) => {
@@ -41,13 +41,13 @@ Si_sesion.findFromTo = (fechaDesde, fechaHasta, user, only_own, connection, next
              INNER JOIN si_user as _si_user_idsi_user ON _si_user_idsi_user.idsi_user = si_sesion.si_user_idsi_user 
               
               
-             ${user.estado_idestado ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = si_sesion.created_by ` : ""} 
+             ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = si_sesion.created_by ` : ""} 
              WHERE si_sesion.is_deleted = false 
                   AND si_sesion.created_at BETWEEN ? AND ? 
-                  ${user.estado_idestado ? `AND _si_user.estado_idestado = ? ` : ""}
+                  ${user.companyunits_idcompanyunits ? `AND _si_user.companyunits_idcompanyunits = ? ` : ""}
                   ${only_own ? `AND si_sesion.created_by = ?` : ""}`
         keys = [fechaDesde, fechaHasta];
-        user.estado_idestado ? keys.push(user.estado_idestado) : null;
+        user.companyunits_idcompanyunits ? keys.push(user.companyunits_idcompanyunits) : null;
         only_own ? keys.push(user.idsi_user) : null;
     connection.query(query, keys, (error, result) => {
         if(error) 
@@ -70,12 +70,12 @@ Si_sesion.all = (user, only_own, connection, next) => {
              INNER JOIN si_user as _si_user_idsi_user ON _si_user_idsi_user.idsi_user = si_sesion.si_user_idsi_user 
               
               
-             ${user.estado_idestado ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = si_sesion.created_by ` : ""} 
+             ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = si_sesion.created_by ` : ""} 
              WHERE si_sesion.is_deleted = false 
-                  ${user.estado_idestado ? `AND _si_user.estado_idestado = ? ` : ""}
+                  ${user.companyunits_idcompanyunits ? `AND _si_user.companyunits_idcompanyunits = ? ` : ""}
                   ${only_own ? `AND si_sesion.created_by = ?` : ""}`
         keys = [];
-        user.estado_idestado ? keys.push(user.estado_idestado) : null;
+        user.companyunits_idcompanyunits ? keys.push(user.companyunits_idcompanyunits) : null;
         only_own ? keys.push(user.idsi_user) : null;
 
     connection.query(query, keys, (error, result) => {
@@ -99,13 +99,13 @@ Si_sesion.findById = (idSi_sesion, user, only_own, connection, next) => {
              INNER JOIN si_user as _si_user_idsi_user ON _si_user_idsi_user.idsi_user = si_sesion.si_user_idsi_user 
               
               
-             ${user.estado_idestado ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = si_sesion.created_by ` : ""} 
+             ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = si_sesion.created_by ` : ""} 
              WHERE si_sesion.is_deleted = false 
                   AND idsi_sesion = ? 
-                  ${user.estado_idestado ? `AND _si_user.estado_idestado = ? ` : ""}
+                  ${user.companyunits_idcompanyunits ? `AND _si_user.companyunits_idcompanyunits = ? ` : ""}
                   ${only_own ? `AND si_sesion.created_by = ?` : ""}`
         keys = [idSi_sesion];
-        user.estado_idestado ? keys.push(user.estado_idestado) : null;
+        user.companyunits_idcompanyunits ? keys.push(user.companyunits_idcompanyunits) : null;
         only_own ? keys.push(user.idsi_user) : null;
 
     connection.query(query, keys, (error, result) => {

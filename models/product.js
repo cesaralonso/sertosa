@@ -11,13 +11,13 @@ Product.findByIdFamily = (idFamily, user, only_own, connection, next) => {
              INNER JOIN provider as _provider_idprovider ON _provider_idprovider.idprovider = product.provider_idprovider INNER JOIN family as _family_idfamily ON _family_idfamily.idfamily = product.family_idfamily 
               
               
-             ${user.estado_idestado ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = product.created_by ` : ""} 
+             ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = product.created_by ` : ""} 
              WHERE product.is_deleted = false 
                   AND product.family_idfamily = ? 
-                  ${user.estado_idestado ? `AND _si_user.estado_idestado = ? ` : ""}
+                  ${user.companyunits_idcompanyunits ? `AND _si_user.companyunits_idcompanyunits = ? ` : ""}
                   ${only_own ? `AND product.created_by = ?` : ""}`
         keys = [idFamily];
-        user.estado_idestado ? keys.push(user.estado_idestado) : null;
+        user.companyunits_idcompanyunits ? keys.push(user.companyunits_idcompanyunits) : null;
         only_own ? keys.push(user.idsi_user) : null;
 
     connection.query(query, keys, (error, result) => {
@@ -41,13 +41,13 @@ Product.findByIdProvider = (idProvider, user, only_own, connection, next) => {
              INNER JOIN provider as _provider_idprovider ON _provider_idprovider.idprovider = product.provider_idprovider INNER JOIN family as _family_idfamily ON _family_idfamily.idfamily = product.family_idfamily 
               
               
-             ${user.estado_idestado ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = product.created_by ` : ""} 
+             ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = product.created_by ` : ""} 
              WHERE product.is_deleted = false 
                   AND product.provider_idprovider = ? 
-                  ${user.estado_idestado ? `AND _si_user.estado_idestado = ? ` : ""}
+                  ${user.companyunits_idcompanyunits ? `AND _si_user.companyunits_idcompanyunits = ? ` : ""}
                   ${only_own ? `AND product.created_by = ?` : ""}`
         keys = [idProvider];
-        user.estado_idestado ? keys.push(user.estado_idestado) : null;
+        user.companyunits_idcompanyunits ? keys.push(user.companyunits_idcompanyunits) : null;
         only_own ? keys.push(user.idsi_user) : null;
 
     connection.query(query, keys, (error, result) => {
@@ -71,13 +71,13 @@ Product.findFromTo = (fechaDesde, fechaHasta, user, only_own, connection, next) 
              INNER JOIN provider as _provider_idprovider ON _provider_idprovider.idprovider = product.provider_idprovider INNER JOIN family as _family_idfamily ON _family_idfamily.idfamily = product.family_idfamily 
               
               
-             ${user.estado_idestado ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = product.created_by ` : ""} 
+             ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = product.created_by ` : ""} 
              WHERE product.is_deleted = false 
                   AND product.created_at BETWEEN ? AND ? 
-                  ${user.estado_idestado ? `AND _si_user.estado_idestado = ? ` : ""}
+                  ${user.companyunits_idcompanyunits ? `AND _si_user.companyunits_idcompanyunits = ? ` : ""}
                   ${only_own ? `AND product.created_by = ?` : ""}`
         keys = [fechaDesde, fechaHasta];
-        user.estado_idestado ? keys.push(user.estado_idestado) : null;
+        user.companyunits_idcompanyunits ? keys.push(user.companyunits_idcompanyunits) : null;
         only_own ? keys.push(user.idsi_user) : null;
     connection.query(query, keys, (error, result) => {
         if(error) 
@@ -100,12 +100,12 @@ Product.all = (user, only_own, connection, next) => {
              INNER JOIN provider as _provider_idprovider ON _provider_idprovider.idprovider = product.provider_idprovider INNER JOIN family as _family_idfamily ON _family_idfamily.idfamily = product.family_idfamily 
               
               
-             ${user.estado_idestado ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = product.created_by ` : ""} 
+             ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = product.created_by ` : ""} 
              WHERE product.is_deleted = false 
-                  ${user.estado_idestado ? `AND _si_user.estado_idestado = ? ` : ""}
+                  ${user.companyunits_idcompanyunits ? `AND _si_user.companyunits_idcompanyunits = ? ` : ""}
                   ${only_own ? `AND product.created_by = ?` : ""}`
         keys = [];
-        user.estado_idestado ? keys.push(user.estado_idestado) : null;
+        user.companyunits_idcompanyunits ? keys.push(user.companyunits_idcompanyunits) : null;
         only_own ? keys.push(user.idsi_user) : null;
 
     connection.query(query, keys, (error, result) => {
@@ -129,13 +129,13 @@ Product.findById = (idProduct, user, only_own, connection, next) => {
              INNER JOIN provider as _provider_idprovider ON _provider_idprovider.idprovider = product.provider_idprovider INNER JOIN family as _family_idfamily ON _family_idfamily.idfamily = product.family_idfamily 
               
               
-             ${user.estado_idestado ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = product.created_by ` : ""} 
+             ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = product.created_by ` : ""} 
              WHERE product.is_deleted = false 
                   AND idproduct = ? 
-                  ${user.estado_idestado ? `AND _si_user.estado_idestado = ? ` : ""}
+                  ${user.companyunits_idcompanyunits ? `AND _si_user.companyunits_idcompanyunits = ? ` : ""}
                   ${only_own ? `AND product.created_by = ?` : ""}`
         keys = [idProduct];
-        user.estado_idestado ? keys.push(user.estado_idestado) : null;
+        user.companyunits_idcompanyunits ? keys.push(user.companyunits_idcompanyunits) : null;
         only_own ? keys.push(user.idsi_user) : null;
 
     connection.query(query, keys, (error, result) => {

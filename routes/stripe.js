@@ -53,12 +53,13 @@ const fulfillOrder = (session, req, res) => {
     amount_discount: 0
     amount_tax: 0
     */
-    if (!session.client_reference_id || !session.customer) {
+    /* if (!session.client_reference_id || !session.customer) { */
+    if (!session.customer) {
         res.status(400).json({success: false, result: {}, message: 'No se encontró la información requerida desde Stripe'});
     }
 
-    const idliquidacion = parseInt(session.client_reference_id.split('||')[0]);
-    const residente_idresidente = parseInt(session.client_reference_id.split('||')[1]);
+    const idliquidacion = parseInt(session.metadata.client_reference_id.split('||')[0]);
+    const residente_idresidente = parseInt(session.metadata.client_reference_id.split('||')[1]);
     const amountTotal = +session.amount_total / 100;
 
     // Aquí debo de updatear liquidación a pagada
@@ -192,7 +193,8 @@ router
             idresidente: `${_liquidacion.residente_idresidente}`,
             userEmail: `${_liquidacion.email}`,
             idLiquidacion: `${_liquidacion.idliquidacion}`,
-            fechaLiquidada: `${_liquidacion.fecha}`
+            fechaLiquidada: `${_liquidacion.fecha}`,
+            client_reference_id: _liquidacion.idliquidacion + '||' + _liquidacion.residente_idresidente
         };
 
         const _session = {

@@ -6,18 +6,18 @@ Project.findByIdCompanyunits = (idCompanyunits, user, only_own, connection, next
 
     let query = '';
     let keys = [];
-    query = `SELECT project.*, _companyunits_idcompanyunits.name as companyunits_companyunits_idcompanyunits , _vehicle_idvehicle.name as vehicle_vehicle_idvehicle 
+    query = `SELECT project.*, _companyunits_idcompanyunits.name as companyunits_companyunits_idcompanyunits , CONCAT(_vehicle_idvehicle.model, ' ',  _vehicle_idvehicle.type, ' ',  _vehicle_idvehicle.year) as vehicle_vehicle_idvehicle 
              FROM project 
              INNER JOIN companyunits as _companyunits_idcompanyunits ON _companyunits_idcompanyunits.idcompanyunits = project.companyunits_idcompanyunits INNER JOIN vehicle as _vehicle_idvehicle ON _vehicle_idvehicle.idvehicle = project.vehicle_idvehicle 
               
               
-             ${user.estado_idestado ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = project.created_by ` : ""} 
+             ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = project.created_by ` : ""} 
              WHERE project.is_deleted = false 
                   AND project.companyunits_idcompanyunits = ? 
-                  ${user.estado_idestado ? `AND _si_user.estado_idestado = ? ` : ""}
+                  ${user.companyunits_idcompanyunits ? `AND _si_user.companyunits_idcompanyunits = ? ` : ""}
                   ${only_own ? `AND project.created_by = ?` : ""}`
         keys = [idCompanyunits];
-        user.estado_idestado ? keys.push(user.estado_idestado) : null;
+        user.companyunits_idcompanyunits ? keys.push(user.companyunits_idcompanyunits) : null;
         only_own ? keys.push(user.idsi_user) : null;
 
     connection.query(query, keys, (error, result) => {
@@ -36,18 +36,18 @@ Project.findByIdVehicle = (idVehicle, user, only_own, connection, next) => {
 
     let query = '';
     let keys = [];
-    query = `SELECT project.*, _companyunits_idcompanyunits.name as companyunits_companyunits_idcompanyunits , _vehicle_idvehicle.name as vehicle_vehicle_idvehicle 
+    query = `SELECT project.*, _companyunits_idcompanyunits.name as companyunits_companyunits_idcompanyunits , CONCAT(_vehicle_idvehicle.model, ' ',  _vehicle_idvehicle.type, ' ',  _vehicle_idvehicle.year) as vehicle_vehicle_idvehicle 
              FROM project 
              INNER JOIN companyunits as _companyunits_idcompanyunits ON _companyunits_idcompanyunits.idcompanyunits = project.companyunits_idcompanyunits INNER JOIN vehicle as _vehicle_idvehicle ON _vehicle_idvehicle.idvehicle = project.vehicle_idvehicle 
               
               
-             ${user.estado_idestado ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = project.created_by ` : ""} 
+             ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = project.created_by ` : ""} 
              WHERE project.is_deleted = false 
                   AND project.vehicle_idvehicle = ? 
-                  ${user.estado_idestado ? `AND _si_user.estado_idestado = ? ` : ""}
+                  ${user.companyunits_idcompanyunits ? `AND _si_user.companyunits_idcompanyunits = ? ` : ""}
                   ${only_own ? `AND project.created_by = ?` : ""}`
         keys = [idVehicle];
-        user.estado_idestado ? keys.push(user.estado_idestado) : null;
+        user.companyunits_idcompanyunits ? keys.push(user.companyunits_idcompanyunits) : null;
         only_own ? keys.push(user.idsi_user) : null;
 
     connection.query(query, keys, (error, result) => {
@@ -66,18 +66,18 @@ Project.findFromTo = (fechaDesde, fechaHasta, user, only_own, connection, next) 
 
     let query = '';
     let keys = [];
-    query = `SELECT project.*, _companyunits_idcompanyunits.name as companyunits_companyunits_idcompanyunits , _vehicle_idvehicle.name as vehicle_vehicle_idvehicle 
+    query = `SELECT project.*, _companyunits_idcompanyunits.name as companyunits_companyunits_idcompanyunits , CONCAT(_vehicle_idvehicle.model, ' ',  _vehicle_idvehicle.type, ' ',  _vehicle_idvehicle.year) as vehicle_vehicle_idvehicle 
              FROM project 
              INNER JOIN companyunits as _companyunits_idcompanyunits ON _companyunits_idcompanyunits.idcompanyunits = project.companyunits_idcompanyunits INNER JOIN vehicle as _vehicle_idvehicle ON _vehicle_idvehicle.idvehicle = project.vehicle_idvehicle 
               
               
-             ${user.estado_idestado ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = project.created_by ` : ""} 
+             ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = project.created_by ` : ""} 
              WHERE project.is_deleted = false 
                   AND project.created_at BETWEEN ? AND ? 
-                  ${user.estado_idestado ? `AND _si_user.estado_idestado = ? ` : ""}
+                  ${user.companyunits_idcompanyunits ? `AND _si_user.companyunits_idcompanyunits = ? ` : ""}
                   ${only_own ? `AND project.created_by = ?` : ""}`
         keys = [fechaDesde, fechaHasta];
-        user.estado_idestado ? keys.push(user.estado_idestado) : null;
+        user.companyunits_idcompanyunits ? keys.push(user.companyunits_idcompanyunits) : null;
         only_own ? keys.push(user.idsi_user) : null;
     connection.query(query, keys, (error, result) => {
         if(error) 
@@ -95,17 +95,17 @@ Project.all = (user, only_own, connection, next) => {
 
     let query = '';
     let keys = [];
-    query = `SELECT project.*, _companyunits_idcompanyunits.name as companyunits_companyunits_idcompanyunits , _vehicle_idvehicle.name as vehicle_vehicle_idvehicle 
+    query = `SELECT project.*, _companyunits_idcompanyunits.name as companyunits_companyunits_idcompanyunits , CONCAT(_vehicle_idvehicle.model, ' ',  _vehicle_idvehicle.type, ' ',  _vehicle_idvehicle.year) as vehicle_vehicle_idvehicle 
              FROM project 
              INNER JOIN companyunits as _companyunits_idcompanyunits ON _companyunits_idcompanyunits.idcompanyunits = project.companyunits_idcompanyunits INNER JOIN vehicle as _vehicle_idvehicle ON _vehicle_idvehicle.idvehicle = project.vehicle_idvehicle 
               
               
-             ${user.estado_idestado ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = project.created_by ` : ""} 
+             ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = project.created_by ` : ""} 
              WHERE project.is_deleted = false 
-                  ${user.estado_idestado ? `AND _si_user.estado_idestado = ? ` : ""}
+                  ${user.companyunits_idcompanyunits ? `AND _si_user.companyunits_idcompanyunits = ? ` : ""}
                   ${only_own ? `AND project.created_by = ?` : ""}`
         keys = [];
-        user.estado_idestado ? keys.push(user.estado_idestado) : null;
+        user.companyunits_idcompanyunits ? keys.push(user.companyunits_idcompanyunits) : null;
         only_own ? keys.push(user.idsi_user) : null;
 
     connection.query(query, keys, (error, result) => {
@@ -124,18 +124,18 @@ Project.findById = (idProject, user, only_own, connection, next) => {
 
     let query = '';
     let keys = [];
-    query = `SELECT project.*, _companyunits_idcompanyunits.name as companyunits_companyunits_idcompanyunits , _vehicle_idvehicle.name as vehicle_vehicle_idvehicle 
+    query = `SELECT project.*, _companyunits_idcompanyunits.name as companyunits_companyunits_idcompanyunits , CONCAT(_vehicle_idvehicle.model, ' ',  _vehicle_idvehicle.type, ' ',  _vehicle_idvehicle.year) as vehicle_vehicle_idvehicle 
              FROM project 
              INNER JOIN companyunits as _companyunits_idcompanyunits ON _companyunits_idcompanyunits.idcompanyunits = project.companyunits_idcompanyunits INNER JOIN vehicle as _vehicle_idvehicle ON _vehicle_idvehicle.idvehicle = project.vehicle_idvehicle 
               
               
-             ${user.estado_idestado ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = project.created_by ` : ""} 
+             ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = project.created_by ` : ""} 
              WHERE project.is_deleted = false 
                   AND idproject = ? 
-                  ${user.estado_idestado ? `AND _si_user.estado_idestado = ? ` : ""}
+                  ${user.companyunits_idcompanyunits ? `AND _si_user.companyunits_idcompanyunits = ? ` : ""}
                   ${only_own ? `AND project.created_by = ?` : ""}`
         keys = [idProject];
-        user.estado_idestado ? keys.push(user.estado_idestado) : null;
+        user.companyunits_idcompanyunits ? keys.push(user.companyunits_idcompanyunits) : null;
         only_own ? keys.push(user.idsi_user) : null;
 
     connection.query(query, keys, (error, result) => {

@@ -32,13 +32,13 @@ Alerta.findFromTo = (fechaDesde, fechaHasta, created_by, ami, connection, next) 
 
             // PRIMERO LAS ENVIADAS
             if (created_by) {
-                query = `SELECT urem.usuario as remitente, si_alerta.*, udes.usuario as si_user_si_user_idsi_user , udes.email as emailDestinatario, urem.email as emailRemitente, si_alerta.tipoAlerta as tipoalerta_tipoalerta_idtipoalerta FROM si_alerta 
+                query = `SELECT urem.nombre as remitente, si_alerta.*, udes.nombre as si_user_si_user_idsi_user , udes.email as emailDestinatario, urem.email as emailRemitente, si_alerta.tipoAlerta as tipoalerta_tipoalerta_idtipoalerta FROM si_alerta 
                             INNER JOIN si_user as urem ON urem.idsi_user = si_alerta.created_by 
                             INNER JOIN si_user as udes ON udes.idsi_user = si_alerta.si_user_idsi_user WHERE si_alerta.created_at BETWEEN ? AND ? AND si_alerta.created_by = ? 
                             HAVING si_alerta.is_deleted IS NULL OR si_alerta.is_deleted = false ORDER BY si_alerta.created_at DESC`;
                 keys = [fechaDesde, fechaHasta, created_by];
             } else {
-                query = `SELECT urem.usuario as remitente, si_alerta.*, udes.usuario as si_user_si_user_idsi_user , udes.email as emailDestinatario, urem.email as emailRemitente, si_alerta.tipoAlerta as tipoalerta_tipoalerta_idtipoalerta FROM si_alerta 
+                query = `SELECT urem.nombre as remitente, si_alerta.*, udes.nombre as si_user_si_user_idsi_user , udes.email as emailDestinatario, urem.email as emailRemitente, si_alerta.tipoAlerta as tipoalerta_tipoalerta_idtipoalerta FROM si_alerta 
                             INNER JOIN si_user as urem ON urem.idsi_user = si_alerta.created_by 
                             INNER JOIN si_user as udes ON udes.idsi_user = si_alerta.si_user_idsi_user WHERE si_alerta.created_at BETWEEN ? AND ? AND si_alerta.created_by = ? 
                             HAVING si_alerta.is_deleted IS NULL OR si_alerta.is_deleted = false ORDER BY si_alerta.created_at DESC`;
@@ -53,13 +53,13 @@ Alerta.findFromTo = (fechaDesde, fechaHasta, created_by, ami, connection, next) 
 
             // DESPUÉS LAS RECIBIDAS
             if (created_by) {
-                query = `SELECT urem.usuario as remitente, si_alerta.*, udes.usuario as si_user_si_user_idsi_user , udes.email as emailDestinatario, urem.email as emailRemitente, si_alerta.tipoAlerta as tipoalerta_tipoalerta_idtipoalerta FROM si_alerta 
+                query = `SELECT urem.nombre as remitente, si_alerta.*, udes.nombre as si_user_si_user_idsi_user , udes.email as emailDestinatario, urem.email as emailRemitente, si_alerta.tipoAlerta as tipoalerta_tipoalerta_idtipoalerta FROM si_alerta 
                             INNER JOIN si_user as urem ON urem.idsi_user = si_alerta.created_by 
                             INNER JOIN si_user as udes ON udes.idsi_user = si_alerta.si_user_idsi_user WHERE si_alerta.created_at BETWEEN ? AND ? AND si_alerta.created_by = ? 
                             HAVING si_alerta.is_deleted IS NULL OR si_alerta.is_deleted = false ORDER BY si_alerta.created_at DESC`;
                 keys = [fechaDesde, fechaHasta, created_by];
             } else {
-                query = `SELECT urem.usuario as remitente, si_alerta.*, udes.usuario as si_user_si_user_idsi_user , udes.email as emailDestinatario, urem.email as emailRemitente, si_alerta.tipoAlerta as tipoalerta_tipoalerta_idtipoalerta FROM si_alerta 
+                query = `SELECT urem.nombre as remitente, si_alerta.*, udes.nombre as si_user_si_user_idsi_user , udes.email as emailDestinatario, urem.email as emailRemitente, si_alerta.tipoAlerta as tipoalerta_tipoalerta_idtipoalerta FROM si_alerta 
                             INNER JOIN si_user as urem ON urem.idsi_user = si_alerta.created_by 
                             INNER JOIN si_user as udes ON udes.idsi_user = si_alerta.si_user_idsi_user WHERE si_alerta.created_at BETWEEN ? AND ? AND  si_alerta.si_user_idsi_user = ? 
                             HAVING si_alerta.is_deleted IS NULL OR si_alerta.is_deleted = false ORDER BY si_alerta.created_at DESC`;
@@ -113,13 +113,13 @@ Alerta.all = (created_by, connection, next) => {
     let query = '';
     let keys = [];
     if (created_by) {
-        query = `SELECT urem.usuario as remitente, si_alerta.*, udes.usuario as si_user_si_user_idsi_user , udes.email as emailDestinatario, urem.email as emailRemitente, si_alerta.tipoAlerta as tipoalerta_tipoalerta_idtipoalerta FROM si_alerta 
+        query = `SELECT urem.nombre as remitente, si_alerta.*, udes.nombre as si_user_si_user_idsi_user , udes.email as emailDestinatario, urem.email as emailRemitente, si_alerta.tipoAlerta as tipoalerta_tipoalerta_idtipoalerta FROM si_alerta 
                     INNER JOIN si_user as urem ON urem.idsi_user = si_alerta.created_by 
                     INNER JOIN si_user as udes ON udes.idsi_user = si_alerta.si_user_idsi_user WHERE si_alerta.created_by = ?  
                     HAVING si_alerta.is_deleted IS NULL OR si_alerta.is_deleted = false`;
         keys = [created_by];
     } else {
-        query = `SELECT urem.usuario as remitente, si_alerta.*, udes.usuario as si_user_si_user_idsi_user , udes.email as emailDestinatario, urem.email as emailRemitente, si_alerta.tipoAlerta as tipoalerta_tipoalerta_idtipoalerta FROM si_alerta 
+        query = `SELECT urem.nombre as remitente, si_alerta.*, udes.nombre as si_user_si_user_idsi_user , udes.email as emailDestinatario, urem.email as emailRemitente, si_alerta.tipoAlerta as tipoalerta_tipoalerta_idtipoalerta FROM si_alerta 
                     INNER JOIN si_user as urem ON urem.idsi_user = si_alerta.created_by 
                     INNER JOIN si_user as udes ON udes.idsi_user = si_alerta.si_user_idsi_user 
                     HAVING si_alerta.is_deleted IS NULL OR si_alerta.is_deleted = false`;
@@ -151,13 +151,13 @@ Alerta.allSeparadas = (created_by, ami, connection, next) => {
 
             // PRIMERO LAS ENVIADAS
             if (created_by) {
-                query = `SELECT urem.usuario as remitente, si_alerta.*, udes.usuario as si_user_si_user_idsi_user , udes.email as emailDestinatario, urem.email as emailRemitente, si_alerta.tipoAlerta as tipoalerta_tipoalerta_idtipoalerta FROM si_alerta 
+                query = `SELECT urem.nombre as remitente, si_alerta.*, udes.nombre as si_user_si_user_idsi_user , udes.email as emailDestinatario, urem.email as emailRemitente, si_alerta.tipoAlerta as tipoalerta_tipoalerta_idtipoalerta FROM si_alerta 
                             INNER JOIN si_user as urem ON urem.idsi_user = si_alerta.created_by 
                             INNER JOIN si_user as udes ON udes.idsi_user = si_alerta.si_user_idsi_user WHERE si_alerta.created_by = ? AND si_alerta.created_at >= ? 
                             HAVING si_alerta.is_deleted IS NULL OR si_alerta.is_deleted = false ORDER BY si_alerta.created_at DESC`;
                 keys = [created_by, thisMonth];
             } else {
-                query = `SELECT urem.usuario as remitente, si_alerta.*, udes.usuario as si_user_si_user_idsi_user , udes.email as emailDestinatario, urem.email as emailRemitente, si_alerta.tipoAlerta as tipoalerta_tipoalerta_idtipoalerta FROM si_alerta 
+                query = `SELECT urem.nombre as remitente, si_alerta.*, udes.nombre as si_user_si_user_idsi_user , udes.email as emailDestinatario, urem.email as emailRemitente, si_alerta.tipoAlerta as tipoalerta_tipoalerta_idtipoalerta FROM si_alerta 
                             INNER JOIN si_user as urem ON urem.idsi_user = si_alerta.created_by 
                             INNER JOIN si_user as udes ON udes.idsi_user = si_alerta.si_user_idsi_user WHERE si_alerta.created_by = ? AND si_alerta.created_at >= ? 
                             HAVING si_alerta.is_deleted IS NULL OR si_alerta.is_deleted = false ORDER BY si_alerta.created_at DESC`;
@@ -172,13 +172,13 @@ Alerta.allSeparadas = (created_by, ami, connection, next) => {
 
             // DESPUÉS LAS RECIBIDAS
             if (created_by) {
-                query = `SELECT urem.usuario as remitente, si_alerta.*, udes.usuario as si_user_si_user_idsi_user , udes.email as emailDestinatario, urem.email as emailRemitente, si_alerta.tipoAlerta as tipoalerta_tipoalerta_idtipoalerta FROM si_alerta 
+                query = `SELECT urem.nombre as remitente, si_alerta.*, udes.nombre as si_user_si_user_idsi_user , udes.email as emailDestinatario, urem.email as emailRemitente, si_alerta.tipoAlerta as tipoalerta_tipoalerta_idtipoalerta FROM si_alerta 
                             INNER JOIN si_user as urem ON urem.idsi_user = si_alerta.created_by 
                             INNER JOIN si_user as udes ON udes.idsi_user = si_alerta.si_user_idsi_user WHERE si_alerta.created_at >= ? AND si_alerta.created_by = ? 
                             HAVING si_alerta.is_deleted IS NULL OR si_alerta.is_deleted = false ORDER BY si_alerta.created_at DESC`;
                 keys = [created_by, thisMonth];
             } else {
-                query = `SELECT urem.usuario as remitente, si_alerta.*, udes.usuario as si_user_si_user_idsi_user , udes.email as emailDestinatario, urem.email as emailRemitente, si_alerta.tipoAlerta as tipoalerta_tipoalerta_idtipoalerta FROM si_alerta 
+                query = `SELECT urem.nombre as remitente, si_alerta.*, udes.nombre as si_user_si_user_idsi_user , udes.email as emailDestinatario, urem.email as emailRemitente, si_alerta.tipoAlerta as tipoalerta_tipoalerta_idtipoalerta FROM si_alerta 
                             INNER JOIN si_user as urem ON urem.idsi_user = si_alerta.created_by 
                             INNER JOIN si_user as udes ON udes.idsi_user = si_alerta.si_user_idsi_user WHERE si_alerta.si_user_idsi_user = ? AND si_alerta.created_at >= ? 
                             HAVING si_alerta.is_deleted IS NULL OR si_alerta.is_deleted = false ORDER BY si_alerta.created_at DESC`;

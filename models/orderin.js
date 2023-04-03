@@ -6,18 +6,18 @@ Orderin.findByIdProduct = (idProduct, user, only_own, connection, next) => {
 
     let query = '';
     let keys = [];
-    query = `SELECT orderin.*, _warehouse_idwarehouse. as warehouse_warehouse_idwarehouse , _product_idproduct.name as product_product_idproduct 
+    query = `SELECT orderin.*, _warehouse_idwarehouse.name as warehouse_warehouse_idwarehouse , _product_idproduct.name as product_product_idproduct 
              FROM orderin 
              INNER JOIN warehouse as _warehouse_idwarehouse ON _warehouse_idwarehouse.idwarehouse = orderin.warehouse_idwarehouse INNER JOIN product as _product_idproduct ON _product_idproduct.idproduct = orderin.product_idproduct 
               
               
-             ${user.estado_idestado ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = orderin.created_by ` : ""} 
+             ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = orderin.created_by ` : ""} 
              WHERE orderin.is_deleted = false 
                   AND orderin.product_idproduct = ? 
-                  ${user.estado_idestado ? `AND _si_user.estado_idestado = ? ` : ""}
+                  ${user.companyunits_idcompanyunits ? `AND _si_user.companyunits_idcompanyunits = ? ` : ""}
                   ${only_own ? `AND orderin.created_by = ?` : ""}`
         keys = [idProduct];
-        user.estado_idestado ? keys.push(user.estado_idestado) : null;
+        user.companyunits_idcompanyunits ? keys.push(user.companyunits_idcompanyunits) : null;
         only_own ? keys.push(user.idsi_user) : null;
 
     connection.query(query, keys, (error, result) => {
@@ -36,18 +36,18 @@ Orderin.findByIdWarehouse = (idWarehouse, user, only_own, connection, next) => {
 
     let query = '';
     let keys = [];
-    query = `SELECT orderin.*, _warehouse_idwarehouse. as warehouse_warehouse_idwarehouse , _product_idproduct.name as product_product_idproduct 
+    query = `SELECT orderin.*, _warehouse_idwarehouse.name as warehouse_warehouse_idwarehouse , _product_idproduct.name as product_product_idproduct 
              FROM orderin 
              INNER JOIN warehouse as _warehouse_idwarehouse ON _warehouse_idwarehouse.idwarehouse = orderin.warehouse_idwarehouse INNER JOIN product as _product_idproduct ON _product_idproduct.idproduct = orderin.product_idproduct 
               
               
-             ${user.estado_idestado ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = orderin.created_by ` : ""} 
+             ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = orderin.created_by ` : ""} 
              WHERE orderin.is_deleted = false 
                   AND orderin.warehouse_idwarehouse = ? 
-                  ${user.estado_idestado ? `AND _si_user.estado_idestado = ? ` : ""}
+                  ${user.companyunits_idcompanyunits ? `AND _si_user.companyunits_idcompanyunits = ? ` : ""}
                   ${only_own ? `AND orderin.created_by = ?` : ""}`
         keys = [idWarehouse];
-        user.estado_idestado ? keys.push(user.estado_idestado) : null;
+        user.companyunits_idcompanyunits ? keys.push(user.companyunits_idcompanyunits) : null;
         only_own ? keys.push(user.idsi_user) : null;
 
     connection.query(query, keys, (error, result) => {
@@ -66,18 +66,18 @@ Orderin.findFromTo = (fechaDesde, fechaHasta, user, only_own, connection, next) 
 
     let query = '';
     let keys = [];
-    query = `SELECT orderin.*, _warehouse_idwarehouse. as warehouse_warehouse_idwarehouse , _product_idproduct.name as product_product_idproduct 
+    query = `SELECT orderin.*, _warehouse_idwarehouse.name as warehouse_warehouse_idwarehouse , _product_idproduct.name as product_product_idproduct 
              FROM orderin 
              INNER JOIN warehouse as _warehouse_idwarehouse ON _warehouse_idwarehouse.idwarehouse = orderin.warehouse_idwarehouse INNER JOIN product as _product_idproduct ON _product_idproduct.idproduct = orderin.product_idproduct 
               
               
-             ${user.estado_idestado ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = orderin.created_by ` : ""} 
+             ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = orderin.created_by ` : ""} 
              WHERE orderin.is_deleted = false 
                   AND orderin.created_at BETWEEN ? AND ? 
-                  ${user.estado_idestado ? `AND _si_user.estado_idestado = ? ` : ""}
+                  ${user.companyunits_idcompanyunits ? `AND _si_user.companyunits_idcompanyunits = ? ` : ""}
                   ${only_own ? `AND orderin.created_by = ?` : ""}`
         keys = [fechaDesde, fechaHasta];
-        user.estado_idestado ? keys.push(user.estado_idestado) : null;
+        user.companyunits_idcompanyunits ? keys.push(user.companyunits_idcompanyunits) : null;
         only_own ? keys.push(user.idsi_user) : null;
     connection.query(query, keys, (error, result) => {
         if(error) 
@@ -95,17 +95,17 @@ Orderin.all = (user, only_own, connection, next) => {
 
     let query = '';
     let keys = [];
-    query = `SELECT orderin.*, _warehouse_idwarehouse. as warehouse_warehouse_idwarehouse , _product_idproduct.name as product_product_idproduct 
+    query = `SELECT orderin.*, _warehouse_idwarehouse.name as warehouse_warehouse_idwarehouse , _product_idproduct.name as product_product_idproduct 
              FROM orderin 
              INNER JOIN warehouse as _warehouse_idwarehouse ON _warehouse_idwarehouse.idwarehouse = orderin.warehouse_idwarehouse INNER JOIN product as _product_idproduct ON _product_idproduct.idproduct = orderin.product_idproduct 
               
               
-             ${user.estado_idestado ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = orderin.created_by ` : ""} 
+             ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = orderin.created_by ` : ""} 
              WHERE orderin.is_deleted = false 
-                  ${user.estado_idestado ? `AND _si_user.estado_idestado = ? ` : ""}
+                  ${user.companyunits_idcompanyunits ? `AND _si_user.companyunits_idcompanyunits = ? ` : ""}
                   ${only_own ? `AND orderin.created_by = ?` : ""}`
         keys = [];
-        user.estado_idestado ? keys.push(user.estado_idestado) : null;
+        user.companyunits_idcompanyunits ? keys.push(user.companyunits_idcompanyunits) : null;
         only_own ? keys.push(user.idsi_user) : null;
 
     connection.query(query, keys, (error, result) => {
@@ -124,18 +124,18 @@ Orderin.findById = (idOrderin, user, only_own, connection, next) => {
 
     let query = '';
     let keys = [];
-    query = `SELECT orderin.*, _warehouse_idwarehouse. as warehouse_warehouse_idwarehouse , _product_idproduct.name as product_product_idproduct 
+    query = `SELECT orderin.*, _warehouse_idwarehouse.name as warehouse_warehouse_idwarehouse , _product_idproduct.name as product_product_idproduct 
              FROM orderin 
              INNER JOIN warehouse as _warehouse_idwarehouse ON _warehouse_idwarehouse.idwarehouse = orderin.warehouse_idwarehouse INNER JOIN product as _product_idproduct ON _product_idproduct.idproduct = orderin.product_idproduct 
               
               
-             ${user.estado_idestado ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = orderin.created_by ` : ""} 
+             ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = orderin.created_by ` : ""} 
              WHERE orderin.is_deleted = false 
                   AND idorderin = ? 
-                  ${user.estado_idestado ? `AND _si_user.estado_idestado = ? ` : ""}
+                  ${user.companyunits_idcompanyunits ? `AND _si_user.companyunits_idcompanyunits = ? ` : ""}
                   ${only_own ? `AND orderin.created_by = ?` : ""}`
         keys = [idOrderin];
-        user.estado_idestado ? keys.push(user.estado_idestado) : null;
+        user.companyunits_idcompanyunits ? keys.push(user.companyunits_idcompanyunits) : null;
         only_own ? keys.push(user.idsi_user) : null;
 
     connection.query(query, keys, (error, result) => {

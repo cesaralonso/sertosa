@@ -6,18 +6,21 @@ Validation.findByIdService_employee = (idService_employee, user, only_own, conne
 
     let query = '';
     let keys = [];
-    query = `SELECT validation.*, _service_employee_idservice_employee.name as service_employee_service_employee_idservice_employee , _service_idservice.name as service_service_idservice 
+    query = `SELECT validation.*, CONCAT(_service_employee_idservice_employee.idservice_employee, ' - ', _employee_idemployee.name, ' ') as service_employee_service_employee_idservice_employee , _service_idservice.name as service_service_idservice 
              FROM validation 
-             INNER JOIN service_employee as _service_employee_idservice_employee ON _service_employee_idservice_employee.idservice_employee = validation.service_employee_idservice_employee INNER JOIN service as _service_idservice ON _service_idservice.idservice = validation.service_idservice 
+             INNER JOIN service_employee as _service_employee_idservice_employee ON _service_employee_idservice_employee.idservice_employee = validation.service_employee_idservice_employee 
+             INNER JOIN service as _service_idservice ON _service_idservice.idservice = validation.service_idservice
+             INNER JOIN employee as _employee_idemployee ON _employee_idemployee.idemployee = _service_employee_idservice_employee.employee_idemployee 
               
               
-             ${user.estado_idestado ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = validation.created_by ` : ""} 
+              
+             ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = validation.created_by ` : ""} 
              WHERE validation.is_deleted = false 
                   AND validation.service_employee_idservice_employee = ? 
-                  ${user.estado_idestado ? `AND _si_user.estado_idestado = ? ` : ""}
+                  ${user.companyunits_idcompanyunits ? `AND _si_user.companyunits_idcompanyunits = ? ` : ""}
                   ${only_own ? `AND validation.created_by = ?` : ""}`
         keys = [idService_employee];
-        user.estado_idestado ? keys.push(user.estado_idestado) : null;
+        user.companyunits_idcompanyunits ? keys.push(user.companyunits_idcompanyunits) : null;
         only_own ? keys.push(user.idsi_user) : null;
 
     connection.query(query, keys, (error, result) => {
@@ -36,18 +39,23 @@ Validation.findByIdService = (idService, user, only_own, connection, next) => {
 
     let query = '';
     let keys = [];
-    query = `SELECT validation.*, _service_employee_idservice_employee.name as service_employee_service_employee_idservice_employee , _service_idservice.name as service_service_idservice 
+    query = `SELECT validation.*, CONCAT(_service_employee_idservice_employee.idservice_employee, ' - ', _employee_idemployee.name, ' ') as service_employee_service_employee_idservice_employee , _service_idservice.name as service_service_idservice 
              FROM validation 
-             INNER JOIN service_employee as _service_employee_idservice_employee ON _service_employee_idservice_employee.idservice_employee = validation.service_employee_idservice_employee INNER JOIN service as _service_idservice ON _service_idservice.idservice = validation.service_idservice 
+             INNER JOIN service_employee as _service_employee_idservice_employee ON _service_employee_idservice_employee.idservice_employee = validation.service_employee_idservice_employee 
+             INNER JOIN service as _service_idservice ON _service_idservice.idservice = validation.service_idservice
+             INNER JOIN employee as _employee_idemployee ON _employee_idemployee.idemployee = _service_employee_idservice_employee.employee_idemployee 
               
               
-             ${user.estado_idestado ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = validation.created_by ` : ""} 
+              
+             ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = validation.created_by ` : ""} 
              WHERE validation.is_deleted = false 
-                  AND validation.service_idservice = ? 
-                  ${user.estado_idestado ? `AND _si_user.estado_idestado = ? ` : ""}
+                  AND validation.service_idservice
+             INNER JOIN employee as _employee_idemployee ON _employee_idemployee.idemployee = _service_employee_idservice_employee.employee_idemployee 
+              = ? 
+                  ${user.companyunits_idcompanyunits ? `AND _si_user.companyunits_idcompanyunits = ? ` : ""}
                   ${only_own ? `AND validation.created_by = ?` : ""}`
         keys = [idService];
-        user.estado_idestado ? keys.push(user.estado_idestado) : null;
+        user.companyunits_idcompanyunits ? keys.push(user.companyunits_idcompanyunits) : null;
         only_own ? keys.push(user.idsi_user) : null;
 
     connection.query(query, keys, (error, result) => {
@@ -66,18 +74,21 @@ Validation.findFromTo = (fechaDesde, fechaHasta, user, only_own, connection, nex
 
     let query = '';
     let keys = [];
-    query = `SELECT validation.*, _service_employee_idservice_employee.name as service_employee_service_employee_idservice_employee , _service_idservice.name as service_service_idservice 
+    query = `SELECT validation.*, CONCAT(_service_employee_idservice_employee.idservice_employee, ' - ', _employee_idemployee.name, ' ') as service_employee_service_employee_idservice_employee , _service_idservice.name as service_service_idservice 
              FROM validation 
-             INNER JOIN service_employee as _service_employee_idservice_employee ON _service_employee_idservice_employee.idservice_employee = validation.service_employee_idservice_employee INNER JOIN service as _service_idservice ON _service_idservice.idservice = validation.service_idservice 
+             INNER JOIN service_employee as _service_employee_idservice_employee ON _service_employee_idservice_employee.idservice_employee = validation.service_employee_idservice_employee 
+             INNER JOIN service as _service_idservice ON _service_idservice.idservice = validation.service_idservice
+             INNER JOIN employee as _employee_idemployee ON _employee_idemployee.idemployee = _service_employee_idservice_employee.employee_idemployee 
               
               
-             ${user.estado_idestado ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = validation.created_by ` : ""} 
+              
+             ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = validation.created_by ` : ""} 
              WHERE validation.is_deleted = false 
                   AND validation.created_at BETWEEN ? AND ? 
-                  ${user.estado_idestado ? `AND _si_user.estado_idestado = ? ` : ""}
+                  ${user.companyunits_idcompanyunits ? `AND _si_user.companyunits_idcompanyunits = ? ` : ""}
                   ${only_own ? `AND validation.created_by = ?` : ""}`
         keys = [fechaDesde, fechaHasta];
-        user.estado_idestado ? keys.push(user.estado_idestado) : null;
+        user.companyunits_idcompanyunits ? keys.push(user.companyunits_idcompanyunits) : null;
         only_own ? keys.push(user.idsi_user) : null;
     connection.query(query, keys, (error, result) => {
         if(error) 
@@ -95,17 +106,20 @@ Validation.all = (user, only_own, connection, next) => {
 
     let query = '';
     let keys = [];
-    query = `SELECT validation.*, _service_employee_idservice_employee.name as service_employee_service_employee_idservice_employee , _service_idservice.name as service_service_idservice 
+    query = `SELECT validation.*, CONCAT(_service_employee_idservice_employee.idservice_employee, ' - ', _employee_idemployee.name, ' ') as service_employee_service_employee_idservice_employee , _service_idservice.name as service_service_idservice 
              FROM validation 
-             INNER JOIN service_employee as _service_employee_idservice_employee ON _service_employee_idservice_employee.idservice_employee = validation.service_employee_idservice_employee INNER JOIN service as _service_idservice ON _service_idservice.idservice = validation.service_idservice 
+             INNER JOIN service_employee as _service_employee_idservice_employee ON _service_employee_idservice_employee.idservice_employee = validation.service_employee_idservice_employee 
+             INNER JOIN service as _service_idservice ON _service_idservice.idservice = validation.service_idservice
+             INNER JOIN employee as _employee_idemployee ON _employee_idemployee.idemployee = _service_employee_idservice_employee.employee_idemployee 
               
               
-             ${user.estado_idestado ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = validation.created_by ` : ""} 
+              
+             ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = validation.created_by ` : ""} 
              WHERE validation.is_deleted = false 
-                  ${user.estado_idestado ? `AND _si_user.estado_idestado = ? ` : ""}
+                  ${user.companyunits_idcompanyunits ? `AND _si_user.companyunits_idcompanyunits = ? ` : ""}
                   ${only_own ? `AND validation.created_by = ?` : ""}`
         keys = [];
-        user.estado_idestado ? keys.push(user.estado_idestado) : null;
+        user.companyunits_idcompanyunits ? keys.push(user.companyunits_idcompanyunits) : null;
         only_own ? keys.push(user.idsi_user) : null;
 
     connection.query(query, keys, (error, result) => {
@@ -124,18 +138,21 @@ Validation.findById = (idValidation, user, only_own, connection, next) => {
 
     let query = '';
     let keys = [];
-    query = `SELECT validation.*, _service_employee_idservice_employee.name as service_employee_service_employee_idservice_employee , _service_idservice.name as service_service_idservice 
+    query = `SELECT validation.*, CONCAT(_service_employee_idservice_employee.idservice_employee, ' - ', _employee_idemployee.name, ' ') as service_employee_service_employee_idservice_employee , _service_idservice.name as service_service_idservice 
              FROM validation 
-             INNER JOIN service_employee as _service_employee_idservice_employee ON _service_employee_idservice_employee.idservice_employee = validation.service_employee_idservice_employee INNER JOIN service as _service_idservice ON _service_idservice.idservice = validation.service_idservice 
+             INNER JOIN service_employee as _service_employee_idservice_employee ON _service_employee_idservice_employee.idservice_employee = validation.service_employee_idservice_employee 
+             INNER JOIN service as _service_idservice ON _service_idservice.idservice = validation.service_idservice
+             INNER JOIN employee as _employee_idemployee ON _employee_idemployee.idemployee = _service_employee_idservice_employee.employee_idemployee 
               
               
-             ${user.estado_idestado ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = validation.created_by ` : ""} 
+              
+             ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = validation.created_by ` : ""} 
              WHERE validation.is_deleted = false 
                   AND idvalidation = ? 
-                  ${user.estado_idestado ? `AND _si_user.estado_idestado = ? ` : ""}
+                  ${user.companyunits_idcompanyunits ? `AND _si_user.companyunits_idcompanyunits = ? ` : ""}
                   ${only_own ? `AND validation.created_by = ?` : ""}`
         keys = [idValidation];
-        user.estado_idestado ? keys.push(user.estado_idestado) : null;
+        user.companyunits_idcompanyunits ? keys.push(user.companyunits_idcompanyunits) : null;
         only_own ? keys.push(user.idsi_user) : null;
 
     connection.query(query, keys, (error, result) => {

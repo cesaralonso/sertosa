@@ -21,10 +21,6 @@ let transport = nodemailer.createTransport({
 const Si_user = {};
 
 
-
-
-
-
 Si_user.cambiaPassword = (email, code, user, connection, next) => {
     if( !connection )
         return next('Connection refused');
@@ -94,7 +90,7 @@ Si_user.forgotRenewPassword = (email, connection, next) => {
             const mensaje = `¡Renueva tu contraseña en ${process.env.APP_NOMBRE}!, debes ingresar a la siguiente liga para confirmar tu correo en un lapso menor a 30 minutos a partir de la creación del usuario. Liga: ${process.env.APP_PRODURL}/renueva-tu-password.php?code=${code}&email=${email}`;
             const html = `
                 <div style="text-align: center;">
-                    <img alt="Logo ${process.env.APP_NOMBRE}" src="${process.env.APP_PRODURL}/assets/img/logo.png" width="200">
+                    <img alt="Logo ${process.env.APP_NOMBRE}" src="${process.env.APP_PRODURL}/assets/img/SVG/logo_horizontal-3x1.png" width="200">
                     <h2>${process.env.APP_NOMBRE}</h2>
                     <h1>¡Renueva tu contraseña en ${process.env.APP_NOMBRE}!</h1>
                     <p>Debes ingresar a la siguiente
@@ -169,7 +165,7 @@ Si_user.forgot = (user, connection, next) => {
                         const mensaje = `Hemos cambiado tu contraseña provisionalmente por la siguiente: ${code}`;
                         const html = `
                             <div style="text-align: center;">
-                                <img alt="Logo" src="${process.env.APP_PRODURL}/assets/img/logo.png" width="200">
+                                <img alt="Logo" src="${process.env.APP_PRODURL}/assets/img/SVG/logo_horizontal-3x1.png" width="200">
                                 <h2>${process.env.APP_RAZONSOCIAL}</h2>
                                 <h1>¡Recordar tu contraseña!</h1>
                                 <p>Hemos cambiado tu contraseña provisionalmente por la siguiente: ${code}. 
@@ -254,9 +250,24 @@ Si_user.insert = (user, connection, next) => {
             const mensaje = `¡Bienvenido a ${process.env.APP_NOMBRE}!, debes ingresar a la siguiente liga para confirmar tu correo en un lapso menor a 30 minutos a partir de la creación del usuario. Liga: ${process.env.APP_PRODURL}/ingresa-tu-codigo-registro.php?code=${code}`;
             const html = `
                 <div style="text-align: center;">
-                    <img alt="Logo" src="${process.env.APP_PRODURL}/assets/img/logo.png" width="200">
+                    <img alt="Logo" src="${process.env.APP_PRODURL}/assets/img/SVG/logo_horizontal-3x1.png" width="200">
                     <h2>${process.env.APP_RAZONSOCIAL}</h2>
-                    <h1>¡Bienvenido a  ${process.env.APP_NOMBRE}!</h1>
+                    <h1>¡Bienvenido a ${process.env.APP_NOMBRE}!</h1>
+                    <p>Debes ingresar a la siguiente
+                    <a href="${process.env.APP_PRODURL}/">liga (${process.env.APP_PRODURL}/)</a> para accesar a la plataforma de control SERTOSA.
+                    </p>
+                    <hr>
+                    <p>
+                        <i><strong>Por favor no respondas a este correo.</strong></i>
+                    </p>
+                </div>
+            `;
+
+            /* const html = `
+                <div style="text-align: center;">
+                    <img alt="Logo" src="${process.env.APP_PRODURL}/assets/img/SVG/logo_horizontal-3x1.png" width="200">
+                    <h2>${process.env.APP_RAZONSOCIAL}</h2>
+                    <h1>¡Bienvenido a ${process.env.APP_NOMBRE}!</h1>
                     <p>Debes ingresar a la siguiente
                     <a href="${process.env.APP_PRODURL}/ingresa-tu-codigo-registro.php?code=${code}&email=${email}">liga (${process.env.APP_PRODURL}/ingresa-tu-codigo-registro.php?code=${code}&email=${email})</a> para confirmar tu correo en un lapso menor a 30 minutos a partir de la creación del usuario.
                     </p>
@@ -265,7 +276,7 @@ Si_user.insert = (user, connection, next) => {
                         <i><strong>Por favor no respondas a este correo.</strong></i>
                     </p>
                 </div>
-            `;
+            `; */
 
             const message = {
                 from: process.env.NODEMAILER_FROM,
@@ -278,7 +289,7 @@ Si_user.insert = (user, connection, next) => {
             transport.sendMail(message, function(err, info) {
                 if (err) {
                     console.log('sendMail err', err)
-                    return next( err );
+                    /* return next( err ); */
                 } else {
                     console.log('sendMail info', info);
                 }
@@ -299,13 +310,14 @@ Si_user.login = (email, password, connection, next) => {
     if ( !connection )
         return next('Connection refused');
 
-    const query = connection.query(`SELECT si_user.* 
-                                    FROM si_user 
-                                    WHERE email = ? AND status != 'SUSPENDIDO' 
-                                    HAVING is_deleted IS NULL OR is_deleted = false`, 
+    connection.query(`SELECT si_user.*, cu.idcompanyunits, c.idcompany, cg.idcompanygroup, cu.name as companyunits_name, c.name as company_name, c.logo as company_logo, cg.name as companygroup_name 
+                        FROM si_user 
+                        INNER JOIN companyunits as cu ON cu.idcompanyunits = si_user.companyunits_idcompanyunits
+                        INNER JOIN company as c ON c.idcompany = cu.company_idcompany
+                        INNER JOIN companygroup as cg ON cg.idcompanygroup = c.companygroup_idcompanygroup
+                        WHERE si_user.email = ? AND si_user.status != 'SUSPENDIDO' 
+                        AND si_user.is_deleted = false`, 
     [email], (error, result) => {
-
-
         if ( error )
             return next( error );
 
@@ -327,12 +339,12 @@ Si_user.login = (email, password, connection, next) => {
                                     INNER JOIN si_rol as r ON r.idsi_rol = u.si_rol_idsi_rol 
                                     INNER JOIN si_permiso as p ON p.si_rol_idsi_rol = r.idsi_rol 
                                     INNER JOIN si_modulo as m ON m.idsi_modulo = p.si_modulo_idsi_modulo 
-                                    WHERE u.idsi_user = ? HAVING m.is_deleted IS NULL OR m.is_deleted = false`;
+                                    WHERE u.idsi_user = ? AND m.is_deleted = false`;
                     } else {
                         _query = `SELECT m.nombre FROM si_modulo as m`;
                     }
 
-                    const query = connection.query(_query, [user.idsi_user], (error, modules) => {
+                    connection.query(_query, [user.idsi_user], (error, modules) => {
 
                         if ( error )
                             return next( error );
@@ -390,11 +402,14 @@ Si_user.login = (email, password, connection, next) => {
 
                                                         const payload = {
                                                             idsi_user: user.idsi_user,
-                                                            usuario: user.usuario,
+                                                            usuario: user.nombre,
                                                             email: user.email,
                                                             idrol: user.si_rol_idsi_rol,
                                                             nombre: user.nombre,
-                                                            idcliente: user.idcliente || 0,
+                                                            idcompanyunits: user.companyunits_idcompanyunits || 0,
+                                                            companyunits_name: user.companyunits_name,
+                                                            company_name: user.company_name,
+                                                            companygroup_name: user.companygroup_name,
                                                             super: user.super || 0,
                                                             idsesion: resultSesion[0].idsi_sesion
                                                         };
@@ -413,7 +428,6 @@ Si_user.login = (email, password, connection, next) => {
                                                             idrol: user.si_rol_idsi_rol,
                                                             email: user.email,
                                                             user: user,
-                                                            idcliente: user.idcliente || 0,
                                                             nombre: user.nombre,
                                                             idsesion: resultSesion[0].idsi_sesion
                                                         });
@@ -449,16 +463,18 @@ Si_user.all = (created_by, connection, next) => {
     let query = '';
     let keys = [];
     if (created_by) {
-        query = `SELECT si_user.*, si_rol.nombre as si_rol_si_rol_idsi_rol, si_sesion.estado as si_sesionestado, si_sesion.modified_at as si_sesionmodifiedat  FROM si_user 
+        query = `SELECT companyunits.name as companyunits_companyunits_idcompanyunits, si_user.*, si_rol.nombre as si_rol_si_rol_idsi_rol, si_sesion.estado as si_sesionestado, si_sesion.modified_at as si_sesionmodifiedat  FROM si_user 
         INNER JOIN si_rol on si_rol.idsi_rol = si_user.si_rol_idsi_rol 
+        INNER JOIN companyunits on companyunits.idcompanyunits = si_user.companyunits_idcompanyunits 
         LEFT JOIN si_sesion on si_sesion.si_user_idsi_user = si_user.idsi_user
-        WHERE created_by = ? HAVING si_user.is_deleted IS NULL OR si_user.is_deleted = false`;
+        WHERE created_by = ? AND si_user.is_deleted = false`;
         keys = [created_by];
     } else {
-        query = `SELECT si_user.*, si_rol.nombre as si_rol_si_rol_idsi_rol, si_sesion.estado as si_sesionestado, si_sesion.modified_at as si_sesionmodifiedat FROM si_user 
+        query = `SELECT companyunits.name as companyunits_companyunits_idcompanyunits, si_user.*, si_rol.nombre as si_rol_si_rol_idsi_rol, si_sesion.estado as si_sesionestado, si_sesion.modified_at as si_sesionmodifiedat FROM si_user 
         INNER JOIN si_rol on si_rol.idsi_rol = si_user.si_rol_idsi_rol 
+        INNER JOIN companyunits on companyunits.idcompanyunits = si_user.companyunits_idcompanyunits 
         LEFT JOIN si_sesion on si_sesion.si_user_idsi_user = si_user.idsi_user
-        HAVING si_user.is_deleted IS NULL OR si_user.is_deleted = false`;
+        WHERE si_user.is_deleted = false`;
         keys = [];
     }
 
@@ -467,8 +483,13 @@ Si_user.all = (created_by, connection, next) => {
             return next({ success: false, error: error, message: 'Un error ha ocurrido mientras se leían registros' });
         else if (result.affectedRows === 0)
             return next(null, { success: false, result: result, message: 'Solo es posible leer registros propios' });
-        else
-            return next(null, { success: true, result: result, message: 'Si_user leíd@' });
+        else {
+            // Limpiar password
+            result.map(o => {
+                o.password = null
+            });
+            return next(null, { success: true, result: result, message: 'Si_user leído' });
+        }
     });
 };
 
@@ -497,8 +518,14 @@ Si_user.allRolClientes = (created_by, connection, next) => {
             return next({ success: false, error: error, message: 'Un error ha ocurrido mientras se leían registros' });
         else if (result.affectedRows === 0)
             return next(null, { success: false, result: result, message: 'Solo es posible leer registros propios' });
-        else
-            return next(null, { success: true, result: result, message: 'Si_user leíd@' });
+        else {
+            
+            // Limpiar password
+            result.map(o => {
+                o.password = null
+            });
+            return next(null, { success: true, result: result, message: 'Si_user leído' });
+        }
     });
 };
 
@@ -529,8 +556,14 @@ Si_user.allClientes = (created_by, connection, next) => {
             return next({ success: false, error: error, message: 'Un error ha ocurrido mientras se leían registros' });
         else if (result.affectedRows === 0)
             return next(null, { success: false, result: result, message: 'Solo es posible leer registros propios' });
-        else
-            return next(null, { success: true, result: result, message: 'Si_user leíd@' });
+        else {
+            
+            // Limpiar password
+            result.map(o => {
+                o.password = null
+            });
+            return next(null, { success: true, result: result, message: 'Si_user leído' });
+        }
     });
 };
 
@@ -553,8 +586,44 @@ Si_user.findById = (idSi_user, created_by, connection, next) => {
             return next({ success: false, error: error, message: 'Un error ha ocurrido mientras se encontraba el registro' });
         else if (result.affectedRows === 0)
             return next(null, { success: false, result: result, message: 'Solo es posible encontrar registros propios' });
-        else
-            return next(null, { success: true, result: result, message: 'Si_user encontrad@' });
+        else {
+            
+            // Limpiar password
+            result.map(o => {
+                o.password = null
+            });
+            return next(null, { success: true, result: result, message: 'Si_user encontrado' });
+        }
+    });
+};
+
+Si_user.findByCompanyunits = (idcompanyunits, created_by, connection, next) => {
+    if( !connection )
+        return next('Connection refused');
+
+    let query = '';
+    let keys = [];
+    if (created_by) {
+        query = `SELECT * FROM si_user WHERE companyunits_idcompanyunits = ? AND created_by = ? AND is_deleted = false`;
+        keys = [idcompanyunits, created_by];
+    } else {
+        query = `SELECT * FROM si_user WHERE companyunits_idcompanyunits = ? WHERE is_deleted = false`;
+        keys = [idcompanyunits];
+    }
+
+    connection.query(query, keys, (error, result) => {
+        if(error) 
+            return next({ success: false, error: error, message: 'Un error ha ocurrido mientras se encontraba el registro' });
+        else if (result.affectedRows === 0)
+            return next(null, { success: false, result: result, message: 'Solo es posible encontrar registros propios' });
+        else {
+
+            // Limpiar password
+            result.map(o => {
+                o.password = null
+            });
+            return next(null, { success: true, result: result, message: 'Si_user encontrado' });
+        }
     });
 };
 
@@ -577,8 +646,14 @@ Si_user.findBySiRol = (idSi_rol, created_by, connection, next) => {
             return next({ success: false, error: error, message: 'Un error ha ocurrido mientras se encontraba el registro' });
         else if (result.affectedRows === 0)
             return next(null, { success: false, result: result, message: 'Solo es posible encontrar registros propios' });
-        else
-            return next(null, { success: true, result: result, message: 'Si_user encontrad@' });
+        else {
+            
+            // Limpiar password
+            result.map(o => {
+                o.password = null
+            });
+            return next(null, { success: true, result: result, message: 'Si_user encontrado' });
+        }
     });
 };
 
@@ -595,7 +670,7 @@ Si_user.count = (connection, next) => {
         if(error) 
             return next({ success: false, error: error, message: 'Un error ha ocurrido mientras se leían registros' });
         else
-            return next(null, { success: true, result: result, message: 'Si_user contabilizad@' });
+            return next(null, { success: true, result: result, message: 'Si_user contabilizado' });
     });
 };
 
@@ -625,7 +700,6 @@ Si_user.verifica = (email, code, connection, next) => {
                 }
             });
         }
-        // return next(null, { success: true, result: result, message: 'Si_user verificad@' });
     });
 };
 
@@ -642,14 +716,14 @@ Si_user.exist = (idSi_user, connection, next) => {
         if(error) 
             return next({ success: false, error: error, message: 'Un error ha ocurrido mientras se leían registros' });
         else
-            return next(null, { success: true, result: result, message: 'Si_user verificad@' });
+            return next(null, { success: true, result: result, message: 'Si_user verificado' });
     });
 };
 
 Si_user.update = (Si_user, created_by, connection, next) => {
     if( !connection )
         return next('Connection refused');
-    
+
     let query = '';
     let keys = [];
     if (created_by) {
@@ -677,14 +751,14 @@ Si_user.update = (Si_user, created_by, connection, next) => {
             });
         });
     } else {
-        const user = {
+        /* const user = {
             'idsi_user': Si_user.idsi_user,
             'email': Si_user.email,
-            'usuario': Si_user.usuario,
+            'nombre': Si_user.nombre,
             'si_rol_idsi_rol': Si_user.si_rol_idsi_rol
-        };
+        }; */
 
-        connection.query(query, [user, Si_user.idsi_user], (error, result) => {
+        connection.query(query, [Si_user, Si_user.idsi_user], (error, result) => {
             if(error) 
                 return next({ success: false, error: error, message: 'Un error ha ocurrido mientras se actualizaba el registro' });
             else if (result.affectedRows === 0)
@@ -716,7 +790,7 @@ Si_user.remove = (idsi_user, created_by, connection, next) => {
         else if (result.affectedRows === 0)
             return next(null, { success: false, result: result, message: 'Solo es posible eliminar registros propios' });
         else
-            return next(null, { success: true, result: result, message: 'Si_user eliminad@' });
+            return next(null, { success: true, result: result, message: 'Si_user eliminado' });
     });
 };
 
@@ -740,7 +814,7 @@ Si_user.logicRemove = (idsi_user, created_by, connection, next) => {
         else if (result.affectedRows === 0)
             return next(null, { success: false, result: result, message: 'Solo es posible eliminar registros propios' });
         else
-            return next(null, { success: true, result: result, message: 'Si_user eliminad@' });
+            return next(null, { success: true, result: result, message: 'Si_user eliminado' });
     });
 };
 

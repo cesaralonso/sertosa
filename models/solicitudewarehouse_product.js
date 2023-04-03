@@ -11,13 +11,13 @@ Solicitudewarehouse_product.findByIdProduct = (idProduct, user, only_own, connec
              INNER JOIN solicitudewarehouse as _solicitudewarehouse_idsolicitudewarehouse ON _solicitudewarehouse_idsolicitudewarehouse.idsolicitudewarehouse = solicitudewarehouse_product.solicitudewarehouse_idsolicitudewarehouse INNER JOIN product as _product_idproduct ON _product_idproduct.idproduct = solicitudewarehouse_product.product_idproduct 
               
               
-             ${user.estado_idestado ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = solicitudewarehouse_product.created_by ` : ""} 
+             ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = solicitudewarehouse_product.created_by ` : ""} 
              WHERE solicitudewarehouse_product.is_deleted = false 
                   AND solicitudewarehouse_product.product_idproduct = ? 
-                  ${user.estado_idestado ? `AND _si_user.estado_idestado = ? ` : ""}
+                  ${user.companyunits_idcompanyunits ? `AND _si_user.companyunits_idcompanyunits = ? ` : ""}
                   ${only_own ? `AND solicitudewarehouse_product.created_by = ?` : ""}`
         keys = [idProduct];
-        user.estado_idestado ? keys.push(user.estado_idestado) : null;
+        user.companyunits_idcompanyunits ? keys.push(user.companyunits_idcompanyunits) : null;
         only_own ? keys.push(user.idsi_user) : null;
 
     connection.query(query, keys, (error, result) => {
@@ -41,13 +41,13 @@ Solicitudewarehouse_product.findByIdSolicitudewarehouse = (idSolicitudewarehouse
              INNER JOIN solicitudewarehouse as _solicitudewarehouse_idsolicitudewarehouse ON _solicitudewarehouse_idsolicitudewarehouse.idsolicitudewarehouse = solicitudewarehouse_product.solicitudewarehouse_idsolicitudewarehouse INNER JOIN product as _product_idproduct ON _product_idproduct.idproduct = solicitudewarehouse_product.product_idproduct 
               
               
-             ${user.estado_idestado ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = solicitudewarehouse_product.created_by ` : ""} 
+             ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = solicitudewarehouse_product.created_by ` : ""} 
              WHERE solicitudewarehouse_product.is_deleted = false 
                   AND solicitudewarehouse_product.solicitudewarehouse_idsolicitudewarehouse = ? 
-                  ${user.estado_idestado ? `AND _si_user.estado_idestado = ? ` : ""}
+                  ${user.companyunits_idcompanyunits ? `AND _si_user.companyunits_idcompanyunits = ? ` : ""}
                   ${only_own ? `AND solicitudewarehouse_product.created_by = ?` : ""}`
         keys = [idSolicitudewarehouse];
-        user.estado_idestado ? keys.push(user.estado_idestado) : null;
+        user.companyunits_idcompanyunits ? keys.push(user.companyunits_idcompanyunits) : null;
         only_own ? keys.push(user.idsi_user) : null;
 
     connection.query(query, keys, (error, result) => {
@@ -71,13 +71,13 @@ Solicitudewarehouse_product.findFromTo = (fechaDesde, fechaHasta, user, only_own
              INNER JOIN solicitudewarehouse as _solicitudewarehouse_idsolicitudewarehouse ON _solicitudewarehouse_idsolicitudewarehouse.idsolicitudewarehouse = solicitudewarehouse_product.solicitudewarehouse_idsolicitudewarehouse INNER JOIN product as _product_idproduct ON _product_idproduct.idproduct = solicitudewarehouse_product.product_idproduct 
               
               
-             ${user.estado_idestado ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = solicitudewarehouse_product.created_by ` : ""} 
+             ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = solicitudewarehouse_product.created_by ` : ""} 
              WHERE solicitudewarehouse_product.is_deleted = false 
                   AND solicitudewarehouse_product.created_at BETWEEN ? AND ? 
-                  ${user.estado_idestado ? `AND _si_user.estado_idestado = ? ` : ""}
+                  ${user.companyunits_idcompanyunits ? `AND _si_user.companyunits_idcompanyunits = ? ` : ""}
                   ${only_own ? `AND solicitudewarehouse_product.created_by = ?` : ""}`
         keys = [fechaDesde, fechaHasta];
-        user.estado_idestado ? keys.push(user.estado_idestado) : null;
+        user.companyunits_idcompanyunits ? keys.push(user.companyunits_idcompanyunits) : null;
         only_own ? keys.push(user.idsi_user) : null;
     connection.query(query, keys, (error, result) => {
         if(error) 
@@ -100,12 +100,12 @@ Solicitudewarehouse_product.all = (user, only_own, connection, next) => {
              INNER JOIN solicitudewarehouse as _solicitudewarehouse_idsolicitudewarehouse ON _solicitudewarehouse_idsolicitudewarehouse.idsolicitudewarehouse = solicitudewarehouse_product.solicitudewarehouse_idsolicitudewarehouse INNER JOIN product as _product_idproduct ON _product_idproduct.idproduct = solicitudewarehouse_product.product_idproduct 
               
               
-             ${user.estado_idestado ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = solicitudewarehouse_product.created_by ` : ""} 
+             ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = solicitudewarehouse_product.created_by ` : ""} 
              WHERE solicitudewarehouse_product.is_deleted = false 
-                  ${user.estado_idestado ? `AND _si_user.estado_idestado = ? ` : ""}
+                  ${user.companyunits_idcompanyunits ? `AND _si_user.companyunits_idcompanyunits = ? ` : ""}
                   ${only_own ? `AND solicitudewarehouse_product.created_by = ?` : ""}`
         keys = [];
-        user.estado_idestado ? keys.push(user.estado_idestado) : null;
+        user.companyunits_idcompanyunits ? keys.push(user.companyunits_idcompanyunits) : null;
         only_own ? keys.push(user.idsi_user) : null;
 
     connection.query(query, keys, (error, result) => {
@@ -129,13 +129,13 @@ Solicitudewarehouse_product.findById = (idSolicitudewarehouse_product, user, onl
              INNER JOIN solicitudewarehouse as _solicitudewarehouse_idsolicitudewarehouse ON _solicitudewarehouse_idsolicitudewarehouse.idsolicitudewarehouse = solicitudewarehouse_product.solicitudewarehouse_idsolicitudewarehouse INNER JOIN product as _product_idproduct ON _product_idproduct.idproduct = solicitudewarehouse_product.product_idproduct 
               
               
-             ${user.estado_idestado ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = solicitudewarehouse_product.created_by ` : ""} 
+             ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = solicitudewarehouse_product.created_by ` : ""} 
              WHERE solicitudewarehouse_product.is_deleted = false 
                   AND idsolicitudewarehouse_product = ? 
-                  ${user.estado_idestado ? `AND _si_user.estado_idestado = ? ` : ""}
+                  ${user.companyunits_idcompanyunits ? `AND _si_user.companyunits_idcompanyunits = ? ` : ""}
                   ${only_own ? `AND solicitudewarehouse_product.created_by = ?` : ""}`
         keys = [idSolicitudewarehouse_product];
-        user.estado_idestado ? keys.push(user.estado_idestado) : null;
+        user.companyunits_idcompanyunits ? keys.push(user.companyunits_idcompanyunits) : null;
         only_own ? keys.push(user.idsi_user) : null;
 
     connection.query(query, keys, (error, result) => {

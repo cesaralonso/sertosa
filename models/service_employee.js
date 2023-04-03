@@ -6,18 +6,18 @@ Service_employee.findByIdProject_service = (idProject_service, user, only_own, c
 
     let query = '';
     let keys = [];
-    query = `SELECT service_employee.*, _employee_idemployee.name as employee_employee_idemployee , _campaign.name as project_service_project_service_idproject_service 
+    query = `SELECT service_employee.*, _employee_idemployee.name as employee_employee_idemployee , _project.name as project_service_project_service_idproject_service 
              FROM service_employee 
              INNER JOIN employee as _employee_idemployee ON _employee_idemployee.idemployee = service_employee.employee_idemployee INNER JOIN project_service as _project_service_idproject_service ON _project_service_idproject_service.idproject_service = service_employee.project_service_idproject_service 
-             INNER JOIN campaign as _campaign ON _campaign.idcampaign = _project_service_idproject_service.campaign_idcampaign 
+             INNER JOIN project as _project ON _project.idproject = _project_service_idproject_service.project_idproject 
               
-             ${user.estado_idestado ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = service_employee.created_by ` : ""} 
+             ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = service_employee.created_by ` : ""} 
              WHERE service_employee.is_deleted = false 
                   AND service_employee.project_service_idproject_service = ? 
-                  ${user.estado_idestado ? `AND _si_user.estado_idestado = ? ` : ""}
+                  ${user.companyunits_idcompanyunits ? `AND _si_user.companyunits_idcompanyunits = ? ` : ""}
                   ${only_own ? `AND service_employee.created_by = ?` : ""}`
         keys = [idProject_service];
-        user.estado_idestado ? keys.push(user.estado_idestado) : null;
+        user.companyunits_idcompanyunits ? keys.push(user.companyunits_idcompanyunits) : null;
         only_own ? keys.push(user.idsi_user) : null;
 
     connection.query(query, keys, (error, result) => {
@@ -36,18 +36,18 @@ Service_employee.findByIdEmployee = (idEmployee, user, only_own, connection, nex
 
     let query = '';
     let keys = [];
-    query = `SELECT service_employee.*, _employee_idemployee.name as employee_employee_idemployee , _campaign.name as project_service_project_service_idproject_service 
+    query = `SELECT service_employee.*, _employee_idemployee.name as employee_employee_idemployee , _project.name as project_service_project_service_idproject_service 
              FROM service_employee 
              INNER JOIN employee as _employee_idemployee ON _employee_idemployee.idemployee = service_employee.employee_idemployee INNER JOIN project_service as _project_service_idproject_service ON _project_service_idproject_service.idproject_service = service_employee.project_service_idproject_service 
-             INNER JOIN campaign as _campaign ON _campaign.idcampaign = _project_service_idproject_service.campaign_idcampaign 
+             INNER JOIN project as _project ON _project.idproject = _project_service_idproject_service.project_idproject 
               
-             ${user.estado_idestado ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = service_employee.created_by ` : ""} 
+             ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = service_employee.created_by ` : ""} 
              WHERE service_employee.is_deleted = false 
                   AND service_employee.employee_idemployee = ? 
-                  ${user.estado_idestado ? `AND _si_user.estado_idestado = ? ` : ""}
+                  ${user.companyunits_idcompanyunits ? `AND _si_user.companyunits_idcompanyunits = ? ` : ""}
                   ${only_own ? `AND service_employee.created_by = ?` : ""}`
         keys = [idEmployee];
-        user.estado_idestado ? keys.push(user.estado_idestado) : null;
+        user.companyunits_idcompanyunits ? keys.push(user.companyunits_idcompanyunits) : null;
         only_own ? keys.push(user.idsi_user) : null;
 
     connection.query(query, keys, (error, result) => {
@@ -66,18 +66,18 @@ Service_employee.findFromTo = (fechaDesde, fechaHasta, user, only_own, connectio
 
     let query = '';
     let keys = [];
-    query = `SELECT service_employee.*, _employee_idemployee.name as employee_employee_idemployee , _campaign.name as project_service_project_service_idproject_service 
+    query = `SELECT service_employee.*, _employee_idemployee.name as employee_employee_idemployee , _project.name as project_service_project_service_idproject_service 
              FROM service_employee 
              INNER JOIN employee as _employee_idemployee ON _employee_idemployee.idemployee = service_employee.employee_idemployee INNER JOIN project_service as _project_service_idproject_service ON _project_service_idproject_service.idproject_service = service_employee.project_service_idproject_service 
-             INNER JOIN campaign as _campaign ON _campaign.idcampaign = _project_service_idproject_service.campaign_idcampaign 
+             INNER JOIN project as _project ON _project.idproject = _project_service_idproject_service.project_idproject 
               
-             ${user.estado_idestado ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = service_employee.created_by ` : ""} 
+             ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = service_employee.created_by ` : ""} 
              WHERE service_employee.is_deleted = false 
                   AND service_employee.created_at BETWEEN ? AND ? 
-                  ${user.estado_idestado ? `AND _si_user.estado_idestado = ? ` : ""}
+                  ${user.companyunits_idcompanyunits ? `AND _si_user.companyunits_idcompanyunits = ? ` : ""}
                   ${only_own ? `AND service_employee.created_by = ?` : ""}`
         keys = [fechaDesde, fechaHasta];
-        user.estado_idestado ? keys.push(user.estado_idestado) : null;
+        user.companyunits_idcompanyunits ? keys.push(user.companyunits_idcompanyunits) : null;
         only_own ? keys.push(user.idsi_user) : null;
     connection.query(query, keys, (error, result) => {
         if(error) 
@@ -95,17 +95,17 @@ Service_employee.all = (user, only_own, connection, next) => {
 
     let query = '';
     let keys = [];
-    query = `SELECT service_employee.*, _employee_idemployee.name as employee_employee_idemployee , _campaign.name as project_service_project_service_idproject_service 
+    query = `SELECT service_employee.*, _employee_idemployee.name as employee_employee_idemployee , _project.name as project_service_project_service_idproject_service 
              FROM service_employee 
              INNER JOIN employee as _employee_idemployee ON _employee_idemployee.idemployee = service_employee.employee_idemployee INNER JOIN project_service as _project_service_idproject_service ON _project_service_idproject_service.idproject_service = service_employee.project_service_idproject_service 
-             INNER JOIN campaign as _campaign ON _campaign.idcampaign = _project_service_idproject_service.campaign_idcampaign 
+             INNER JOIN project as _project ON _project.idproject = _project_service_idproject_service.project_idproject 
               
-             ${user.estado_idestado ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = service_employee.created_by ` : ""} 
+             ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = service_employee.created_by ` : ""} 
              WHERE service_employee.is_deleted = false 
-                  ${user.estado_idestado ? `AND _si_user.estado_idestado = ? ` : ""}
+                  ${user.companyunits_idcompanyunits ? `AND _si_user.companyunits_idcompanyunits = ? ` : ""}
                   ${only_own ? `AND service_employee.created_by = ?` : ""}`
         keys = [];
-        user.estado_idestado ? keys.push(user.estado_idestado) : null;
+        user.companyunits_idcompanyunits ? keys.push(user.companyunits_idcompanyunits) : null;
         only_own ? keys.push(user.idsi_user) : null;
 
     connection.query(query, keys, (error, result) => {
@@ -124,18 +124,18 @@ Service_employee.findById = (idService_employee, user, only_own, connection, nex
 
     let query = '';
     let keys = [];
-    query = `SELECT service_employee.*, _employee_idemployee.name as employee_employee_idemployee , _campaign.name as project_service_project_service_idproject_service 
+    query = `SELECT service_employee.*, _employee_idemployee.name as employee_employee_idemployee , _project.name as project_service_project_service_idproject_service 
              FROM service_employee 
              INNER JOIN employee as _employee_idemployee ON _employee_idemployee.idemployee = service_employee.employee_idemployee INNER JOIN project_service as _project_service_idproject_service ON _project_service_idproject_service.idproject_service = service_employee.project_service_idproject_service 
-             INNER JOIN campaign as _campaign ON _campaign.idcampaign = _project_service_idproject_service.campaign_idcampaign 
+             INNER JOIN project as _project ON _project.idproject = _project_service_idproject_service.project_idproject 
               
-             ${user.estado_idestado ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = service_employee.created_by ` : ""} 
+             ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = service_employee.created_by ` : ""} 
              WHERE service_employee.is_deleted = false 
                   AND idservice_employee = ? 
-                  ${user.estado_idestado ? `AND _si_user.estado_idestado = ? ` : ""}
+                  ${user.companyunits_idcompanyunits ? `AND _si_user.companyunits_idcompanyunits = ? ` : ""}
                   ${only_own ? `AND service_employee.created_by = ?` : ""}`
         keys = [idService_employee];
-        user.estado_idestado ? keys.push(user.estado_idestado) : null;
+        user.companyunits_idcompanyunits ? keys.push(user.companyunits_idcompanyunits) : null;
         only_own ? keys.push(user.idsi_user) : null;
 
     connection.query(query, keys, (error, result) => {

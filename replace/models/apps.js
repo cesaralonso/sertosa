@@ -35,7 +35,7 @@ Api.allSesion = (created_by, connection, next) => {
     let query = '';
     let keys = [];
 
-    query = `SELECT si_sesion.latitude, si_sesion.longitude, si_sesion.accuracy, si_sesion.modified_at, u.usuario, u.email FROM si_sesion 
+    query = `SELECT si_sesion.latitude, si_sesion.longitude, si_sesion.accuracy, si_sesion.modified_at, u.nombre, u.email FROM si_sesion 
             INNER JOIN si_user AS u ON u.idsi_user = si_sesion.si_user_idsi_user 
             WHERE si_sesion.latitude != '' AND si_sesion.longitude != ''`;
     keys = [];

@@ -390,7 +390,7 @@ Si_user.login = (email, password, connection, next) => {
 
                                                         const payload = {
                                                             idsi_user: user.idsi_user,
-                                                            usuario: user.usuario,
+                                                            usuario: user.nombre,
                                                             email: user.email,
                                                             idrol: user.si_rol_idsi_rol,
                                                             nombre: user.nombre,
@@ -680,7 +680,7 @@ Si_user.update = (Si_user, created_by, connection, next) => {
         const user = {
             'idsi_user': Si_user.idsi_user,
             'email': Si_user.email,
-            'usuario': Si_user.usuario,
+            'usuario': Si_user.nombre,
             'si_rol_idsi_rol': Si_user.si_rol_idsi_rol
         };
 

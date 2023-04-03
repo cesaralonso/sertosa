@@ -7,12 +7,12 @@ Log.findByIdSi_modulo = (idSi_modulo, created_by, connection, next) => {
     let query = '';
     let keys = [];
     if (created_by) {
-        query = `SELECT si_log.*, _si_modulo_idsi_modulo.nombre as si_modulo_si_modulo_idsi_modulo, _si_user.usuario as created_by FROM si_log 
+        query = `SELECT si_log.*, _si_modulo_idsi_modulo.nombre as si_modulo_si_modulo_idsi_modulo, _si_user.email as created_by FROM si_log 
                     INNER JOIN si_user as _si_user ON _si_user.idsi_user = si_log.created_by 
                     INNER JOIN si_modulo as _si_modulo_idsi_modulo ON _si_modulo_idsi_modulo.idsi_modulo = si_log.si_modulo_idsi_modulo   WHERE si_log.si_modulo_idsi_modulo = ? AND si_log.created_by = ? HAVING si_log.is_deleted IS NULL OR si_log.is_deleted = false`;
         keys = [idSi_modulo, created_by];
     } else {
-        query = `SELECT si_log.*, _si_modulo_idsi_modulo.nombre as si_modulo_si_modulo_idsi_modulo, _si_user.usuario as created_by FROM si_log 
+        query = `SELECT si_log.*, _si_modulo_idsi_modulo.nombre as si_modulo_si_modulo_idsi_modulo, _si_user.email as created_by FROM si_log 
                     INNER JOIN si_user as _si_user ON _si_user.idsi_user = si_log.created_by 
                     INNER JOIN si_modulo as _si_modulo_idsi_modulo ON _si_modulo_idsi_modulo.idsi_modulo = si_log.si_modulo_idsi_modulo   WHERE si_log.si_modulo_idsi_modulo = ? HAVING si_log.is_deleted IS NULL OR si_log.is_deleted = false`;
         keys = [idSi_modulo];
@@ -35,12 +35,12 @@ Log.findFromTo = (fechaDesde, fechaHasta, created_by, connection, next) => {
     let query = '';
     let keys = [];
     if (created_by) {
-        query = `SELECT si_log.*, _si_modulo_idsi_modulo.nombre as si_modulo_si_modulo_idsi_modulo, _si_user.usuario as created_by FROM si_log 
+        query = `SELECT si_log.*, _si_modulo_idsi_modulo.nombre as si_modulo_si_modulo_idsi_modulo, _si_user.email as created_by FROM si_log 
                     INNER JOIN si_user as _si_user ON _si_user.idsi_user = si_log.created_by 
                     INNER JOIN si_modulo as _si_modulo_idsi_modulo ON _si_modulo_idsi_modulo.idsi_modulo = si_log.si_modulo_idsi_modulo   WHERE si_log.created_at BETWEEN ? AND ?  si_log.created_by = ? HAVING si_log.is_deleted IS NULL OR si_log.is_deleted = false`;
         keys = [fechaDesde, fechaHasta, created_by];
     } else {
-        query = `SELECT si_log.*, _si_modulo_idsi_modulo.nombre as si_modulo_si_modulo_idsi_modulo, _si_user.usuario as created_by FROM si_log 
+        query = `SELECT si_log.*, _si_modulo_idsi_modulo.nombre as si_modulo_si_modulo_idsi_modulo, _si_user.email as created_by FROM si_log 
                     INNER JOIN si_user as _si_user ON _si_user.idsi_user = si_log.created_by 
                     INNER JOIN si_modulo as _si_modulo_idsi_modulo ON _si_modulo_idsi_modulo.idsi_modulo = si_log.si_modulo_idsi_modulo   WHERE si_log.created_at BETWEEN ? AND ? HAVING si_log.is_deleted IS NULL OR si_log.is_deleted = false`;
         keys = [fechaDesde, fechaHasta];
@@ -62,14 +62,14 @@ Log.all = (created_by, connection, next) => {
     let query = '';
     let keys = [];
     if (created_by) {
-        query = `SELECT si_log.*, _si_modulo_idsi_modulo.nombre as si_modulo_si_modulo_idsi_modulo, _si_user.usuario as created_by FROM si_log 
+        query = `SELECT si_log.*, _si_modulo_idsi_modulo.nombre as si_modulo_si_modulo_idsi_modulo, _si_user.email as created_by FROM si_log 
                     INNER JOIN si_user as _si_user ON _si_user.idsi_user = si_log.created_by 
                     INNER JOIN si_modulo as _si_modulo_idsi_modulo ON _si_modulo_idsi_modulo.idsi_modulo = si_log.si_modulo_idsi_modulo   
         WHERE si_log.created_at >= (DATE_FORMAT(si_log.created_at, "%Y-%m-01")) AND si_log.created_by = ? HAVING si_log.is_deleted IS NULL OR si_log.is_deleted = false
         ORDER BY created_at DESC`;
         keys = [created_by];
     } else {
-        query = `SELECT si_log.*, _si_modulo_idsi_modulo.nombre as si_modulo_si_modulo_idsi_modulo, _si_user.usuario as created_by FROM si_log 
+        query = `SELECT si_log.*, _si_modulo_idsi_modulo.nombre as si_modulo_si_modulo_idsi_modulo, _si_user.email as created_by FROM si_log 
                     INNER JOIN si_user as _si_user ON _si_user.idsi_user = si_log.created_by 
                     INNER JOIN si_modulo as _si_modulo_idsi_modulo ON _si_modulo_idsi_modulo.idsi_modulo = si_log.si_modulo_idsi_modulo   
         WHERE si_log.created_at >= (DATE_FORMAT(si_log.created_at, "%Y-%m-01")) HAVING si_log.is_deleted IS NULL OR si_log.is_deleted = false
