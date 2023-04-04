@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 15-03-2023 a las 14:52:10
+-- Tiempo de generación: 04-04-2023 a las 03:15:59
 -- Versión del servidor: 10.4.18-MariaDB
 -- Versión de PHP: 7.3.27
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de datos: `si_sertosa2`
+-- Base de datos: `si_sertosa2_6411ce4229fd4`
 --
 
 -- --------------------------------------------------------
@@ -38,6 +38,16 @@ CREATE TABLE `company` (
   `modified_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT '0|Fecha de actualización'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='1|1|Empresa||';
 
+--
+-- Volcado de datos para la tabla `company`
+--
+
+INSERT INTO `company` (`idcompany`, `name`, `companygroup_idcompanygroup`, `logo`, `is_deleted`, `created_at`, `created_by`, `modified_at`) VALUES
+(1, 'SERTOSA', 1, NULL, 0, '2023-03-15 14:46:00', 1, '2023-03-15 15:02:21'),
+(9, 'AFRISA', 1, NULL, 0, '2023-03-15 16:58:39', 1, '2023-03-15 16:58:39'),
+(10, 'USA MEX', 1, NULL, 0, '2023-03-15 16:58:49', 1, '2023-03-15 16:58:49'),
+(11, 'XXX', 1, 'http://localhost:3000/company/blob', 0, '2023-04-02 18:44:21', 1, '2023-04-02 18:44:21');
+
 -- --------------------------------------------------------
 
 --
@@ -52,6 +62,13 @@ CREATE TABLE `companygroup` (
   `created_by` int(11) DEFAULT NULL COMMENT '0|Creado por',
   `modified_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT '0|Fecha de actualización'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='1|1|Empresa grupo||';
+
+--
+-- Volcado de datos para la tabla `companygroup`
+--
+
+INSERT INTO `companygroup` (`idcompanygroup`, `name`, `is_deleted`, `created_at`, `created_by`, `modified_at`) VALUES
+(1, 'SERTOSA', 0, '2023-03-15 14:45:38', 1, '2023-03-15 15:02:11');
 
 -- --------------------------------------------------------
 
@@ -68,6 +85,13 @@ CREATE TABLE `companyunits` (
   `created_by` int(11) DEFAULT NULL COMMENT '0|Creado por',
   `modified_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT '0|Fecha de actualización'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='1|1|Unidad de negocio||';
+
+--
+-- Volcado de datos para la tabla `companyunits`
+--
+
+INSERT INTO `companyunits` (`idcompanyunits`, `name`, `company_idcompany`, `is_deleted`, `created_at`, `created_by`, `modified_at`) VALUES
+(1, 'AFRISA TALLER', 1, 0, '2023-03-15 14:46:12', 1, '2023-03-15 17:00:17');
 
 -- --------------------------------------------------------
 
@@ -88,6 +112,13 @@ CREATE TABLE `employee` (
   `modified_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT '0|Fecha de actualización'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='1|1|Empleado||';
 
+--
+-- Volcado de datos para la tabla `employee`
+--
+
+INSERT INTO `employee` (`idemployee`, `name`, `email`, `si_user_idsi_user`, `companyunits_idcompanyunits`, `code`, `is_deleted`, `created_at`, `created_by`, `modified_at`) VALUES
+(44, 'PANCHO LOPEZ', 'pancho@lopez.com', 1, 1, '4321', 0, '2023-04-02 17:44:15', 1, '2023-04-02 17:44:15');
+
 -- --------------------------------------------------------
 
 --
@@ -102,6 +133,13 @@ CREATE TABLE `family` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp() COMMENT '0|Fecha de creación',
   `modified_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT '0|Fecha de modificación'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='1|1|Familia de producto||';
+
+--
+-- Volcado de datos para la tabla `family`
+--
+
+INSERT INTO `family` (`idfamily`, `name`, `is_deleted`, `created_by`, `created_at`, `modified_at`) VALUES
+(1, 'BUJIAS', 0, 0000000001, '2023-03-28 14:57:47', '2023-03-28 14:57:47');
 
 -- --------------------------------------------------------
 
@@ -120,6 +158,13 @@ CREATE TABLE `orderin` (
   `modified_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT '0|Fecha de modificación'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='1|1|Orden de entrada||';
 
+--
+-- Volcado de datos para la tabla `orderin`
+--
+
+INSERT INTO `orderin` (`idorderin`, `warehouse_idwarehouse`, `product_idproduct`, `quantity`, `is_deleted`, `created_by`, `created_at`, `modified_at`) VALUES
+(1, 2, 1, 50, 0, 0000000001, '2023-04-02 19:05:02', '2023-04-02 19:05:02');
+
 -- --------------------------------------------------------
 
 --
@@ -136,6 +181,13 @@ CREATE TABLE `orderout` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp() COMMENT '0|Fecha de creación',
   `modified_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT '0|Fecha de modificación'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='1|1|Orden de salida||';
+
+--
+-- Volcado de datos para la tabla `orderout`
+--
+
+INSERT INTO `orderout` (`idorderout`, `warehouse_idwarehouse`, `product_idproduct`, `quantity`, `is_deleted`, `created_by`, `created_at`, `modified_at`) VALUES
+(1, 1, 1, 679, 0, 0000000001, '2023-04-02 19:05:43', '2023-04-02 19:05:43');
 
 -- --------------------------------------------------------
 
@@ -155,6 +207,13 @@ CREATE TABLE `product` (
   `modified_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT '0|Fecha de modificación'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='1|1|Refacción||';
 
+--
+-- Volcado de datos para la tabla `product`
+--
+
+INSERT INTO `product` (`idproduct`, `name`, `description`, `provider_idprovider`, `family_idfamily`, `is_deleted`, `created_by`, `created_at`, `modified_at`) VALUES
+(1, 'BUJIA 1/2', 'X', 1, 1, 0, 0000000001, '2023-03-28 14:58:01', '2023-03-28 14:58:01');
+
 -- --------------------------------------------------------
 
 --
@@ -172,6 +231,13 @@ CREATE TABLE `project` (
   `vehicle_idvehicle` int(10) UNSIGNED NOT NULL COMMENT '1|Vehículo|name'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='1|1|Reparaciones||';
 
+--
+-- Volcado de datos para la tabla `project`
+--
+
+INSERT INTO `project` (`idproject`, `name`, `companyunits_idcompanyunits`, `is_deleted`, `created_at`, `created_by`, `modified_at`, `vehicle_idvehicle`) VALUES
+(12, 'SERVICIO X', 1, 0, '2023-03-28 14:52:41', 1, '2023-03-28 14:52:41', 1);
+
 -- --------------------------------------------------------
 
 --
@@ -188,6 +254,13 @@ CREATE TABLE `project_service` (
   `modified_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT '0|Fecha de actualización'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='1|1|Orden servicio||';
 
+--
+-- Volcado de datos para la tabla `project_service`
+--
+
+INSERT INTO `project_service` (`idproject_service`, `project_idproject`, `service_idservice`, `is_deleted`, `created_at`, `created_by`, `modified_at`) VALUES
+(1, 12, 71, 0, '2023-04-02 17:35:20', 1, '2023-04-02 17:43:25');
+
 -- --------------------------------------------------------
 
 --
@@ -203,6 +276,13 @@ CREATE TABLE `provider` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp() COMMENT '0|Fecha de creación',
   `modified_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT '0|Fecha de modificación'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='1|1|Proveedor||';
+
+--
+-- Volcado de datos para la tabla `provider`
+--
+
+INSERT INTO `provider` (`idprovider`, `name`, `status`, `is_deleted`, `created_by`, `created_at`, `modified_at`) VALUES
+(1, 'GOODYEAR', 'ACTIVO', 0, 0000000001, '2023-03-28 14:51:17', '2023-03-28 14:51:17');
 
 -- --------------------------------------------------------
 
@@ -227,6 +307,13 @@ CREATE TABLE `service` (
   `modified_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT '0|Fecha de actualización'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='1|1|Servicio||';
 
+--
+-- Volcado de datos para la tabla `service`
+--
+
+INSERT INTO `service` (`idservice`, `name`, `initialMessage`, `finalMessage`, `emailMessage`, `downloable`, `showEmployee`, `target`, `time`, `saveAsTemplate`, `is_deleted`, `created_at`, `created_by`, `modified_at`) VALUES
+(71, 'CAMBIO DE BUJIAS', 'DESCRIPCION INICIAL', 'DESCRIPCION FINAL', 'MENSAJE DIRECTO DEL JEFE', 1, 1, 'companygroup', 34265, 1, 0, '2023-03-28 14:55:31', 1, '2023-03-28 14:55:31');
+
 -- --------------------------------------------------------
 
 --
@@ -248,6 +335,14 @@ CREATE TABLE `service_employee` (
   `modified_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT '0|Fecha de actualización'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='1|1|Trabajando||';
 
+--
+-- Volcado de datos para la tabla `service_employee`
+--
+
+INSERT INTO `service_employee` (`idservice_employee`, `status`, `employee_idemployee`, `project_service_idproject_service`, `ponderationFinal`, `observations`, `url`, `time`, `is_deleted`, `created_at`, `created_by`, `modified_at`) VALUES
+(120, 'SIN INICIAR', 44, 1, 0, 'test', NULL, NULL, 0, '2023-04-02 18:02:23', 1, '2023-04-02 18:02:23'),
+(121, 'SIN INICIAR', 44, 1, 0, 'test2', NULL, NULL, 0, '2023-04-02 18:04:18', 1, '2023-04-02 18:04:18');
+
 -- --------------------------------------------------------
 
 --
@@ -268,6 +363,29 @@ CREATE TABLE `si_alerta` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp() COMMENT '0|Fecha de creación',
   `modified_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT '0|Fecha de modificación'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='1|1|Alerta||';
+
+--
+-- Volcado de datos para la tabla `si_alerta`
+--
+
+INSERT INTO `si_alerta` (`idsi_alerta`, `si_user_idsi_user`, `tipoAlerta`, `emailRemitente`, `emailDestinatario`, `mensaje`, `vista`, `leida`, `is_deleted`, `created_by`, `created_at`, `modified_at`) VALUES
+(117, 1, 'ALERTA', NULL, 'cesar.desarrollo.web@gmail.com', 'Registro creado: 9', 0, 0, 0, 1, '2023-03-15 16:58:39', '2023-03-15 16:58:39'),
+(118, 1, 'ALERTA', NULL, 'cesar.desarrollo.web@gmail.com', 'Registro creado: 10', 0, 0, 0, 1, '2023-03-15 16:58:49', '2023-03-15 16:58:49'),
+(119, 1, 'ALERTA', NULL, 'cesar.desarrollo.web@gmail.com', 'Registro actualizado: 1', 0, 0, 0, 1, '2023-03-15 17:00:17', '2023-03-15 17:00:17'),
+(120, 1, 'ALERTA', NULL, 'cesar.desarrollo.web@gmail.com', 'Registro creado: 1', 0, 0, 0, 1, '2023-03-27 23:28:11', '2023-03-27 23:28:11'),
+(121, 1, 'ALERTA', NULL, 'cesar.desarrollo.web@gmail.com', 'Registro creado: 2', 0, 0, 0, 1, '2023-03-27 23:28:42', '2023-03-27 23:28:42'),
+(122, 1, 'ALERTA', NULL, 'cesar.desarrollo.web@gmail.com', 'Registro creado: 2', 0, 0, 0, 1, '2023-03-28 14:47:25', '2023-03-28 14:47:25'),
+(123, 1, 'ALERTA', NULL, 'cesar.desarrollo.web@gmail.com', 'Registro creado: 3', 0, 0, 0, 1, '2023-03-28 14:47:35', '2023-03-28 14:47:35'),
+(124, 1, 'ALERTA', NULL, 'cesar.desarrollo.web@gmail.com', 'Registro creado: 1', 0, 0, 0, 1, '2023-03-28 14:51:18', '2023-03-28 14:51:18'),
+(125, 1, 'ALERTA', NULL, 'cesar.desarrollo.web@gmail.com', 'Registro creado: 1', 0, 0, 0, 1, '2023-03-28 14:52:29', '2023-03-28 14:52:29'),
+(126, 1, 'ALERTA', NULL, 'cesar.desarrollo.web@gmail.com', 'Registro creado: 12', 0, 0, 0, 1, '2023-03-28 14:52:41', '2023-03-28 14:52:41'),
+(127, 1, 'ALERTA', NULL, 'cesar.desarrollo.web@gmail.com', 'Registro creado: 71', 0, 0, 0, 1, '2023-03-28 14:55:31', '2023-03-28 14:55:31'),
+(128, 1, 'ALERTA', NULL, 'cesar.desarrollo.web@gmail.com', 'Registro creado: 1', 0, 0, 0, 1, '2023-03-28 14:57:47', '2023-03-28 14:57:47'),
+(129, 1, 'ALERTA', NULL, 'cesar.desarrollo.web@gmail.com', 'Registro creado: 1', 0, 0, 0, 1, '2023-03-28 14:58:01', '2023-03-28 14:58:01'),
+(130, 1, 'ALERTA', NULL, 'cesar.desarrollo.web@gmail.com', 'Registro creado: 0', 0, 0, 0, 1, '2023-04-02 17:35:20', '2023-04-02 17:35:20'),
+(131, 1, 'ALERTA', NULL, 'cesar.desarrollo.web@gmail.com', 'Registro creado: 44', 0, 0, 0, 1, '2023-04-02 17:44:15', '2023-04-02 17:44:15'),
+(132, 1, 'ALERTA', NULL, 'cesar.desarrollo.web@gmail.com', 'Registro creado: 120', 0, 0, 0, 1, '2023-04-02 18:02:23', '2023-04-02 18:02:23'),
+(133, 1, 'ALERTA', NULL, 'cesar.desarrollo.web@gmail.com', 'Registro creado: 121', 0, 0, 0, 1, '2023-04-02 18:04:18', '2023-04-02 18:04:18');
 
 -- --------------------------------------------------------
 
@@ -304,6 +422,26 @@ CREATE TABLE `si_log` (
   `modified_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT '0|Fecha de modificación'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='1|1|Logs||';
 
+--
+-- Volcado de datos para la tabla `si_log`
+--
+
+INSERT INTO `si_log` (`idsi_log`, `si_modulo_idsi_modulo`, `accion`, `is_deleted`, `created_by`, `created_at`, `modified_at`) VALUES
+(947, 31, 'Registro creado: 1', 0, 0000000001, '2023-03-27 23:28:11', '2023-03-27 23:28:11'),
+(948, 31, 'Registro creado: 2', 0, 0000000001, '2023-03-27 23:28:41', '2023-03-27 23:28:41'),
+(952, 30, 'Registro creado: 1', 0, 0000000001, '2023-03-28 14:52:29', '2023-03-28 14:52:29'),
+(965, 17, 'Registro actualizado: 5', 0, 0000000001, '2023-04-02 19:29:18', '2023-04-02 19:29:18'),
+(966, 18, 'Registro creado: 58', 0, 0000000001, '2023-04-02 19:31:23', '2023-04-02 19:31:23'),
+(967, 20, 'Registro creado: 1', 0, 0000000001, '2023-04-02 19:33:40', '2023-04-02 19:33:40'),
+(968, 24, 'Registro creado: 1', 0, 0000000001, '2023-04-02 19:51:41', '2023-04-02 19:51:41'),
+(969, 25, 'Registro creado: 1', 0, 0000000001, '2023-04-02 19:51:53', '2023-04-02 19:51:53'),
+(970, 27, 'Registro creado: 1', 0, 0000000001, '2023-04-02 19:52:02', '2023-04-02 19:52:02'),
+(971, 25, 'Registro creado: 2', 0, 0000000001, '2023-04-03 04:45:28', '2023-04-03 04:45:28'),
+(972, 26, 'Registro creado: 1', 0, 0000000001, '2023-04-03 05:03:47', '2023-04-03 05:03:47'),
+(973, 27, 'Registro creado: 2', 0, 0000000001, '2023-04-03 05:10:15', '2023-04-03 05:10:15'),
+(974, 27, 'Registro creado: 3', 0, 0000000001, '2023-04-03 05:12:47', '2023-04-03 05:12:47'),
+(975, 28, 'Registro creado: 1', 0, 0000000001, '2023-04-03 05:15:33', '2023-04-03 05:15:33');
+
 -- --------------------------------------------------------
 
 --
@@ -312,14 +450,51 @@ CREATE TABLE `si_log` (
 
 CREATE TABLE `si_modulo` (
   `idsi_modulo` int(10) UNSIGNED NOT NULL COMMENT '0|',
-  `codigo` varchar(15) COLLATE utf8_bin NOT NULL COMMENT '1|Código',
-  `descripcion` varchar(45) COLLATE utf8_bin DEFAULT NULL COMMENT '0|Descripción',
-  `nombre` varchar(25) COLLATE utf8_bin NOT NULL COMMENT '1|Nombre',
+  `codigo` varchar(15) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL COMMENT '1|Código',
+  `descripcion` varchar(45) CHARACTER SET utf8 COLLATE utf8_bin DEFAULT NULL COMMENT '0|Descripción',
+  `nombre` varchar(55) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL COMMENT '1|Nombre',
   `is_deleted` tinyint(1) NOT NULL DEFAULT 0 COMMENT '0|Eliminado',
   `created_by` int(10) NOT NULL COMMENT '0|Creado por',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp() COMMENT '0|Fecha de creación',
   `modified_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT '0|Fecha de modificación'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='1|1|Módulo||';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Volcado de datos para la tabla `si_modulo`
+--
+
+INSERT INTO `si_modulo` (`idsi_modulo`, `codigo`, `descripcion`, `nombre`, `is_deleted`, `created_by`, `created_at`, `modified_at`) VALUES
+(1, '', NULL, 'company', 0, 1, '2023-03-15 19:56:10', '2023-04-02 19:27:10'),
+(2, '', NULL, 'companygroup', 0, 1, '2023-03-15 19:56:10', '2023-04-02 19:27:34'),
+(3, '', NULL, 'companyunits', 0, 1, '2023-03-15 19:56:10', '2023-04-02 19:27:34'),
+(4, '', NULL, 'employee', 0, 1, '2023-03-15 19:56:10', '2023-04-02 19:27:34'),
+(5, 'FAMILIA', NULL, 'family', 0, 1, '2023-03-15 19:56:11', '2023-04-02 19:29:18'),
+(6, '', NULL, 'orderin', 0, 1, '2023-03-15 19:56:11', '2023-04-02 19:27:34'),
+(7, '', NULL, 'orderout', 0, 1, '2023-03-15 19:56:11', '2023-04-02 19:27:34'),
+(8, '', NULL, 'product', 0, 1, '2023-03-15 19:56:11', '2023-04-02 19:27:34'),
+(9, '', NULL, 'project', 0, 1, '2023-03-15 19:56:11', '2023-04-02 19:27:34'),
+(10, '', NULL, 'project_service', 0, 1, '2023-03-15 19:56:11', '2023-04-02 19:27:34'),
+(11, '', NULL, 'provider', 0, 1, '2023-03-15 19:56:11', '2023-04-02 19:27:34'),
+(12, '', NULL, 'service', 0, 1, '2023-03-15 19:56:11', '2023-04-02 19:27:34'),
+(13, '', NULL, 'service_employee', 0, 1, '2023-03-15 19:56:12', '2023-04-02 19:27:34'),
+(14, '', NULL, 'si_alerta', 0, 1, '2023-03-15 19:56:12', '2023-04-02 19:27:34'),
+(15, '', NULL, 'si_device', 0, 1, '2023-03-15 19:56:12', '2023-04-02 19:27:34'),
+(16, '', NULL, 'si_log', 0, 1, '2023-03-15 19:56:12', '2023-04-02 19:27:34'),
+(17, '', NULL, 'si_modulo', 0, 1, '2023-03-15 19:56:12', '2023-04-02 19:27:34'),
+(18, '', NULL, 'si_permiso', 0, 1, '2023-03-15 19:56:12', '2023-04-02 19:27:34'),
+(19, '', NULL, 'si_rol', 0, 1, '2023-03-15 19:56:12', '2023-04-02 19:27:34'),
+(20, '', NULL, 'si_rol_permiso', 0, 1, '2023-03-15 19:56:12', '2023-04-02 19:27:34'),
+(21, '', NULL, 'si_sesion', 0, 1, '2023-03-15 19:56:13', '2023-04-02 19:27:34'),
+(22, '', NULL, 'si_sesionestado', 0, 1, '2023-03-15 19:56:13', '2023-04-02 19:27:34'),
+(23, '', NULL, 'si_user', 0, 1, '2023-03-15 19:56:13', '2023-04-02 19:27:34'),
+(24, '', NULL, 'si_user_rol', 0, 1, '2023-03-15 19:56:13', '2023-04-02 19:27:34'),
+(25, '', NULL, 'solicitudeprovider', 0, 1, '2023-03-15 19:56:13', '2023-04-02 19:27:34'),
+(26, '', NULL, 'solicitudeprovider_product', 0, 1, '2023-03-15 19:56:13', '2023-04-03 05:06:26'),
+(27, '', NULL, 'solicitudewarehouse', 0, 1, '2023-03-15 19:56:13', '2023-04-02 19:27:34'),
+(28, '', NULL, 'solicitudewarehouse_product', 0, 1, '2023-03-15 19:56:13', '2023-04-03 05:06:26'),
+(29, '', NULL, 'validation', 0, 1, '2023-03-15 19:56:14', '2023-04-02 19:27:34'),
+(30, '', NULL, 'vehicle', 0, 1, '2023-03-15 19:56:14', '2023-04-02 19:27:34'),
+(31, '', NULL, 'warehouse', 0, 1, '2023-03-15 19:56:14', '2023-04-02 19:27:34');
 
 -- --------------------------------------------------------
 
@@ -349,6 +524,13 @@ CREATE TABLE `si_permiso` (
   `modified_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT '0|Fecha de modificación'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='1|1|Permiso||';
 
+--
+-- Volcado de datos para la tabla `si_permiso`
+--
+
+INSERT INTO `si_permiso` (`idsi_permiso`, `codigo`, `descripcion`, `nombre`, `si_rol_idsi_rol`, `si_modulo_idsi_modulo`, `acceso`, `readable`, `writeable`, `updateable`, `deleteable`, `read_own`, `write_own`, `update_own`, `delete_own`, `is_deleted`, `created_by`, `created_at`, `modified_at`) VALUES
+(58, NULL, NULL, 'x', 3, 5, 1, 1, 1, 1, NULL, NULL, NULL, NULL, NULL, 0, 1, '2023-04-02 19:31:23', '2023-04-02 19:31:23');
+
 -- --------------------------------------------------------
 
 --
@@ -365,6 +547,15 @@ CREATE TABLE `si_rol` (
   `created_at` timestamp NULL DEFAULT current_timestamp() COMMENT '0|',
   `modified_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT '0|'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='1|1|Roles||';
+
+--
+-- Volcado de datos para la tabla `si_rol`
+--
+
+INSERT INTO `si_rol` (`idsi_rol`, `codigo`, `descripcion`, `nombre`, `is_deleted`, `created_by`, `created_at`, `modified_at`) VALUES
+(1, '', NULL, 'ADMINISTRADOR', 0, NULL, '2023-03-15 13:56:10', '2023-03-15 13:56:10'),
+(2, '1', NULL, 'ADMINISTRADOR', 0, 1, '2023-03-28 14:47:25', '2023-03-28 14:47:25'),
+(3, '2', NULL, 'JEFE ALMACEN', 0, 1, '2023-03-28 14:47:35', '2023-03-28 14:47:35');
 
 -- --------------------------------------------------------
 
@@ -383,6 +574,13 @@ CREATE TABLE `si_rol_permiso` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp() COMMENT '0|Fecha de creación',
   `modified_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT '0|Fecha de modificación'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='1|1|Rol Permiso||';
+
+--
+-- Volcado de datos para la tabla `si_rol_permiso`
+--
+
+INSERT INTO `si_rol_permiso` (`idsi_rol_permiso`, `codigo`, `descripcion`, `si_rol_idsi_rol`, `si_permiso_idsi_permiso`, `is_deleted`, `created_by`, `created_at`, `modified_at`) VALUES
+(1, 'TEST', NULL, 3, 58, 0, 1, '2023-04-02 19:33:40', '2023-04-02 19:33:40');
 
 -- --------------------------------------------------------
 
@@ -406,6 +604,13 @@ CREATE TABLE `si_sesion` (
   `modified_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT '0|Fecha de modificación'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='1|1|Registro de accesos a la app||';
 
+--
+-- Volcado de datos para la tabla `si_sesion`
+--
+
+INSERT INTO `si_sesion` (`idsi_sesion`, `codigo`, `descripcion`, `tipo`, `si_user_idsi_user`, `estado`, `latitude`, `longitude`, `accuracy`, `is_deleted`, `created_by`, `created_at`, `modified_at`) VALUES
+(57, '', NULL, 'APPUSER', 1, 'CONECTADO', NULL, NULL, NULL, 0, 1, '2023-03-15 14:46:53', '2023-04-03 05:09:53');
+
 -- --------------------------------------------------------
 
 --
@@ -421,6 +626,23 @@ CREATE TABLE `si_sesionestado` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp() COMMENT '0|Fecha de creación',
   `modified_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT '0|Fecha de modificación'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='0|1|Sesión Usuario Estado||';
+
+--
+-- Volcado de datos para la tabla `si_sesionestado`
+--
+
+INSERT INTO `si_sesionestado` (`idsi_sesionestado`, `si_sesion_idsi_sesion`, `estado`, `is_deleted`, `created_by`, `created_at`, `modified_at`) VALUES
+(88, 57, 'CONECTADO', 0, 1, '2023-03-15 14:46:53', '2023-03-15 14:46:53'),
+(89, 57, 'CONECTADO', 0, 1, '2023-03-15 14:48:18', '2023-03-15 14:48:18'),
+(90, 57, 'CONECTADO', 0, 1, '2023-03-15 15:11:01', '2023-03-15 15:11:01'),
+(91, 57, 'CONECTADO', 0, 1, '2023-03-27 23:27:17', '2023-03-27 23:27:17'),
+(92, 57, 'CONECTADO', 0, 1, '2023-03-27 23:39:54', '2023-03-27 23:39:54'),
+(93, 57, 'CONECTADO', 0, 1, '2023-03-27 23:47:47', '2023-03-27 23:47:47'),
+(94, 57, 'DESCONECTADO', 0, 1, '2023-03-28 14:48:16', '2023-03-28 14:48:16'),
+(95, 57, 'CONECTADO', 0, 1, '2023-03-28 14:48:28', '2023-03-28 14:48:28'),
+(96, 57, 'CONECTADO', 0, 1, '2023-04-02 16:42:15', '2023-04-02 16:42:15'),
+(97, 57, 'DESCONECTADO', 0, 1, '2023-04-03 05:07:51', '2023-04-03 05:07:51'),
+(98, 57, 'CONECTADO', 0, 1, '2023-04-03 05:09:53', '2023-04-03 05:09:53');
 
 -- --------------------------------------------------------
 
@@ -447,6 +669,13 @@ CREATE TABLE `si_user` (
   `modified_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT '0|Fecha de modificación'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='1|1|Usuarios de App|si_user_rol.si_user_idsi_user.si_rol_idsi_rol.si_rol.idsi_rol.nombre.Roles|';
 
+--
+-- Volcado de datos para la tabla `si_user`
+--
+
+INSERT INTO `si_user` (`idsi_user`, `nombre`, `apmat`, `appat`, `email`, `password`, `si_rol_idsi_rol`, `companyunits_idcompanyunits`, `status`, `code`, `super`, `code_at`, `is_deleted`, `created_by`, `created_at`, `modified_at`) VALUES
+(1, 'Admin', 'x', 'y', 'admin@sertosa.com', 0x243261243130246362766c3943474b4d525146327a564a4a577945747549676c4f4651384f5056517951436c4c6d344e50314e386e4d4a6175476b47, 2, 1, 'ACTIVO', '', 1, '2022-04-06 02:30:12', 0, 1, '2022-04-06 02:30:12', '2023-04-03 05:09:49');
+
 -- --------------------------------------------------------
 
 --
@@ -465,6 +694,13 @@ CREATE TABLE `si_user_rol` (
   `modified_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT '0|Fecha de modificación'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='1|1|Usuario Rol||';
 
+--
+-- Volcado de datos para la tabla `si_user_rol`
+--
+
+INSERT INTO `si_user_rol` (`idsi_user_rol`, `codigo`, `descripcion`, `si_user_idsi_user`, `si_rol_idsi_rol`, `is_deleted`, `created_by`, `created_at`, `modified_at`) VALUES
+(1, '1', NULL, 1, 3, 0, 1, '2023-04-02 19:51:41', '2023-04-02 19:51:41');
+
 -- --------------------------------------------------------
 
 --
@@ -481,6 +717,14 @@ CREATE TABLE `solicitudeprovider` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp() COMMENT '0|Fecha de creación',
   `modified_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT '0|Fecha de modificación'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='1|1|Solicitud a proveedor||';
+
+--
+-- Volcado de datos para la tabla `solicitudeprovider`
+--
+
+INSERT INTO `solicitudeprovider` (`idsolicitudeprovider`, `provider_idprovider`, `project_service_idproject_service`, `status`, `is_deleted`, `created_by`, `created_at`, `modified_at`) VALUES
+(1, 1, 1, 'x', 0, 0000000001, '2023-04-02 19:51:53', '2023-04-02 19:51:53'),
+(2, 1, 1, 'CERRADA', 0, 0000000001, '2023-04-03 04:45:28', '2023-04-03 04:45:28');
 
 -- --------------------------------------------------------
 
@@ -499,6 +743,13 @@ CREATE TABLE `solicitudeprovider_product` (
   `modified_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT '0|Fecha de modificación'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='1|1|Solicitud proveedor producto||';
 
+--
+-- Volcado de datos para la tabla `solicitudeprovider_product`
+--
+
+INSERT INTO `solicitudeprovider_product` (`idsolicitudeprovider_product`, `solicitudeprovider_idsolicitudeprovider`, `product_idproduct`, `quantity`, `is_deleted`, `created_by`, `created_at`, `modified_at`) VALUES
+(1, 1, 1, 1234, 0, 0000000001, '2023-04-03 05:03:47', '2023-04-03 05:03:47');
+
 -- --------------------------------------------------------
 
 --
@@ -515,6 +766,15 @@ CREATE TABLE `solicitudewarehouse` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp() COMMENT '0|Fecha de creación',
   `modified_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT '0|Fecha de modificación'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='1|1|Solicitud de almacen||';
+
+--
+-- Volcado de datos para la tabla `solicitudewarehouse`
+--
+
+INSERT INTO `solicitudewarehouse` (`idsolicitudewarehouse`, `project_service_idproject_service`, `warehouse_idwarehouse`, `status`, `is_deleted`, `created_by`, `created_at`, `modified_at`) VALUES
+(1, 1, 1, 'x', 0, 0000000001, '2023-04-02 19:52:02', '2023-04-02 19:52:02'),
+(2, 1, 1, 'ABIERTA', 0, 0000000001, '2023-04-03 05:10:15', '2023-04-03 05:10:15'),
+(3, 1, 1, 'ABIERTA', 0, 0000000001, '2023-04-03 05:12:47', '2023-04-03 05:12:47');
 
 -- --------------------------------------------------------
 
@@ -533,6 +793,13 @@ CREATE TABLE `solicitudewarehouse_product` (
   `modified_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT '0|Fecha de modificación'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='1|1|Solicitud almacen producto||';
 
+--
+-- Volcado de datos para la tabla `solicitudewarehouse_product`
+--
+
+INSERT INTO `solicitudewarehouse_product` (`idsolicitudewarehouse_product`, `solicitudewarehouse_idsolicitudewarehouse`, `product_idproduct`, `quantity`, `is_deleted`, `created_by`, `created_at`, `modified_at`) VALUES
+(1, 1, 1, 453253225, 0, 0000000001, '2023-04-03 05:15:33', '2023-04-03 05:15:33');
+
 -- --------------------------------------------------------
 
 --
@@ -549,6 +816,13 @@ CREATE TABLE `validation` (
   `created_by` int(11) DEFAULT NULL COMMENT '0|Creado por',
   `modified_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT '0|Fecha de actualización'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='1|1|Servicio validado||';
+
+--
+-- Volcado de datos para la tabla `validation`
+--
+
+INSERT INTO `validation` (`idvalidation`, `validated`, `service_employee_idservice_employee`, `service_idservice`, `is_deleted`, `created_at`, `created_by`, `modified_at`) VALUES
+(1, 1, 120, 71, 0, '2023-04-02 18:50:35', 1, '2023-04-02 18:50:35');
 
 -- --------------------------------------------------------
 
@@ -570,6 +844,13 @@ CREATE TABLE `vehicle` (
   `modified_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT '0|Fecha de modificación'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='1|1|Vehículo||';
 
+--
+-- Volcado de datos para la tabla `vehicle`
+--
+
+INSERT INTO `vehicle` (`idvehicle`, `company_idcompany`, `model`, `type`, `km`, `trade`, `year`, `is_deleted`, `created_by`, `created_at`, `modified_at`) VALUES
+(1, 9, 'RANGER', 'CAMIONETA', 2000, 'FORD', 2019, 0, 0000000001, '2023-03-28 14:52:29', '2023-03-28 14:52:29');
+
 -- --------------------------------------------------------
 
 --
@@ -586,6 +867,14 @@ CREATE TABLE `warehouse` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp() COMMENT '0|Fecha de creación',
   `modified_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT '0|Fecha de modificación'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='1|1|Almacen||';
+
+--
+-- Volcado de datos para la tabla `warehouse`
+--
+
+INSERT INTO `warehouse` (`idwarehouse`, `company_idcompany`, `name`, `status`, `is_deleted`, `created_by`, `created_at`, `modified_at`) VALUES
+(1, 1, 'ALMACEN', 'X', 0, 0000000001, '2023-03-27 23:28:11', '2023-03-27 23:28:11'),
+(2, 9, 'X', 'X', 0, 0000000001, '2023-03-27 23:28:41', '2023-03-27 23:28:41');
 
 --
 -- Índices para tablas volcadas
@@ -860,79 +1149,79 @@ ALTER TABLE `warehouse`
 -- AUTO_INCREMENT de la tabla `company`
 --
 ALTER TABLE `company`
-  MODIFY `idcompany` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=7;
+  MODIFY `idcompany` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT de la tabla `companygroup`
 --
 ALTER TABLE `companygroup`
-  MODIFY `idcompanygroup` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=4;
+  MODIFY `idcompanygroup` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `companyunits`
 --
 ALTER TABLE `companyunits`
-  MODIFY `idcompanyunits` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=9;
+  MODIFY `idcompanyunits` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=18;
 
 --
 -- AUTO_INCREMENT de la tabla `employee`
 --
 ALTER TABLE `employee`
-  MODIFY `idemployee` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=44;
+  MODIFY `idemployee` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=45;
 
 --
 -- AUTO_INCREMENT de la tabla `family`
 --
 ALTER TABLE `family`
-  MODIFY `idfamily` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|';
+  MODIFY `idfamily` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `orderin`
 --
 ALTER TABLE `orderin`
-  MODIFY `idorderin` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|';
+  MODIFY `idorderin` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `orderout`
 --
 ALTER TABLE `orderout`
-  MODIFY `idorderout` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|';
+  MODIFY `idorderout` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `product`
 --
 ALTER TABLE `product`
-  MODIFY `idproduct` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|';
+  MODIFY `idproduct` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `project`
 --
 ALTER TABLE `project`
-  MODIFY `idproject` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=12;
+  MODIFY `idproject` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de la tabla `provider`
 --
 ALTER TABLE `provider`
-  MODIFY `idprovider` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|';
+  MODIFY `idprovider` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `service`
 --
 ALTER TABLE `service`
-  MODIFY `idservice` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=71;
+  MODIFY `idservice` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=72;
 
 --
 -- AUTO_INCREMENT de la tabla `service_employee`
 --
 ALTER TABLE `service_employee`
-  MODIFY `idservice_employee` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=120;
+  MODIFY `idservice_employee` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=122;
 
 --
 -- AUTO_INCREMENT de la tabla `si_alerta`
 --
 ALTER TABLE `si_alerta`
-  MODIFY `idsi_alerta` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=117;
+  MODIFY `idsi_alerta` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=134;
 
 --
 -- AUTO_INCREMENT de la tabla `si_device`
@@ -944,43 +1233,43 @@ ALTER TABLE `si_device`
 -- AUTO_INCREMENT de la tabla `si_log`
 --
 ALTER TABLE `si_log`
-  MODIFY `idsi_log` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=944;
+  MODIFY `idsi_log` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=976;
 
 --
 -- AUTO_INCREMENT de la tabla `si_modulo`
 --
 ALTER TABLE `si_modulo`
-  MODIFY `idsi_modulo` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=30;
+  MODIFY `idsi_modulo` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=32;
 
 --
 -- AUTO_INCREMENT de la tabla `si_permiso`
 --
 ALTER TABLE `si_permiso`
-  MODIFY `idsi_permiso` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=27;
+  MODIFY `idsi_permiso` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=59;
 
 --
 -- AUTO_INCREMENT de la tabla `si_rol`
 --
 ALTER TABLE `si_rol`
-  MODIFY `idsi_rol` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=2;
+  MODIFY `idsi_rol` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `si_rol_permiso`
 --
 ALTER TABLE `si_rol_permiso`
-  MODIFY `idsi_rol_permiso` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|';
+  MODIFY `idsi_rol_permiso` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `si_sesion`
 --
 ALTER TABLE `si_sesion`
-  MODIFY `idsi_sesion` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=57;
+  MODIFY `idsi_sesion` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=66;
 
 --
 -- AUTO_INCREMENT de la tabla `si_sesionestado`
 --
 ALTER TABLE `si_sesionestado`
-  MODIFY `idsi_sesionestado` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=88;
+  MODIFY `idsi_sesionestado` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=99;
 
 --
 -- AUTO_INCREMENT de la tabla `si_user`
@@ -992,49 +1281,49 @@ ALTER TABLE `si_user`
 -- AUTO_INCREMENT de la tabla `si_user_rol`
 --
 ALTER TABLE `si_user_rol`
-  MODIFY `idsi_user_rol` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|';
+  MODIFY `idsi_user_rol` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `solicitudeprovider`
 --
 ALTER TABLE `solicitudeprovider`
-  MODIFY `idsolicitudeprovider` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|';
+  MODIFY `idsolicitudeprovider` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `solicitudeprovider_product`
 --
 ALTER TABLE `solicitudeprovider_product`
-  MODIFY `idsolicitudeprovider_product` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|';
+  MODIFY `idsolicitudeprovider_product` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `solicitudewarehouse`
 --
 ALTER TABLE `solicitudewarehouse`
-  MODIFY `idsolicitudewarehouse` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|';
+  MODIFY `idsolicitudewarehouse` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `solicitudewarehouse_product`
 --
 ALTER TABLE `solicitudewarehouse_product`
-  MODIFY `idsolicitudewarehouse_product` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|';
+  MODIFY `idsolicitudewarehouse_product` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `validation`
 --
 ALTER TABLE `validation`
-  MODIFY `idvalidation` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|';
+  MODIFY `idvalidation` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `vehicle`
 --
 ALTER TABLE `vehicle`
-  MODIFY `idvehicle` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|';
+  MODIFY `idvehicle` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `warehouse`
 --
 ALTER TABLE `warehouse`
-  MODIFY `idwarehouse` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|';
+  MODIFY `idwarehouse` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=3;
 
 --
 -- Restricciones para tablas volcadas
