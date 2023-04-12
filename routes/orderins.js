@@ -72,6 +72,28 @@ router
             });
         })(req, res, next);
     })
+
+
+    
+    .get('/warehouse/:idorderin/inventary', (req, res, next) => {
+        passport.authenticate('jwt', { session: true }, (err, auth_data, info) => {
+          if (!auth_data) {
+               return next('auth_data refused');
+          }
+            permissions.module_permission(auth_data.modules, 'orderin', auth_data.user.super, 'readable', (error, permission) => {
+                if (permission.success) {
+                    Orderin.findInventaryByIdWarehouse(req.params.idorderin, auth_data.user, permission.only_own, req.mysql, (error, data) => {
+                        return Orderin.response(res, error, data);
+                    });
+                } else {
+                    return Orderin.response(res, error, permission);
+                }
+            });
+        })(req, res, next);
+    })
+
+
+
     .get('/warehouse/:idorderin', (req, res, next) => {
         passport.authenticate('jwt', { session: true }, (err, auth_data, info) => {
           if (!auth_data) {

@@ -1,5 +1,38 @@
 const Solicitudewarehouse = {};
 
+Solicitudewarehouse.findByIdProject = (idProject, user, only_own, connection, next) => {
+    if( !connection )
+        return next('Connection refused');
+
+    let query = '';
+    let keys = [];
+    query = `SELECT solicitudewarehouse.*, CONCAT(_project_service_idproject_service.idproject_service, ' - ', _project_idproject.name, ' - ', _service_idservice.name) as project_service_project_service_idproject_service , _warehouse_idwarehouse.name as warehouse_warehouse_idwarehouse 
+             FROM solicitudewarehouse 
+             INNER JOIN project_service as _project_service_idproject_service ON _project_service_idproject_service.idproject_service = solicitudewarehouse.project_service_idproject_service INNER JOIN warehouse as _warehouse_idwarehouse ON _warehouse_idwarehouse.idwarehouse = solicitudewarehouse.warehouse_idwarehouse
+             
+             INNER JOIN project as _project_idproject ON _project_idproject.idproject = _project_service_idproject_service.project_idproject 
+             INNER JOIN service as _service_idservice ON _service_idservice.idservice = _project_service_idproject_service.service_idservice 
+             
+              
+              
+             ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = solicitudewarehouse.created_by ` : ""} 
+             WHERE solicitudewarehouse.is_deleted = false 
+                  AND _project_idproject.idproject = ? 
+                  ${user.companyunits_idcompanyunits ? `AND _si_user.companyunits_idcompanyunits = ? ` : ""}
+                  ${only_own ? `AND solicitudewarehouse.created_by = ?` : ""}`
+        keys = [idProject];
+        user.companyunits_idcompanyunits ? keys.push(user.companyunits_idcompanyunits) : null;
+        only_own ? keys.push(user.idsi_user) : null;
+
+    connection.query(query, keys, (error, result) => {
+        if(error)
+            return next({ success: false, error: error, message: 'Un error ha ocurrido mientras se encontraba el registro' });
+        else if (result.affectedRows === 0)
+            return next(null, { success: false, result: result, message: 'Solo es posible encontrar registros propios' });
+        else
+            return next(null, { success: true, result: result, message: 'Solicitudewarehouse encontrad@' });
+    });
+};
 Solicitudewarehouse.findByIdProject_service = (idProject_service, user, only_own, connection, next) => {
     if( !connection )
         return next('Connection refused');
@@ -107,12 +140,18 @@ Solicitudewarehouse.all = (user, only_own, connection, next) => {
 
     let query = '';
     let keys = [];
-    query = `SELECT solicitudewarehouse.*, CONCAT(_project_service_idproject_service.idproject_service, ' - ', _project_idproject.name, ' - ', _service_idservice.name) as project_service_project_service_idproject_service , _warehouse_idwarehouse.name as warehouse_warehouse_idwarehouse 
-             FROM solicitudewarehouse 
-             INNER JOIN project_service as _project_service_idproject_service ON _project_service_idproject_service.idproject_service = solicitudewarehouse.project_service_idproject_service INNER JOIN warehouse as _warehouse_idwarehouse ON _warehouse_idwarehouse.idwarehouse = solicitudewarehouse.warehouse_idwarehouse
-             
-             INNER JOIN project as _project_idproject ON _project_idproject.idproject = _project_service_idproject_service.project_idproject 
-             INNER JOIN service as _service_idservice ON _service_idservice.idservice = _project_service_idproject_service.service_idservice 
+    query = `SELECT CONCAT(user.nombre, ' ', user.appat, ' ', user.apmat) as usuario, p.name as product_product_idproduct, pr.name as provider_provider_idprovider, swp.quantity as quantity, solicitudewarehouse.*, CONCAT(_project_service_idproject_service.idproject_service, ' - ', _project_idproject.name, ' - ', _service_idservice.name) as project_service_project_service_idproject_service , _warehouse_idwarehouse.name as warehouse_warehouse_idwarehouse 
+                FROM solicitudewarehouse 
+                INNER JOIN project_service as _project_service_idproject_service ON _project_service_idproject_service.idproject_service = solicitudewarehouse.project_service_idproject_service INNER JOIN warehouse as _warehouse_idwarehouse ON _warehouse_idwarehouse.idwarehouse = solicitudewarehouse.warehouse_idwarehouse
+                
+                INNER JOIN project as _project_idproject ON _project_idproject.idproject = _project_service_idproject_service.project_idproject 
+                INNER JOIN service as _service_idservice ON _service_idservice.idservice = _project_service_idproject_service.service_idservice
+                
+                INNER JOIN solicitudewarehouse_product as swp ON swp.solicitudewarehouse_idsolicitudewarehouse = solicitudewarehouse.idsolicitudewarehouse
+                INNER JOIN product as p ON p.idproduct = swp.product_idproduct            
+                INNER JOIN provider as pr ON pr.idprovider = p.provider_idprovider  
+
+                INNER JOIN si_user as user ON user.idsi_user = solicitudewarehouse.created_by
 
 
              ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = solicitudewarehouse.created_by ` : ""} 

@@ -39,6 +39,27 @@ var upload = multer({
 });
 
 router
+
+
+
+    .get('/templates', (req, res, next) => {
+        passport.authenticate('jwt', { session: true }, (err, auth_data, info) => {
+        if (!auth_data) {
+            return next('auth_data refused');
+        }
+            permissions.module_permission(auth_data.modules, 'service', auth_data.user.super, 'readable', (error, permission) => {
+                if (permission.success) {
+                    Service.allTemplates(auth_data.user, permission.only_own, req.mysql, (error, data) => {
+                        return Service.response(res, error, data);
+                    });
+                } else {
+                    return Service.response(res, error, permission);
+                }
+            });
+        })(req, res, next);
+    })
+
+
     .get('/from-to/:fechaDesde/:fechaHasta', (req, res, next) => {
         passport.authenticate('jwt', { session: true }, (err, auth_data, info) => {
 

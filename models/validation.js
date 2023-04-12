@@ -106,13 +106,18 @@ Validation.all = (user, only_own, connection, next) => {
 
     let query = '';
     let keys = [];
-    query = `SELECT validation.*, CONCAT(_service_employee_idservice_employee.idservice_employee, ' - ', _employee_idemployee.name, ' ') as service_employee_service_employee_idservice_employee , _service_idservice.name as service_service_idservice 
+    query = `SELECT validation.*, CONCAT(_service_employee_idservice_employee.idservice_employee, ' - ', _employee_idemployee.name) as service_employee_service_employee_idservice_employee2 , _service_idservice.name as service_service_idservice ,
+
+    CONCAT(_project_service_idproject_service.idproject_service, ' - ', _project.name, ' - ', _service.name, ' > ', _employee_idemployee.name) as service_employee_service_employee_idservice_employee
+
              FROM validation 
              INNER JOIN service_employee as _service_employee_idservice_employee ON _service_employee_idservice_employee.idservice_employee = validation.service_employee_idservice_employee 
              INNER JOIN service as _service_idservice ON _service_idservice.idservice = validation.service_idservice
              INNER JOIN employee as _employee_idemployee ON _employee_idemployee.idemployee = _service_employee_idservice_employee.employee_idemployee 
               
-              
+             INNER JOIN project_service as _project_service_idproject_service ON _project_service_idproject_service.idproject_service = _service_employee_idservice_employee.project_service_idproject_service 
+             INNER JOIN project as _project ON _project.idproject = _project_service_idproject_service.project_idproject 
+             INNER JOIN service as _service ON _service.idservice = _project_service_idproject_service.service_idservice     
               
              ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = validation.created_by ` : ""} 
              WHERE validation.is_deleted = false 

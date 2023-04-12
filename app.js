@@ -24,6 +24,7 @@ const orderout = require('./routes/orderouts');
 const product = require('./routes/products');
 const project = require('./routes/projects');
 const project_service = require('./routes/project_services');
+const service_product = require('./routes/service_products');
 const provider = require('./routes/providers');
 const service = require('./routes/services');
 const service_employee = require('./routes/service_employees');
@@ -46,6 +47,7 @@ const validation = require('./routes/validations');
 const vehicle = require('./routes/vehicles');
 const warehouse = require('./routes/warehouses');
 const appModel = require('./routes/apps');
+const report = require('./routes/reports');
 /* const stripe = require('./routes/stripe'); */
 
 const subdomain = '';
@@ -102,6 +104,7 @@ app.use(subdomain + '/api/orderout', orderout);
 app.use(subdomain + '/api/product', product);
 app.use(subdomain + '/api/project', project);
 app.use(subdomain + '/api/project_service', project_service);
+app.use(subdomain + '/api/service_product', service_product);
 app.use(subdomain + '/api/provider', provider);
 app.use(subdomain + '/api/service', service);
 app.use(subdomain + '/api/service_employee', service_employee);
@@ -123,6 +126,7 @@ app.use(subdomain + '/api/solicitudewarehouse_product', solicitudewarehouse_prod
 app.use(subdomain + '/api/validation', validation);
 app.use(subdomain + '/api/vehicle', vehicle);
 app.use(subdomain + '/api/warehouse', warehouse);
+app.use(subdomain + '/api/report', report);
 
 app.use(subdomain + '/api/app', appModel);
 

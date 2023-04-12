@@ -56,6 +56,22 @@ router
             });
         })(req, res, next);
     })
+    .get('/project/:idproject', (req, res, next) => {
+        passport.authenticate('jwt', { session: true }, (err, auth_data, info) => {
+          if (!auth_data) {
+               return next('auth_data refused');
+          }
+            permissions.module_permission(auth_data.modules, 'vehicle', auth_data.user.super, 'readable', (error, permission) => {
+                if (permission.success) {
+                    Vehicle.findByIdProject(req.params.idproject, auth_data.user, permission.only_own, req.mysql, (error, data) => {
+                        return Vehicle.response(res, error, data);
+                    });
+                } else {
+                    return Vehicle.response(res, error, permission);
+                }
+            });
+        })(req, res, next);
+    })
     .get('/company/:idvehicle', (req, res, next) => {
         passport.authenticate('jwt', { session: true }, (err, auth_data, info) => {
           if (!auth_data) {

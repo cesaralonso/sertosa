@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const Solicitudewarehouse = require('../models/solicitudewarehouse');
+const Service_product = require('../models/service_product');
 const passport = require('passport');
 const permissions = require('../config/permissions');
 /* const fs = require('fs-extra');
@@ -15,7 +15,7 @@ dotenv.config();
 const multer = require('multer');
 
 // Multer File upload settings
-const DIR = './public/solicitudewarehouse'; // CREAR CARPETA SI SE REQUIERE
+const DIR = './public/service_product'; // CREAR CARPETA SI SE REQUIERE
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -45,61 +45,45 @@ router
             if( !auth_data )
                 return next('auth_data refused');
 
-            permissions.module_permission(auth_data.modules, 'solicitudewarehouse', auth_data.user.super, 'readable', (error, permission) => {
+            permissions.module_permission(auth_data.modules, 'service_product', auth_data.user.super, 'readable', (error, permission) => {
                 if (permission.success) {
-                    Solicitudewarehouse.findFromTo(req.params.fechaDesde, req.params.fechaHasta, auth_data.user, permission.only_own, req.mysql, (error, data) => {
-                        return Solicitudewarehouse.response(res, error, data);
+                    Service_product.findFromTo(req.params.fechaDesde, req.params.fechaHasta, auth_data.user, permission.only_own, req.mysql, (error, data) => {
+                        return Service_product.response(res, error, data);
                     })
                 } else {
-                    return Solicitudewarehouse.response(res, error, permission);
+                    return Service_product.response(res, error, permission);
                 }
             });
         })(req, res, next);
     })
-    .get('/project/:idproject', (req, res, next) => {
+    .get('/product/:idservice_product', (req, res, next) => {
         passport.authenticate('jwt', { session: true }, (err, auth_data, info) => {
           if (!auth_data) {
                return next('auth_data refused');
           }
-            permissions.module_permission(auth_data.modules, 'solicitudewarehouse', auth_data.user.super, 'readable', (error, permission) => {
+            permissions.module_permission(auth_data.modules, 'service_product', auth_data.user.super, 'readable', (error, permission) => {
                 if (permission.success) {
-                    Solicitudewarehouse.findByIdProject(req.params.idproject, auth_data.user, permission.only_own, req.mysql, (error, data) => {
-                        return Solicitudewarehouse.response(res, error, data);
+                    Service_product.findByIdProduct(req.params.idservice_product, auth_data.user, permission.only_own, req.mysql, (error, data) => {
+                        return Service_product.response(res, error, data);
                     });
                 } else {
-                    return Solicitudewarehouse.response(res, error, permission);
+                    return Service_product.response(res, error, permission);
                 }
             });
         })(req, res, next);
     })
-    .get('/project_service/:idsolicitudewarehouse', (req, res, next) => {
+    .get('/service/:idservice_product', (req, res, next) => {
         passport.authenticate('jwt', { session: true }, (err, auth_data, info) => {
           if (!auth_data) {
                return next('auth_data refused');
           }
-            permissions.module_permission(auth_data.modules, 'solicitudewarehouse', auth_data.user.super, 'readable', (error, permission) => {
+            permissions.module_permission(auth_data.modules, 'service_product', auth_data.user.super, 'readable', (error, permission) => {
                 if (permission.success) {
-                    Solicitudewarehouse.findByIdProject_service(req.params.idsolicitudewarehouse, auth_data.user, permission.only_own, req.mysql, (error, data) => {
-                        return Solicitudewarehouse.response(res, error, data);
+                    Service_product.findByIdService(req.params.idservice_product, auth_data.user, permission.only_own, req.mysql, (error, data) => {
+                        return Service_product.response(res, error, data);
                     });
                 } else {
-                    return Solicitudewarehouse.response(res, error, permission);
-                }
-            });
-        })(req, res, next);
-    })
-    .get('/warehouse/:idsolicitudewarehouse', (req, res, next) => {
-        passport.authenticate('jwt', { session: true }, (err, auth_data, info) => {
-          if (!auth_data) {
-               return next('auth_data refused');
-          }
-            permissions.module_permission(auth_data.modules, 'solicitudewarehouse', auth_data.user.super, 'readable', (error, permission) => {
-                if (permission.success) {
-                    Solicitudewarehouse.findByIdWarehouse(req.params.idsolicitudewarehouse, auth_data.user, permission.only_own, req.mysql, (error, data) => {
-                        return Solicitudewarehouse.response(res, error, data);
-                    });
-                } else {
-                    return Solicitudewarehouse.response(res, error, permission);
+                    return Service_product.response(res, error, permission);
                 }
             });
         })(req, res, next);
@@ -109,13 +93,13 @@ router
           if (!auth_data) {
                return next('auth_data refused');
           }
-            permissions.module_permission(auth_data.modules, 'solicitudewarehouse', auth_data.user.super, 'readable', (error, permission) => {
+            permissions.module_permission(auth_data.modules, 'service_product', auth_data.user.super, 'readable', (error, permission) => {
                 if (permission.success) {
-                    Solicitudewarehouse.all(auth_data.user, permission.only_own, req.mysql, (error, data) => {
-                        return Solicitudewarehouse.response(res, error, data);
+                    Service_product.all(auth_data.user, permission.only_own, req.mysql, (error, data) => {
+                        return Service_product.response(res, error, data);
                     });
                 } else {
-                    return Solicitudewarehouse.response(res, error, permission);
+                    return Service_product.response(res, error, permission);
                 }
             });
         })(req, res, next);
@@ -125,13 +109,13 @@ router
           if (!auth_data) {
                return next('auth_data refused');
           }
-            permissions.module_permission(auth_data.modules, 'solicitudewarehouse', auth_data.user.super, 'readable', (error, permission) => {
+            permissions.module_permission(auth_data.modules, 'service_product', auth_data.user.super, 'readable', (error, permission) => {
                 if (permission.success) {
-                    Solicitudewarehouse.count(req.mysql, (error, data) => {
-                        return Solicitudewarehouse.response(res, error, data);
+                    Service_product.count(req.mysql, (error, data) => {
+                        return Service_product.response(res, error, data);
                     });
                 } else {
-                    return Solicitudewarehouse.response(res, error, permission);
+                    return Service_product.response(res, error, permission);
                 }
             });
         })(req, res, next);
@@ -141,13 +125,13 @@ router
           if (!auth_data) {
                return next('auth_data refused');
           }
-            permissions.module_permission(auth_data.modules, 'solicitudewarehouse', auth_data.user.super, 'readable', (error, permission) => {
+            permissions.module_permission(auth_data.modules, 'service_product', auth_data.user.super, 'readable', (error, permission) => {
                 if (permission.success) {
-                    Solicitudewarehouse.exist(req.params.id, req.mysql, (error, data) => {
-                        return Solicitudewarehouse.response(res, error, data);
+                    Service_product.exist(req.params.id, req.mysql, (error, data) => {
+                        return Service_product.response(res, error, data);
                     });
                 } else {
-                    return Solicitudewarehouse.response(res, error, permission);
+                    return Service_product.response(res, error, permission);
                 }
             });
         })(req, res, next);
@@ -157,13 +141,13 @@ router
           if (!auth_data) {
                return next('auth_data refused');
           }
-            permissions.module_permission(auth_data.modules, 'solicitudewarehouse', auth_data.user.super, 'readable', (error, permission) => {
+            permissions.module_permission(auth_data.modules, 'service_product', auth_data.user.super, 'readable', (error, permission) => {
                 if (permission.success) {
-                    Solicitudewarehouse.findById(req.params.id, auth_data.user, permission.only_own, req.mysql, (error, data) => {
-                        return Solicitudewarehouse.response(res, error, data);
+                    Service_product.findById(req.params.id, auth_data.user, permission.only_own, req.mysql, (error, data) => {
+                        return Service_product.response(res, error, data);
                     });
                 } else {
-                    return Solicitudewarehouse.response(res, error, permission);
+                    return Service_product.response(res, error, permission);
                 }
             });
         })(req, res, next);
@@ -173,29 +157,29 @@ router
           if (!auth_data) {
                return next('auth_data refused');
           }
-            permissions.module_permission(auth_data.modules, 'solicitudewarehouse', auth_data.user.super, 'deleteable', (error, permission) => {
+            permissions.module_permission(auth_data.modules, 'service_product', auth_data.user.super, 'deleteable', (error, permission) => {
                 if (permission.success) {
                     const created_by = (permission.only_own) ? auth_data.user.idsi_user : false;
-                    Solicitudewarehouse.logicRemove(req.params.id, created_by, req.mysql, (error, data) => {
+                    Service_product.logicRemove(req.params.id, created_by, req.mysql, (error, data) => {
                       if (!error) {
                           const params = {
                               accion: 'Registro eliminado',
                               itemId: req.params.id,
                               created_by: auth_data.user.idsi_user,
-                              idsi_modulo: 27
+                              idsi_modulo: 1
                           };
                           ResponseService.createLog(req, params, () => {
                             ResponseService.sendAlert(req, params, () => {
-                              return Solicitudewarehouse.response(res, error, data);
+                              return Service_product.response(res, error, data);
                             });
                           });
                       } else {
                           // ENVIA RESPUESTA
-                          return Solicitudewarehouse.response(res, error, data);
+                          return Service_product.response(res, error, data);
                       }
                     });
                 } else {
-                    return Solicitudewarehouse.response(res, error, permission);
+                    return Service_product.response(res, error, permission);
                 }
             });
         })(req, res, next);
@@ -205,30 +189,30 @@ router
           if (!auth_data) {
                return next('auth_data refused');
           }
-            permissions.module_permission(auth_data.modules, 'solicitudewarehouse', auth_data.user.super, 'updateable', (error, permission) => {
+            permissions.module_permission(auth_data.modules, 'service_product', auth_data.user.super, 'updateable', (error, permission) => {
                 if (permission.success) {
-                    const _solicitudewarehouse = req.body;
+                    const _service_product = req.body;
                     const created_by = (permission.only_own) ? auth_data.user.idsi_user : false;
-                    Solicitudewarehouse.update(_solicitudewarehouse, created_by, req.mysql, (error, data) => {
+                    Service_product.update(_service_product, created_by, req.mysql, (error, data) => {
                       if (!error && data.result.affectedRows) {
                           const params = {
                               accion: 'Registro actualizado',
-                              itemId: _solicitudewarehouse.idsolicitudewarehouse,
+                              itemId: _service_product.idservice_product,
                               created_by: auth_data.user.idsi_user,
-                              idsi_modulo: 27
+                              idsi_modulo: 1
                           };
                           ResponseService.createLog(req, params, () => {
                             ResponseService.sendAlert(req, params, () => {
-                              return Solicitudewarehouse.response(res, error, data);
+                              return Service_product.response(res, error, data);
                             });
                           });
                       } else {
                           // ENVIA RESPUESTA
-                          return Solicitudewarehouse.response(res, error, data);
+                          return Service_product.response(res, error, data);
                       }
                     });
                 } else {
-                    return Solicitudewarehouse.response(res, error, permission);
+                    return Service_product.response(res, error, permission);
                 }
             });
         })(req, res, next);
@@ -238,38 +222,38 @@ router
             if (!auth_data) {
                return next('auth_data refused');
             }
-            permissions.module_permission(auth_data.modules, 'solicitudewarehouse', auth_data.user.super, 'writeable', (error, permission) => {
+            permissions.module_permission(auth_data.modules, 'service_product', auth_data.user.super, 'writeable', (error, permission) => {
                 if (permission.success) {
-                    const _solicitudewarehouse = req.body;
-                    _solicitudewarehouse.created_by = auth_data.user.idsi_user;
+                    const _service_product = req.body;
+                    _service_product.created_by = auth_data.user.idsi_user;
 
                     // CAPTURA URL DE ARCHIVO
                     if (req.file && req.file.filename) {
                         const _url = process.env.HOST || req.protocol + '://' + req.get('host');
-                        const _documento =  _url + '/solicitudewarehouse/' + req.file.filename;
+                        const _documento =  _url + '/service_product/' + req.file.filename;
                         _folio.documento = _documento;
                     }
 
-                    Solicitudewarehouse.insert( _solicitudewarehouse, req.mysql, (error, data) => {
+                    Service_product.insert( _service_product, req.mysql, (error, data) => {
                       if (!error) {
                           const params = {
                               accion: 'Registro creado con archivo adjunto',
                               itemId: data.result.insertId,
                               created_by: auth_data.user.idsi_user,
-                              idsi_modulo: 27
+                              idsi_modulo: 1
                           };
                           ResponseService.createLog(req, params, () => {
                             ResponseService.sendAlert(req, params, () => {
-                              return Solicitudewarehouse.response(res, error, data);
+                              return Service_product.response(res, error, data);
                             });
                           });
                       } else {
                           // ENVIA RESPUESTA
-                          return Solicitudewarehouse.response(res, error, data);
+                          return Service_product.response(res, error, data);
                       }
                     });
                 } else {
-                    return Solicitudewarehouse.response(res, error, permission);
+                    return Service_product.response(res, error, permission);
                 }
             });
         })(req, res, next);
@@ -279,30 +263,30 @@ router
             if (!auth_data) {
                return next('auth_data refused');
             }
-            permissions.module_permission(auth_data.modules, 'solicitudewarehouse', auth_data.user.super, 'writeable', (error, permission) => {
+            permissions.module_permission(auth_data.modules, 'service_product', auth_data.user.super, 'writeable', (error, permission) => {
                 if (permission.success) {
-                    const _solicitudewarehouse = req.body;
-                    _solicitudewarehouse.created_by = auth_data.user.idsi_user;
-                    Solicitudewarehouse.insert( _solicitudewarehouse, req.mysql, (error, data) => {
+                    const _service_product = req.body;
+                    _service_product.created_by = auth_data.user.idsi_user;
+                    Service_product.insert( _service_product, req.mysql, (error, data) => {
                       if (!error) {
                           const params = {
                               accion: 'Registro creado',
                               itemId: data.result.insertId,
                               created_by: auth_data.user.idsi_user,
-                              idsi_modulo: 27
+                              idsi_modulo: 1
                           };
                           ResponseService.createLog(req, params, () => {
                             ResponseService.sendAlert(req, params, () => {
-                              return Solicitudewarehouse.response(res, error, data);
+                              return Service_product.response(res, error, data);
                             });
                           });
                       } else {
                           // ENVIA RESPUESTA
-                          return Solicitudewarehouse.response(res, error, data);
+                          return Service_product.response(res, error, data);
                       }
                     });
                 } else {
-                    return Solicitudewarehouse.response(res, error, permission);
+                    return Service_product.response(res, error, permission);
                 }
             });
         })(req, res, next);

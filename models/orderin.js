@@ -30,6 +30,56 @@ Orderin.findByIdProduct = (idProduct, user, only_own, connection, next) => {
     });
 };
 
+
+
+
+Orderin.findInventaryByIdWarehouse = (idWarehouse, user, only_own, connection, next) => {
+    if( !connection )
+        return next('Connection refused');
+
+    let query = '';
+    let keys = [];
+    query = `
+    SELECT oi.*, p.name as product_product_idproduct, w.name as warehouse_warehouse_idwarehouse, pr.name as provider_provider_idprovider,
+        IFNULL(SUM(oi.quantity), 0) as sumquantityin,
+
+        IFNULL((SELECT SUM(oo.quantity) FROM orderout as oo 
+            WHERE oo.is_deleted = false 
+            AND oo.product_idproduct = oi.product_idproduct
+            AND oo.warehouse_idwarehouse = oi.warehouse_idwarehouse  ), 0) as sumquantityout
+
+                FROM orderin as oi
+                INNER JOIN product as p ON p.idproduct = oi.product_idproduct
+                INNER JOIN warehouse as w ON w.idwarehouse = oi.warehouse_idwarehouse
+                INNER JOIN provider as pr ON pr.idprovider = p.provider_idprovider
+
+                ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = oi.created_by ` : ""} 
+                WHERE oi.is_deleted = false 
+                     AND oi.warehouse_idwarehouse = ? 
+                     ${user.companyunits_idcompanyunits ? `AND _si_user.companyunits_idcompanyunits = ? ` : ""}
+                     ${only_own ? `AND oi.created_by = ?` : ""}
+                     
+                 GROUP BY oi.product_idproduct`
+
+        keys = [idWarehouse];
+        user.companyunits_idcompanyunits ? keys.push(user.companyunits_idcompanyunits) : null;
+        only_own ? keys.push(user.idsi_user) : null;
+
+    connection.query(query, keys, (error, result) => {
+        if(error)
+            return next({ success: false, error: error, message: 'Un error ha ocurrido mientras se encontraba el registro' });
+        else if (result.affectedRows === 0)
+            return next(null, { success: false, result: result, message: 'Solo es posible encontrar registros propios' });
+        else
+            return next(null, { success: true, result: result, message: 'Orderin encontrado' });
+    });
+};
+
+
+
+
+
+
 Orderin.findByIdWarehouse = (idWarehouse, user, only_own, connection, next) => {
     if( !connection )
         return next('Connection refused');

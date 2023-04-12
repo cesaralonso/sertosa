@@ -1,5 +1,35 @@
 const Vehicle = {};
 
+Vehicle.findByIdProject= (idProject, user, only_own, connection, next) => {
+    if( !connection )
+        return next('Connection refused');
+
+    let query = '';
+    let keys = [];
+    query = `SELECT vehicle.*, _company_idcompany.name as company_company_idcompany 
+             FROM vehicle 
+             INNER JOIN company as _company_idcompany ON _company_idcompany.idcompany = vehicle.company_idcompany 
+             INNER JOIN project as _project_idproject ON _project_idproject.vehicle_idvehicle = vehicle.idvehicle
+              
+              
+             ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = vehicle.created_by ` : ""} 
+             WHERE vehicle.is_deleted = false 
+                  AND _project_idproject.idproject = ?
+                  ${user.companyunits_idcompanyunits ? `AND _si_user.companyunits_idcompanyunits = ? ` : ""}
+                  ${only_own ? `AND vehicle.created_by = ?` : ""}`
+        keys = [idProject];
+        user.companyunits_idcompanyunits ? keys.push(user.companyunits_idcompanyunits) : null;
+        only_own ? keys.push(user.idsi_user) : null;
+
+    connection.query(query, keys, (error, result) => {
+        if(error)
+            return next({ success: false, error: error, message: 'Un error ha ocurrido mientras se encontraba el registro' });
+        else if (result.affectedRows === 0)
+            return next(null, { success: false, result: result, message: 'Solo es posible encontrar registros propios' });
+        else
+            return next(null, { success: true, result: result, message: 'Vehicle encontrad@' });
+    });
+};
 Vehicle.findByIdCompany = (idCompany, user, only_own, connection, next) => {
     if( !connection )
         return next('Connection refused');
@@ -65,11 +95,15 @@ Vehicle.all = (user, only_own, connection, next) => {
 
     let query = '';
     let keys = [];
-    query = `SELECT vehicle.*, _company_idcompany.name as company_company_idcompany 
+    query = `SELECT 
+    
+    LPAD(vehicle.idvehicle,4,'0') AS ID, 
+    (SELECT COUNT(*) as count FROM project WHERE project.vehicle_idvehicle = vehicle.idvehicle) as countReparaciones,
+    
+    vehicle.*, _company_idcompany.name as company_company_idcompany 
              FROM vehicle 
-             INNER JOIN company as _company_idcompany ON _company_idcompany.idcompany = vehicle.company_idcompany 
-              
-              
+             INNER JOIN company as _company_idcompany ON _company_idcompany.idcompany = vehicle.company_idcompany
+
              ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = vehicle.created_by ` : ""} 
              WHERE vehicle.is_deleted = false 
                   ${user.companyunits_idcompanyunits ? `AND _si_user.companyunits_idcompanyunits = ? ` : ""}

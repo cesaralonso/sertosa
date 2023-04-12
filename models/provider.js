@@ -35,7 +35,12 @@ Provider.all = (user, only_own, connection, next) => {
 
     let query = '';
     let keys = [];
-    query = `SELECT provider.* 
+    query = `SELECT provider.*,
+    
+    (SELECT COUNT(*) FROM solicitudeprovider WHERE provider_idprovider = provider.idprovider) as solicitudeproviderCount
+
+
+
              FROM provider 
               
               
