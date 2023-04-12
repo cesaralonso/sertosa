@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 04-04-2023 a las 03:15:59
+-- Tiempo de generación: 12-04-2023 a las 15:38:55
 -- Versión del servidor: 10.4.18-MariaDB
 -- Versión de PHP: 7.3.27
 
@@ -46,7 +46,8 @@ INSERT INTO `company` (`idcompany`, `name`, `companygroup_idcompanygroup`, `logo
 (1, 'SERTOSA', 1, NULL, 0, '2023-03-15 14:46:00', 1, '2023-03-15 15:02:21'),
 (9, 'AFRISA', 1, NULL, 0, '2023-03-15 16:58:39', 1, '2023-03-15 16:58:39'),
 (10, 'USA MEX', 1, NULL, 0, '2023-03-15 16:58:49', 1, '2023-03-15 16:58:49'),
-(11, 'XXX', 1, 'http://localhost:3000/company/blob', 0, '2023-04-02 18:44:21', 1, '2023-04-02 18:44:21');
+(11, 'XXX', 1, 'http://localhost:3000/company/blob', 0, '2023-04-02 18:44:21', 1, '2023-04-02 18:44:21'),
+(12, 'sfdgdfsgdsg', 1, 'http://localhost:3000/company/blob', 0, '2023-04-04 02:30:44', 1, '2023-04-04 02:30:44');
 
 -- --------------------------------------------------------
 
@@ -152,6 +153,7 @@ CREATE TABLE `orderin` (
   `warehouse_idwarehouse` int(10) UNSIGNED NOT NULL,
   `product_idproduct` int(10) UNSIGNED NOT NULL COMMENT '1|Producto|name',
   `quantity` int(11) NOT NULL COMMENT '1|Cantidad',
+  `motive` set('AJUSTE DE INVENTARIO','ROBO','DAÑO','CADUCIDAD') COLLATE utf8_bin NOT NULL COMMENT '1|Motivo',
   `is_deleted` tinyint(1) NOT NULL DEFAULT 0 COMMENT '0|Eliminado',
   `created_by` int(10) UNSIGNED ZEROFILL NOT NULL COMMENT '0|Creado por',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp() COMMENT '0|Fecha de creación',
@@ -162,8 +164,12 @@ CREATE TABLE `orderin` (
 -- Volcado de datos para la tabla `orderin`
 --
 
-INSERT INTO `orderin` (`idorderin`, `warehouse_idwarehouse`, `product_idproduct`, `quantity`, `is_deleted`, `created_by`, `created_at`, `modified_at`) VALUES
-(1, 2, 1, 50, 0, 0000000001, '2023-04-02 19:05:02', '2023-04-02 19:05:02');
+INSERT INTO `orderin` (`idorderin`, `warehouse_idwarehouse`, `product_idproduct`, `quantity`, `motive`, `is_deleted`, `created_by`, `created_at`, `modified_at`) VALUES
+(1, 2, 1, 50, 'AJUSTE DE INVENTARIO', 0, 0000000001, '2023-04-02 19:05:02', '2023-04-07 02:58:42'),
+(2, 1, 3, 123213, 'CADUCIDAD', 0, 0000000001, '2023-04-05 03:38:40', '2023-04-07 02:58:53'),
+(3, 1, 1, 999, 'ROBO', 0, 0000000001, '2023-04-06 18:07:11', '2023-04-07 02:58:47'),
+(4, 1, 1, 802, 'AJUSTE DE INVENTARIO', 0, 0000000001, '2023-04-07 23:40:09', '2023-04-07 23:40:09'),
+(5, 1, 1, 3, 'DAÑO', 0, 0000000001, '2023-04-07 23:48:05', '2023-04-07 23:48:05');
 
 -- --------------------------------------------------------
 
@@ -176,6 +182,7 @@ CREATE TABLE `orderout` (
   `warehouse_idwarehouse` int(10) UNSIGNED NOT NULL COMMENT '1|Almacen|name',
   `product_idproduct` int(10) UNSIGNED NOT NULL COMMENT '1|Producto|name',
   `quantity` int(11) NOT NULL COMMENT '1|Cantidad',
+  `motive` set('AJUSTE DE INVENTARIO','ROBO','DAÑO','CADUCIDAD') COLLATE utf8_bin NOT NULL COMMENT '1|Motivo',
   `is_deleted` tinyint(1) NOT NULL DEFAULT 0 COMMENT '0|Eliminado',
   `created_by` int(10) UNSIGNED ZEROFILL NOT NULL COMMENT '0|Creado por',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp() COMMENT '0|Fecha de creación',
@@ -186,8 +193,11 @@ CREATE TABLE `orderout` (
 -- Volcado de datos para la tabla `orderout`
 --
 
-INSERT INTO `orderout` (`idorderout`, `warehouse_idwarehouse`, `product_idproduct`, `quantity`, `is_deleted`, `created_by`, `created_at`, `modified_at`) VALUES
-(1, 1, 1, 679, 0, 0000000001, '2023-04-02 19:05:43', '2023-04-02 19:05:43');
+INSERT INTO `orderout` (`idorderout`, `warehouse_idwarehouse`, `product_idproduct`, `quantity`, `motive`, `is_deleted`, `created_by`, `created_at`, `modified_at`) VALUES
+(1, 1, 1, 679, 'DAÑO', 0, 0000000001, '2023-04-02 19:05:43', '2023-04-07 02:58:36'),
+(2, 1, 1, 998, 'ROBO', 0, 0000000001, '2023-04-06 18:07:59', '2023-04-07 02:58:31'),
+(3, 1, 1, 123, 'AJUSTE DE INVENTARIO', 0, 0000000001, '2023-04-07 02:57:14', '2023-04-07 02:58:24'),
+(4, 1, 1, 3, 'CADUCIDAD', 0, 0000000001, '2023-04-07 23:48:17', '2023-04-07 23:48:17');
 
 -- --------------------------------------------------------
 
@@ -201,6 +211,17 @@ CREATE TABLE `product` (
   `description` varchar(345) COLLATE utf8_bin DEFAULT NULL COMMENT '1|Descripción',
   `provider_idprovider` int(10) UNSIGNED NOT NULL COMMENT '1|Proveedor|name',
   `family_idfamily` int(10) UNSIGNED NOT NULL COMMENT '1|Familia|name',
+  `sku` varchar(16) COLLATE utf8_bin NOT NULL COMMENT '1|SKU',
+  `aka` varchar(100) COLLATE utf8_bin NOT NULL COMMENT '1|AKA',
+  `type` set('ORIGINAL','GENÉRICA','HUESO','') COLLATE utf8_bin NOT NULL COMMENT '1|Tipo',
+  `cost` int(11) NOT NULL COMMENT '1|Costo',
+  `min` int(11) NOT NULL COMMENT '1|Mínimo en inventario',
+  `id` varchar(20) COLLATE utf8_bin NOT NULL COMMENT '1|ID por Proveedor',
+  `reorderpoint` int(11) NOT NULL COMMENT '1|Punto de reorden',
+  `max` int(11) NOT NULL COMMENT '1|Cantidad máxima en inventario',
+  `caducity` date DEFAULT NULL COMMENT '1|Fecha caducidad',
+  `unitin` set('PIEZA','GRAMO','UNIDAD','KIT') COLLATE utf8_bin NOT NULL COMMENT '1|Unidad de compra',
+  `unitout` set('PIEZA','GRAMO','UNIDAD','KIT') COLLATE utf8_bin NOT NULL COMMENT '1|Unidad de salida',
   `is_deleted` tinyint(1) NOT NULL DEFAULT 0 COMMENT '0|Eliminado',
   `created_by` int(10) UNSIGNED ZEROFILL NOT NULL COMMENT '0|Creado por',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp() COMMENT '0|Fecha de creación',
@@ -211,8 +232,11 @@ CREATE TABLE `product` (
 -- Volcado de datos para la tabla `product`
 --
 
-INSERT INTO `product` (`idproduct`, `name`, `description`, `provider_idprovider`, `family_idfamily`, `is_deleted`, `created_by`, `created_at`, `modified_at`) VALUES
-(1, 'BUJIA 1/2', 'X', 1, 1, 0, 0000000001, '2023-03-28 14:58:01', '2023-03-28 14:58:01');
+INSERT INTO `product` (`idproduct`, `name`, `description`, `provider_idprovider`, `family_idfamily`, `sku`, `aka`, `type`, `cost`, `min`, `id`, `reorderpoint`, `max`, `caducity`, `unitin`, `unitout`, `is_deleted`, `created_by`, `created_at`, `modified_at`) VALUES
+(1, 'BUJIA 1/2', 'X', 1, 1, '', '', '', 0, 0, '', 0, 0, NULL, '', '', 0, 0000000001, '2023-03-28 14:58:01', '2023-03-28 14:58:01'),
+(2, 'sdfgd', 'rtsergstres', 1, 1, '', '', '', 0, 0, '', 0, 0, NULL, '', '', 0, 0000000001, '2023-04-04 01:48:06', '2023-04-04 01:48:06'),
+(3, 'VALERO', 'X', 1, 1, '', '', '', 0, 0, '', 0, 0, NULL, '', '', 0, 0000000001, '2023-04-05 03:38:02', '2023-04-05 03:38:02'),
+(4, 'XXXX', 'XXX', 1, 1, '468898', 'XXXX', 'ORIGINAL', 577, 567, 'CHKHK758', 7, 897, '2023-04-07', 'PIEZA', 'KIT', 0, 0000000001, '2023-04-06 18:04:42', '2023-04-06 18:04:42');
 
 -- --------------------------------------------------------
 
@@ -224,6 +248,7 @@ CREATE TABLE `project` (
   `idproject` int(10) UNSIGNED NOT NULL COMMENT '0|',
   `name` varchar(45) COLLATE utf8_bin NOT NULL COMMENT '1|Nombre',
   `companyunits_idcompanyunits` int(10) UNSIGNED NOT NULL COMMENT '1|Unidad de negocio|name',
+  `status` set('EN PROCESO','COMPLETADO','VACIO') COLLATE utf8_bin NOT NULL COMMENT '1|Estatus',
   `is_deleted` tinyint(1) DEFAULT 0 COMMENT '0|Baja lógica',
   `created_at` timestamp NULL DEFAULT current_timestamp() COMMENT '0|Fecha de creación',
   `created_by` int(11) DEFAULT NULL COMMENT '0|Creado por',
@@ -235,8 +260,10 @@ CREATE TABLE `project` (
 -- Volcado de datos para la tabla `project`
 --
 
-INSERT INTO `project` (`idproject`, `name`, `companyunits_idcompanyunits`, `is_deleted`, `created_at`, `created_by`, `modified_at`, `vehicle_idvehicle`) VALUES
-(12, 'SERVICIO X', 1, 0, '2023-03-28 14:52:41', 1, '2023-03-28 14:52:41', 1);
+INSERT INTO `project` (`idproject`, `name`, `companyunits_idcompanyunits`, `status`, `is_deleted`, `created_at`, `created_by`, `modified_at`, `vehicle_idvehicle`) VALUES
+(12, 'SERVICIO X', 1, 'VACIO', 0, '2023-03-28 14:52:41', 1, '2023-04-07 22:54:47', 1),
+(13, 'test 2', 1, 'COMPLETADO', 0, '2023-04-07 22:54:32', 1, '2023-04-07 22:54:32', 1),
+(14, 'xxxxxxxxxxxxx', 1, 'COMPLETADO', 0, '2023-04-08 00:16:44', 1, '2023-04-08 00:16:44', 1);
 
 -- --------------------------------------------------------
 
@@ -259,7 +286,10 @@ CREATE TABLE `project_service` (
 --
 
 INSERT INTO `project_service` (`idproject_service`, `project_idproject`, `service_idservice`, `is_deleted`, `created_at`, `created_by`, `modified_at`) VALUES
-(1, 12, 71, 0, '2023-04-02 17:35:20', 1, '2023-04-02 17:43:25');
+(1, 12, 71, 0, '2023-04-02 17:35:20', 1, '2023-04-02 17:43:25'),
+(2, 12, 71, 0, '2023-04-05 05:15:27', 1, '2023-04-07 04:20:00'),
+(3, 12, 72, 0, '2023-04-12 02:06:21', 1, '2023-04-12 02:06:21'),
+(4, 12, 73, 0, '2023-04-12 02:06:29', 1, '2023-04-12 02:06:29');
 
 -- --------------------------------------------------------
 
@@ -312,7 +342,9 @@ CREATE TABLE `service` (
 --
 
 INSERT INTO `service` (`idservice`, `name`, `initialMessage`, `finalMessage`, `emailMessage`, `downloable`, `showEmployee`, `target`, `time`, `saveAsTemplate`, `is_deleted`, `created_at`, `created_by`, `modified_at`) VALUES
-(71, 'CAMBIO DE BUJIAS', 'DESCRIPCION INICIAL', 'DESCRIPCION FINAL', 'MENSAJE DIRECTO DEL JEFE', 1, 1, 'companygroup', 34265, 1, 0, '2023-03-28 14:55:31', 1, '2023-03-28 14:55:31');
+(71, 'CAMBIO DE BUJIAS', 'DESCRIPCION INICIAL', 'DESCRIPCION FINAL', 'MENSAJE DIRECTO DEL JEFE', 1, 1, 'companygroup', 34265, 1, 0, '2023-03-28 14:55:31', 1, '2023-03-28 14:55:31'),
+(72, 'MI SEGUNDO SERVICO', 'DESC DE SEGUNDO SERVICO', NULL, NULL, 0, 0, 'companyunits', 0, 0, 0, '2023-04-12 02:05:46', 1, '2023-04-12 02:05:46'),
+(73, 'TERCER SERVICO', 'DESC. DE TERCER SERVICIO', NULL, NULL, 0, 0, 'companyunits', 0, 0, 0, '2023-04-12 02:06:02', 1, '2023-04-12 02:06:02');
 
 -- --------------------------------------------------------
 
@@ -341,7 +373,32 @@ CREATE TABLE `service_employee` (
 
 INSERT INTO `service_employee` (`idservice_employee`, `status`, `employee_idemployee`, `project_service_idproject_service`, `ponderationFinal`, `observations`, `url`, `time`, `is_deleted`, `created_at`, `created_by`, `modified_at`) VALUES
 (120, 'SIN INICIAR', 44, 1, 0, 'test', NULL, NULL, 0, '2023-04-02 18:02:23', 1, '2023-04-02 18:02:23'),
-(121, 'SIN INICIAR', 44, 1, 0, 'test2', NULL, NULL, 0, '2023-04-02 18:04:18', 1, '2023-04-02 18:04:18');
+(121, 'SIN INICIAR', 44, 1, 0, 'test2', NULL, NULL, 0, '2023-04-02 18:04:18', 1, '2023-04-02 18:04:18'),
+(122, 'SIN INICIAR', 44, 1, 0, NULL, NULL, NULL, 0, '2023-04-05 05:15:38', 1, '2023-04-05 05:15:38');
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `service_product`
+--
+
+CREATE TABLE `service_product` (
+  `idservice_product` int(10) UNSIGNED NOT NULL COMMENT '0|',
+  `service_idservice` int(10) UNSIGNED NOT NULL COMMENT '1|Servicio|name',
+  `product_idproduct` int(10) UNSIGNED NOT NULL COMMENT '1|Refacción|name',
+  `quantity` int(11) NOT NULL DEFAULT 1 COMMENT '1|Cantidad',
+  `is_deleted` tinyint(1) DEFAULT 0 COMMENT '0|Baja lógica',
+  `created_at` timestamp NULL DEFAULT current_timestamp() COMMENT '0|Fecha de creación',
+  `created_by` int(11) DEFAULT NULL COMMENT '0|Creado por',
+  `modified_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT '0|Fecha de actualización'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='1|1|Servicio Refacción||';
+
+--
+-- Volcado de datos para la tabla `service_product`
+--
+
+INSERT INTO `service_product` (`idservice_product`, `service_idservice`, `product_idproduct`, `quantity`, `is_deleted`, `created_at`, `created_by`, `modified_at`) VALUES
+(1, 71, 1, 888, 0, '2023-04-10 19:10:15', 1, '2023-04-10 19:10:15');
 
 -- --------------------------------------------------------
 
@@ -406,6 +463,13 @@ CREATE TABLE `si_device` (
   `modified_at` timestamp NULL DEFAULT current_timestamp() ON UPDATE current_timestamp() COMMENT '0|Fecha de modificación'
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin COMMENT='1|1|Device||';
 
+--
+-- Volcado de datos para la tabla `si_device`
+--
+
+INSERT INTO `si_device` (`idsi_device`, `codigo`, `descripcion`, `token`, `si_user_idsi_user`, `si_rol_idsi_rol`, `is_deleted`, `created_by`, `created_at`, `modified_at`) VALUES
+(1, 'r567', NULL, '4567890', 1, 2, 0, 1, '2023-04-04 03:56:26', '2023-04-04 03:56:26');
+
 -- --------------------------------------------------------
 
 --
@@ -440,7 +504,75 @@ INSERT INTO `si_log` (`idsi_log`, `si_modulo_idsi_modulo`, `accion`, `is_deleted
 (972, 26, 'Registro creado: 1', 0, 0000000001, '2023-04-03 05:03:47', '2023-04-03 05:03:47'),
 (973, 27, 'Registro creado: 2', 0, 0000000001, '2023-04-03 05:10:15', '2023-04-03 05:10:15'),
 (974, 27, 'Registro creado: 3', 0, 0000000001, '2023-04-03 05:12:47', '2023-04-03 05:12:47'),
-(975, 28, 'Registro creado: 1', 0, 0000000001, '2023-04-03 05:15:33', '2023-04-03 05:15:33');
+(975, 28, 'Registro creado: 1', 0, 0000000001, '2023-04-03 05:15:33', '2023-04-03 05:15:33'),
+(976, 30, 'Registro actualizado: 1', 0, 0000000001, '2023-04-04 01:44:33', '2023-04-04 01:44:33'),
+(977, 8, 'Registro creado: 2', 0, 0000000001, '2023-04-04 01:48:06', '2023-04-04 01:48:06'),
+(978, 27, 'Registro creado: 4', 0, 0000000001, '2023-04-04 01:51:56', '2023-04-04 01:51:56'),
+(979, 19, 'Registro creado: 4', 0, 0000000001, '2023-04-04 01:58:06', '2023-04-04 01:58:06'),
+(980, 19, 'Registro creado: 5', 0, 0000000001, '2023-04-04 01:58:18', '2023-04-04 01:58:18'),
+(981, 19, 'Registro creado: 6', 0, 0000000001, '2023-04-04 01:58:34', '2023-04-04 01:58:34'),
+(982, 18, 'Registro creado: 59', 0, 0000000001, '2023-04-04 02:02:07', '2023-04-04 02:02:07'),
+(983, 19, 'Registro creado: 7', 0, 0000000001, '2023-04-04 02:06:55', '2023-04-04 02:06:55'),
+(984, 1, 'Registro creado con archivo adjunto: 12', 0, 0000000001, '2023-04-04 02:30:44', '2023-04-04 02:30:44'),
+(985, 15, 'Registro creado: 1', 0, 0000000001, '2023-04-04 03:56:26', '2023-04-04 03:56:26'),
+(986, 8, 'Registro creado: 3', 0, 0000000001, '2023-04-05 03:38:02', '2023-04-05 03:38:02'),
+(987, 6, 'Registro creado: 2', 0, 0000000001, '2023-04-05 03:38:40', '2023-04-05 03:38:40'),
+(988, 10, 'Registro creado: 0', 0, 0000000001, '2023-04-05 05:15:27', '2023-04-05 05:15:27'),
+(989, 13, 'Registro creado: 122', 0, 0000000001, '2023-04-05 05:15:38', '2023-04-05 05:15:38'),
+(990, 8, 'Registro creado: 4', 0, 0000000001, '2023-04-06 18:04:42', '2023-04-06 18:04:42'),
+(991, 6, 'Registro creado: 3', 0, 0000000001, '2023-04-06 18:07:11', '2023-04-06 18:07:11'),
+(992, 7, 'Registro creado: 2', 0, 0000000001, '2023-04-06 18:07:59', '2023-04-06 18:07:59'),
+(993, 7, 'Registro actualizado: 2', 0, 0000000001, '2023-04-07 02:57:00', '2023-04-07 02:57:00'),
+(994, 7, 'Registro creado: 3', 0, 0000000001, '2023-04-07 02:57:14', '2023-04-07 02:57:14'),
+(995, 7, 'Registro actualizado: 3', 0, 0000000001, '2023-04-07 02:58:24', '2023-04-07 02:58:24'),
+(996, 7, 'Registro actualizado: 2', 0, 0000000001, '2023-04-07 02:58:31', '2023-04-07 02:58:31'),
+(997, 7, 'Registro actualizado: 1', 0, 0000000001, '2023-04-07 02:58:36', '2023-04-07 02:58:36'),
+(998, 6, 'Registro actualizado: 1', 0, 0000000001, '2023-04-07 02:58:42', '2023-04-07 02:58:42'),
+(999, 6, 'Registro actualizado: 3', 0, 0000000001, '2023-04-07 02:58:47', '2023-04-07 02:58:47'),
+(1000, 6, 'Registro actualizado: 2', 0, 0000000001, '2023-04-07 02:58:54', '2023-04-07 02:58:54'),
+(1001, 9, 'Registro actualizado: 12', 0, 0000000001, '2023-04-07 16:16:23', '2023-04-07 16:16:23'),
+(1002, 9, 'Registro actualizado: 12', 0, 0000000001, '2023-04-07 16:17:42', '2023-04-07 16:17:42'),
+(1003, 28, 'Registro creado: 2', 0, 0000000001, '2023-04-07 21:41:06', '2023-04-07 21:41:06'),
+(1004, 28, 'Registro creado: 3', 0, 0000000001, '2023-04-07 21:43:41', '2023-04-07 21:43:41'),
+(1005, 28, 'Registro creado: 4', 0, 0000000001, '2023-04-07 21:43:51', '2023-04-07 21:43:51'),
+(1006, 28, 'Registro creado: 5', 0, 0000000001, '2023-04-07 21:44:02', '2023-04-07 21:44:02'),
+(1007, 28, 'Registro creado: 6', 0, 0000000001, '2023-04-07 21:49:54', '2023-04-07 21:49:54'),
+(1008, 28, 'Registro actualizado: 6', 0, 0000000001, '2023-04-07 21:50:05', '2023-04-07 21:50:05'),
+(1009, 28, 'Registro eliminado: 6', 0, 0000000001, '2023-04-07 21:52:04', '2023-04-07 21:52:04'),
+(1010, 28, 'Registro eliminado: 3', 0, 0000000001, '2023-04-07 21:54:54', '2023-04-07 21:54:54'),
+(1011, 28, 'Registro actualizado: 2', 0, 0000000001, '2023-04-07 21:54:59', '2023-04-07 21:54:59'),
+(1012, 28, 'Registro creado: 7', 0, 0000000001, '2023-04-07 22:51:02', '2023-04-07 22:51:02'),
+(1013, 28, 'Registro creado: 8', 0, 0000000001, '2023-04-07 22:51:41', '2023-04-07 22:51:41'),
+(1014, 9, 'Registro creado: 13', 0, 0000000001, '2023-04-07 22:54:32', '2023-04-07 22:54:32'),
+(1015, 9, 'Registro actualizado: 12', 0, 0000000001, '2023-04-07 22:54:47', '2023-04-07 22:54:47'),
+(1016, 30, 'Registro actualizado: 1', 0, 0000000001, '2023-04-07 23:00:08', '2023-04-07 23:00:08'),
+(1017, 25, 'Registro actualizado: 1', 0, 0000000001, '2023-04-07 23:08:53', '2023-04-07 23:08:53'),
+(1018, 25, 'Registro actualizado: 1', 0, 0000000001, '2023-04-07 23:08:58', '2023-04-07 23:08:58'),
+(1019, 31, 'Registro actualizado: 1', 0, 0000000001, '2023-04-07 23:39:40', '2023-04-07 23:39:40'),
+(1020, 6, 'Registro creado: 4', 0, 0000000001, '2023-04-07 23:40:09', '2023-04-07 23:40:09'),
+(1021, 6, 'Registro creado: 5', 0, 0000000001, '2023-04-07 23:48:05', '2023-04-07 23:48:05'),
+(1022, 7, 'Registro creado: 4', 0, 0000000001, '2023-04-07 23:48:17', '2023-04-07 23:48:17'),
+(1023, 9, 'Registro creado: 14', 0, 0000000001, '2023-04-08 00:16:44', '2023-04-08 00:16:44'),
+(1024, 27, 'Registro actualizado: 1', 0, 0000000001, '2023-04-08 15:07:14', '2023-04-08 15:07:14'),
+(1025, 27, 'Registro actualizado: 1', 0, 0000000001, '2023-04-08 15:08:43', '2023-04-08 15:08:43'),
+(1026, 26, 'Registro creado: 2', 0, 0000000001, '2023-04-08 15:12:17', '2023-04-08 15:12:17'),
+(1027, 26, 'Registro creado: 3', 0, 0000000001, '2023-04-08 15:12:33', '2023-04-08 15:12:33'),
+(1028, 29, 'Registro creado: 2', 0, 0000000001, '2023-04-09 15:11:47', '2023-04-09 15:11:47'),
+(1029, 28, 'Registro creado: 10', 0, 0000000001, '2023-04-10 17:18:05', '2023-04-10 17:18:05'),
+(1030, 17, 'Registro actualizado: 32', 0, 0000000001, '2023-04-10 19:09:36', '2023-04-10 19:09:36'),
+(1031, 1, 'Registro creado: 1', 0, 0000000001, '2023-04-10 19:10:15', '2023-04-10 19:10:15'),
+(1032, 12, 'Registro creado: 72', 0, 0000000001, '2023-04-12 02:05:46', '2023-04-12 02:05:46'),
+(1033, 12, 'Registro creado: 73', 0, 0000000001, '2023-04-12 02:06:02', '2023-04-12 02:06:02'),
+(1034, 10, 'Registro creado: 3', 0, 0000000001, '2023-04-12 02:06:21', '2023-04-12 02:06:21'),
+(1035, 10, 'Registro creado: 4', 0, 0000000001, '2023-04-12 02:06:30', '2023-04-12 02:06:30'),
+(1036, 27, 'Registro creado: 5', 0, 0000000001, '2023-04-12 02:45:21', '2023-04-12 02:45:21'),
+(1037, 28, 'Registro creado: 13', 0, 0000000001, '2023-04-12 02:49:45', '2023-04-12 02:49:45'),
+(1038, 28, 'Registro creado: 14', 0, 0000000001, '2023-04-12 02:49:50', '2023-04-12 02:49:50'),
+(1039, 27, 'Registro creado: 6', 0, 0000000001, '2023-04-12 02:50:01', '2023-04-12 02:50:01'),
+(1040, 27, 'Registro creado: 7', 0, 0000000001, '2023-04-12 02:54:39', '2023-04-12 02:54:39'),
+(1041, 28, 'Registro creado: 15', 0, 0000000001, '2023-04-12 02:54:51', '2023-04-12 02:54:51'),
+(1042, 17, 'Registro creado: 33', 0, 0000000001, '2023-04-12 03:25:05', '2023-04-12 03:25:05'),
+(1043, 17, 'Registro actualizado: 33', 0, 0000000001, '2023-04-12 03:25:18', '2023-04-12 03:25:18');
 
 -- --------------------------------------------------------
 
@@ -494,7 +626,9 @@ INSERT INTO `si_modulo` (`idsi_modulo`, `codigo`, `descripcion`, `nombre`, `is_d
 (28, '', NULL, 'solicitudewarehouse_product', 0, 1, '2023-03-15 19:56:13', '2023-04-03 05:06:26'),
 (29, '', NULL, 'validation', 0, 1, '2023-03-15 19:56:14', '2023-04-02 19:27:34'),
 (30, '', NULL, 'vehicle', 0, 1, '2023-03-15 19:56:14', '2023-04-02 19:27:34'),
-(31, '', NULL, 'warehouse', 0, 1, '2023-03-15 19:56:14', '2023-04-02 19:27:34');
+(31, '', NULL, 'warehouse', 0, 1, '2023-03-15 19:56:14', '2023-04-02 19:27:34'),
+(32, 'Ref. de Serv.', NULL, 'service_product', 0, 1, '2023-04-07 21:56:15', '2023-04-10 19:09:36'),
+(33, 'Reportes', NULL, 'report', 0, 1, '2023-04-12 03:25:05', '2023-04-12 03:25:18');
 
 -- --------------------------------------------------------
 
@@ -529,7 +663,8 @@ CREATE TABLE `si_permiso` (
 --
 
 INSERT INTO `si_permiso` (`idsi_permiso`, `codigo`, `descripcion`, `nombre`, `si_rol_idsi_rol`, `si_modulo_idsi_modulo`, `acceso`, `readable`, `writeable`, `updateable`, `deleteable`, `read_own`, `write_own`, `update_own`, `delete_own`, `is_deleted`, `created_by`, `created_at`, `modified_at`) VALUES
-(58, NULL, NULL, 'x', 3, 5, 1, 1, 1, 1, NULL, NULL, NULL, NULL, NULL, 0, 1, '2023-04-02 19:31:23', '2023-04-02 19:31:23');
+(58, NULL, NULL, 'x', 3, 5, 1, 1, 1, 1, NULL, NULL, NULL, NULL, NULL, 0, 1, '2023-04-02 19:31:23', '2023-04-02 19:31:23'),
+(59, NULL, NULL, 'ACCESO A ALMACEN', 3, 31, 1, 1, 1, 1, 1, NULL, NULL, NULL, NULL, 0, 1, '2023-04-04 02:02:07', '2023-04-04 02:02:07');
 
 -- --------------------------------------------------------
 
@@ -555,7 +690,11 @@ CREATE TABLE `si_rol` (
 INSERT INTO `si_rol` (`idsi_rol`, `codigo`, `descripcion`, `nombre`, `is_deleted`, `created_by`, `created_at`, `modified_at`) VALUES
 (1, '', NULL, 'ADMINISTRADOR', 0, NULL, '2023-03-15 13:56:10', '2023-03-15 13:56:10'),
 (2, '1', NULL, 'ADMINISTRADOR', 0, 1, '2023-03-28 14:47:25', '2023-03-28 14:47:25'),
-(3, '2', NULL, 'JEFE ALMACEN', 0, 1, '2023-03-28 14:47:35', '2023-03-28 14:47:35');
+(3, '2', NULL, 'JEFE ALMACEN', 0, 1, '2023-03-28 14:47:35', '2023-03-28 14:47:35'),
+(4, 'Jefe de taller', NULL, 'Jefe de taller', 0, 1, '2023-04-04 01:58:06', '2023-04-04 01:58:06'),
+(5, 'Supervisor', NULL, 'Supervisor', 0, 1, '2023-04-04 01:58:18', '2023-04-04 01:58:18'),
+(6, 'Mecánico', NULL, 'Mecánico', 0, 1, '2023-04-04 01:58:34', '2023-04-04 01:58:34'),
+(7, 'Encargado', NULL, 'Encargado', 0, 1, '2023-04-04 02:06:55', '2023-04-04 02:06:55');
 
 -- --------------------------------------------------------
 
@@ -609,7 +748,7 @@ CREATE TABLE `si_sesion` (
 --
 
 INSERT INTO `si_sesion` (`idsi_sesion`, `codigo`, `descripcion`, `tipo`, `si_user_idsi_user`, `estado`, `latitude`, `longitude`, `accuracy`, `is_deleted`, `created_by`, `created_at`, `modified_at`) VALUES
-(57, '', NULL, 'APPUSER', 1, 'CONECTADO', NULL, NULL, NULL, 0, 1, '2023-03-15 14:46:53', '2023-04-03 05:09:53');
+(57, '', NULL, 'APPUSER', 1, 'CONECTADO', NULL, NULL, NULL, 0, 1, '2023-03-15 14:46:53', '2023-04-12 03:42:45');
 
 -- --------------------------------------------------------
 
@@ -642,7 +781,23 @@ INSERT INTO `si_sesionestado` (`idsi_sesionestado`, `si_sesion_idsi_sesion`, `es
 (95, 57, 'CONECTADO', 0, 1, '2023-03-28 14:48:28', '2023-03-28 14:48:28'),
 (96, 57, 'CONECTADO', 0, 1, '2023-04-02 16:42:15', '2023-04-02 16:42:15'),
 (97, 57, 'DESCONECTADO', 0, 1, '2023-04-03 05:07:51', '2023-04-03 05:07:51'),
-(98, 57, 'CONECTADO', 0, 1, '2023-04-03 05:09:53', '2023-04-03 05:09:53');
+(98, 57, 'CONECTADO', 0, 1, '2023-04-03 05:09:53', '2023-04-03 05:09:53'),
+(99, 57, 'DESCONECTADO', 0, 1, '2023-04-05 03:52:30', '2023-04-05 03:52:30'),
+(100, 57, 'CONECTADO', 0, 1, '2023-04-05 03:52:32', '2023-04-05 03:52:32'),
+(101, 57, 'DESCONECTADO', 0, 1, '2023-04-05 04:09:10', '2023-04-05 04:09:10'),
+(102, 57, 'CONECTADO', 0, 1, '2023-04-05 04:09:12', '2023-04-05 04:09:12'),
+(103, 57, 'DESCONECTADO', 0, 1, '2023-04-07 23:50:23', '2023-04-07 23:50:23'),
+(104, 57, 'CONECTADO', 0, 1, '2023-04-07 23:50:26', '2023-04-07 23:50:26'),
+(105, 57, 'CONECTADO', 0, 1, '2023-04-10 16:38:28', '2023-04-10 16:38:28'),
+(106, 57, 'DESCONECTADO', 0, 1, '2023-04-10 17:13:38', '2023-04-10 17:13:38'),
+(107, 57, 'CONECTADO', 0, 1, '2023-04-10 17:13:40', '2023-04-10 17:13:40'),
+(108, 57, 'DESCONECTADO', 0, 1, '2023-04-10 19:09:41', '2023-04-10 19:09:41'),
+(109, 57, 'CONECTADO', 0, 1, '2023-04-10 19:09:43', '2023-04-10 19:09:43'),
+(110, 57, 'CONECTADO', 0, 1, '2023-04-12 01:18:55', '2023-04-12 01:18:55'),
+(111, 57, 'DESCONECTADO', 0, 1, '2023-04-12 03:25:44', '2023-04-12 03:25:44'),
+(112, 57, 'CONECTADO', 0, 1, '2023-04-12 03:25:46', '2023-04-12 03:25:46'),
+(113, 57, 'DESCONECTADO', 0, 1, '2023-04-12 03:42:42', '2023-04-12 03:42:42'),
+(114, 57, 'CONECTADO', 0, 1, '2023-04-12 03:42:45', '2023-04-12 03:42:45');
 
 -- --------------------------------------------------------
 
@@ -711,7 +866,8 @@ CREATE TABLE `solicitudeprovider` (
   `idsolicitudeprovider` int(10) UNSIGNED NOT NULL COMMENT '0|',
   `provider_idprovider` int(10) UNSIGNED NOT NULL COMMENT '1|Proveedor|name',
   `project_service_idproject_service` int(10) UNSIGNED NOT NULL COMMENT '1|Reparación|idproject_service',
-  `status` varchar(45) COLLATE utf8_bin NOT NULL COMMENT '1|Status',
+  `warehouse_idwarehouse` int(10) UNSIGNED NOT NULL COMMENT '1|Almacen|name',
+  `status` set('NUEVA','ABIERTA','CERRADA','EN REVISIÓN','CANCELADA') COLLATE utf8_bin NOT NULL COMMENT '1|Status',
   `is_deleted` tinyint(1) NOT NULL DEFAULT 0 COMMENT '0|Eliminado',
   `created_by` int(10) UNSIGNED ZEROFILL NOT NULL COMMENT '0|Creado por',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp() COMMENT '0|Fecha de creación',
@@ -722,9 +878,9 @@ CREATE TABLE `solicitudeprovider` (
 -- Volcado de datos para la tabla `solicitudeprovider`
 --
 
-INSERT INTO `solicitudeprovider` (`idsolicitudeprovider`, `provider_idprovider`, `project_service_idproject_service`, `status`, `is_deleted`, `created_by`, `created_at`, `modified_at`) VALUES
-(1, 1, 1, 'x', 0, 0000000001, '2023-04-02 19:51:53', '2023-04-02 19:51:53'),
-(2, 1, 1, 'CERRADA', 0, 0000000001, '2023-04-03 04:45:28', '2023-04-03 04:45:28');
+INSERT INTO `solicitudeprovider` (`idsolicitudeprovider`, `provider_idprovider`, `project_service_idproject_service`, `warehouse_idwarehouse`, `status`, `is_deleted`, `created_by`, `created_at`, `modified_at`) VALUES
+(1, 1, 1, 1, 'EN REVISIÓN', 0, 0000000001, '2023-04-02 19:51:53', '2023-04-07 23:08:58'),
+(2, 1, 1, 1, 'CERRADA', 0, 0000000001, '2023-04-03 04:45:28', '2023-04-05 04:38:46');
 
 -- --------------------------------------------------------
 
@@ -748,7 +904,9 @@ CREATE TABLE `solicitudeprovider_product` (
 --
 
 INSERT INTO `solicitudeprovider_product` (`idsolicitudeprovider_product`, `solicitudeprovider_idsolicitudeprovider`, `product_idproduct`, `quantity`, `is_deleted`, `created_by`, `created_at`, `modified_at`) VALUES
-(1, 1, 1, 1234, 0, 0000000001, '2023-04-03 05:03:47', '2023-04-03 05:03:47');
+(1, 1, 1, 1234, 0, 0000000001, '2023-04-03 05:03:47', '2023-04-03 05:03:47'),
+(2, 2, 1, 6789, 0, 0000000001, '2023-04-08 15:12:17', '2023-04-08 15:12:17'),
+(3, 2, 4, 333, 0, 0000000001, '2023-04-08 15:12:33', '2023-04-08 15:12:33');
 
 -- --------------------------------------------------------
 
@@ -760,7 +918,7 @@ CREATE TABLE `solicitudewarehouse` (
   `idsolicitudewarehouse` int(10) UNSIGNED NOT NULL COMMENT '0|',
   `project_service_idproject_service` int(10) UNSIGNED NOT NULL COMMENT '1|Reparación|idproject_service',
   `warehouse_idwarehouse` int(10) UNSIGNED NOT NULL COMMENT '1|Almacen|nombre',
-  `status` varchar(45) COLLATE utf8_bin NOT NULL,
+  `status` set('NUEVA','ABIERTA','CERRADA','EN REVISIÓN','CANCELADA') COLLATE utf8_bin NOT NULL DEFAULT 'NUEVA' COMMENT '1|Status',
   `is_deleted` tinyint(1) NOT NULL DEFAULT 0 COMMENT '0|Eliminado',
   `created_by` int(10) UNSIGNED ZEROFILL NOT NULL COMMENT '0|Creado por',
   `created_at` timestamp NOT NULL DEFAULT current_timestamp() COMMENT '0|Fecha de creación',
@@ -772,9 +930,13 @@ CREATE TABLE `solicitudewarehouse` (
 --
 
 INSERT INTO `solicitudewarehouse` (`idsolicitudewarehouse`, `project_service_idproject_service`, `warehouse_idwarehouse`, `status`, `is_deleted`, `created_by`, `created_at`, `modified_at`) VALUES
-(1, 1, 1, 'x', 0, 0000000001, '2023-04-02 19:52:02', '2023-04-02 19:52:02'),
+(1, 1, 1, 'CERRADA', 0, 0000000001, '2023-04-02 19:52:02', '2023-04-08 15:08:43'),
 (2, 1, 1, 'ABIERTA', 0, 0000000001, '2023-04-03 05:10:15', '2023-04-03 05:10:15'),
-(3, 1, 1, 'ABIERTA', 0, 0000000001, '2023-04-03 05:12:47', '2023-04-03 05:12:47');
+(3, 1, 1, 'ABIERTA', 0, 0000000001, '2023-04-03 05:12:47', '2023-04-03 05:12:47'),
+(4, 1, 1, 'ABIERTA', 0, 0000000001, '2023-04-04 01:51:56', '2023-04-04 01:51:56'),
+(5, 4, 2, 'NUEVA', 0, 0000000001, '2023-04-12 02:45:21', '2023-04-12 02:45:21'),
+(6, 4, 1, 'NUEVA', 0, 0000000001, '2023-04-12 02:50:01', '2023-04-12 02:50:01'),
+(7, 4, 2, 'NUEVA', 0, 0000000001, '2023-04-12 02:54:39', '2023-04-12 02:54:39');
 
 -- --------------------------------------------------------
 
@@ -798,7 +960,18 @@ CREATE TABLE `solicitudewarehouse_product` (
 --
 
 INSERT INTO `solicitudewarehouse_product` (`idsolicitudewarehouse_product`, `solicitudewarehouse_idsolicitudewarehouse`, `product_idproduct`, `quantity`, `is_deleted`, `created_by`, `created_at`, `modified_at`) VALUES
-(1, 1, 1, 453253225, 0, 0000000001, '2023-04-03 05:15:33', '2023-04-03 05:15:33');
+(1, 1, 1, 453253225, 0, 0000000001, '2023-04-03 05:15:33', '2023-04-03 05:15:33'),
+(2, 1, 1, 3, 0, 0000000001, '2023-04-07 21:41:06', '2023-04-07 21:54:59'),
+(3, 1, 3, 2, 1, 0000000001, '2023-04-07 21:43:41', '2023-04-07 21:54:54'),
+(4, 1, 4, 7, 0, 0000000001, '2023-04-07 21:43:51', '2023-04-07 21:43:51'),
+(5, 3, 4, 3, 0, 0000000001, '2023-04-07 21:44:02', '2023-04-07 21:44:02'),
+(6, 1, 4, 6, 1, 0000000001, '2023-04-07 21:49:54', '2023-04-07 21:52:04'),
+(7, 1, 1, 4, 0, 0000000001, '2023-04-07 22:51:02', '2023-04-07 22:51:02'),
+(8, 1, 3, 4, 0, 0000000001, '2023-04-07 22:51:41', '2023-04-07 22:51:41'),
+(10, 1, 3, 55, 0, 0000000001, '2023-04-10 17:18:05', '2023-04-10 17:18:05'),
+(13, 5, 1, 2, 0, 0000000001, '2023-04-12 02:49:45', '2023-04-12 02:49:45'),
+(14, 5, 3, 4, 0, 0000000001, '2023-04-12 02:49:50', '2023-04-12 02:49:50'),
+(15, 7, 4, 666, 0, 0000000001, '2023-04-12 02:54:51', '2023-04-12 02:54:51');
 
 -- --------------------------------------------------------
 
@@ -810,7 +983,6 @@ CREATE TABLE `validation` (
   `idvalidation` int(10) UNSIGNED NOT NULL COMMENT '0|',
   `validated` tinyint(4) DEFAULT NULL COMMENT '1|Validado',
   `service_employee_idservice_employee` int(10) UNSIGNED NOT NULL COMMENT '1|Empleado|name',
-  `service_idservice` int(10) UNSIGNED NOT NULL COMMENT '1|Servicio|name',
   `is_deleted` tinyint(1) DEFAULT 0 COMMENT '0|Baja lógica',
   `created_at` timestamp NULL DEFAULT current_timestamp() COMMENT '0|Fecha de creación',
   `created_by` int(11) DEFAULT NULL COMMENT '0|Creado por',
@@ -821,8 +993,9 @@ CREATE TABLE `validation` (
 -- Volcado de datos para la tabla `validation`
 --
 
-INSERT INTO `validation` (`idvalidation`, `validated`, `service_employee_idservice_employee`, `service_idservice`, `is_deleted`, `created_at`, `created_by`, `modified_at`) VALUES
-(1, 1, 120, 71, 0, '2023-04-02 18:50:35', 1, '2023-04-02 18:50:35');
+INSERT INTO `validation` (`idvalidation`, `validated`, `service_employee_idservice_employee`, `is_deleted`, `created_at`, `created_by`, `modified_at`) VALUES
+(1, 1, 120, 0, '2023-04-02 18:50:35', 1, '2023-04-02 18:50:35'),
+(2, 1, 120, 0, '2023-04-09 15:11:47', 1, '2023-04-09 15:11:47');
 
 -- --------------------------------------------------------
 
@@ -832,6 +1005,7 @@ INSERT INTO `validation` (`idvalidation`, `validated`, `service_employee_idservi
 
 CREATE TABLE `vehicle` (
   `idvehicle` int(10) UNSIGNED NOT NULL COMMENT '0|',
+  `number` int(4) UNSIGNED ZEROFILL NOT NULL COMMENT '1|Número de unidad',
   `company_idcompany` int(10) UNSIGNED NOT NULL COMMENT '1|Compañia|name',
   `model` varchar(45) COLLATE utf8_bin NOT NULL COMMENT '1|Modelo',
   `type` varchar(45) COLLATE utf8_bin NOT NULL COMMENT '1|Tipo',
@@ -848,8 +1022,8 @@ CREATE TABLE `vehicle` (
 -- Volcado de datos para la tabla `vehicle`
 --
 
-INSERT INTO `vehicle` (`idvehicle`, `company_idcompany`, `model`, `type`, `km`, `trade`, `year`, `is_deleted`, `created_by`, `created_at`, `modified_at`) VALUES
-(1, 9, 'RANGER', 'CAMIONETA', 2000, 'FORD', 2019, 0, 0000000001, '2023-03-28 14:52:29', '2023-03-28 14:52:29');
+INSERT INTO `vehicle` (`idvehicle`, `number`, `company_idcompany`, `model`, `type`, `km`, `trade`, `year`, `is_deleted`, `created_by`, `created_at`, `modified_at`) VALUES
+(1, 0001, 9, 'RANGER', 'TRACTOCAMIÓN', 2000, 'FORD', 2019, 0, 0000000001, '2023-03-28 14:52:29', '2023-04-07 23:00:08');
 
 -- --------------------------------------------------------
 
@@ -873,7 +1047,7 @@ CREATE TABLE `warehouse` (
 --
 
 INSERT INTO `warehouse` (`idwarehouse`, `company_idcompany`, `name`, `status`, `is_deleted`, `created_by`, `created_at`, `modified_at`) VALUES
-(1, 1, 'ALMACEN', 'X', 0, 0000000001, '2023-03-27 23:28:11', '2023-03-27 23:28:11'),
+(1, 1, 'ALMACEN PRINCIPAL', 'ACTIVO', 0, 0000000001, '2023-03-27 23:28:11', '2023-04-07 23:39:40'),
 (2, 9, 'X', 'X', 0, 0000000001, '2023-03-27 23:28:41', '2023-03-27 23:28:41');
 
 --
@@ -987,6 +1161,15 @@ ALTER TABLE `service_employee`
   ADD KEY `fk_survey_employee_campaign_survey1_idx` (`project_service_idproject_service`);
 
 --
+-- Indices de la tabla `service_product`
+--
+ALTER TABLE `service_product`
+  ADD PRIMARY KEY (`idservice_product`),
+  ADD UNIQUE KEY `idservice_product_UNIQUE` (`idservice_product`),
+  ADD KEY `fk_service_has_product_product1_idx` (`product_idproduct`),
+  ADD KEY `fk_service_has_product_service1_idx` (`service_idservice`);
+
+--
 -- Indices de la tabla `si_alerta`
 --
 ALTER TABLE `si_alerta`
@@ -1087,7 +1270,9 @@ ALTER TABLE `solicitudeprovider`
   ADD PRIMARY KEY (`idsolicitudeprovider`),
   ADD UNIQUE KEY `idsolicitudeprovider_UNIQUE` (`idsolicitudeprovider`),
   ADD KEY `fk_solicitudeprovider_provider1_idx` (`provider_idprovider`),
-  ADD KEY `fk_solicitudeprovider_project_service1_idx` (`project_service_idproject_service`);
+  ADD KEY `fk_solicitudeprovider_project_service1_idx` (`project_service_idproject_service`),
+  ADD KEY `warehouse1` (`idsolicitudeprovider`),
+  ADD KEY `fk_solicitudeprovider_warehouse11` (`warehouse_idwarehouse`);
 
 --
 -- Indices de la tabla `solicitudeprovider_product`
@@ -1122,8 +1307,7 @@ ALTER TABLE `solicitudewarehouse_product`
 ALTER TABLE `validation`
   ADD PRIMARY KEY (`idvalidation`),
   ADD UNIQUE KEY `idvalidation_UNIQUE` (`idvalidation`),
-  ADD KEY `fk_service_task_has_service_employee_service_employee1_idx` (`service_employee_idservice_employee`),
-  ADD KEY `fk_validation_service1_idx` (`service_idservice`);
+  ADD KEY `fk_service_task_has_service_employee_service_employee1_idx` (`service_employee_idservice_employee`);
 
 --
 -- Indices de la tabla `vehicle`
@@ -1149,7 +1333,7 @@ ALTER TABLE `warehouse`
 -- AUTO_INCREMENT de la tabla `company`
 --
 ALTER TABLE `company`
-  MODIFY `idcompany` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=12;
+  MODIFY `idcompany` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT de la tabla `companygroup`
@@ -1179,25 +1363,31 @@ ALTER TABLE `family`
 -- AUTO_INCREMENT de la tabla `orderin`
 --
 ALTER TABLE `orderin`
-  MODIFY `idorderin` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=2;
+  MODIFY `idorderin` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `orderout`
 --
 ALTER TABLE `orderout`
-  MODIFY `idorderout` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=2;
+  MODIFY `idorderout` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `product`
 --
 ALTER TABLE `product`
-  MODIFY `idproduct` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=2;
+  MODIFY `idproduct` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `project`
 --
 ALTER TABLE `project`
-  MODIFY `idproject` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=13;
+  MODIFY `idproject` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=15;
+
+--
+-- AUTO_INCREMENT de la tabla `project_service`
+--
+ALTER TABLE `project_service`
+  MODIFY `idproject_service` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT de la tabla `provider`
@@ -1209,13 +1399,19 @@ ALTER TABLE `provider`
 -- AUTO_INCREMENT de la tabla `service`
 --
 ALTER TABLE `service`
-  MODIFY `idservice` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=72;
+  MODIFY `idservice` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=74;
 
 --
 -- AUTO_INCREMENT de la tabla `service_employee`
 --
 ALTER TABLE `service_employee`
-  MODIFY `idservice_employee` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=122;
+  MODIFY `idservice_employee` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=123;
+
+--
+-- AUTO_INCREMENT de la tabla `service_product`
+--
+ALTER TABLE `service_product`
+  MODIFY `idservice_product` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `si_alerta`
@@ -1227,31 +1423,31 @@ ALTER TABLE `si_alerta`
 -- AUTO_INCREMENT de la tabla `si_device`
 --
 ALTER TABLE `si_device`
-  MODIFY `idsi_device` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|';
+  MODIFY `idsi_device` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de la tabla `si_log`
 --
 ALTER TABLE `si_log`
-  MODIFY `idsi_log` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=976;
+  MODIFY `idsi_log` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=1044;
 
 --
 -- AUTO_INCREMENT de la tabla `si_modulo`
 --
 ALTER TABLE `si_modulo`
-  MODIFY `idsi_modulo` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=32;
+  MODIFY `idsi_modulo` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT de la tabla `si_permiso`
 --
 ALTER TABLE `si_permiso`
-  MODIFY `idsi_permiso` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=59;
+  MODIFY `idsi_permiso` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=60;
 
 --
 -- AUTO_INCREMENT de la tabla `si_rol`
 --
 ALTER TABLE `si_rol`
-  MODIFY `idsi_rol` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=4;
+  MODIFY `idsi_rol` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de la tabla `si_rol_permiso`
@@ -1263,13 +1459,13 @@ ALTER TABLE `si_rol_permiso`
 -- AUTO_INCREMENT de la tabla `si_sesion`
 --
 ALTER TABLE `si_sesion`
-  MODIFY `idsi_sesion` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=66;
+  MODIFY `idsi_sesion` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=75;
 
 --
 -- AUTO_INCREMENT de la tabla `si_sesionestado`
 --
 ALTER TABLE `si_sesionestado`
-  MODIFY `idsi_sesionestado` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=99;
+  MODIFY `idsi_sesionestado` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=115;
 
 --
 -- AUTO_INCREMENT de la tabla `si_user`
@@ -1293,25 +1489,25 @@ ALTER TABLE `solicitudeprovider`
 -- AUTO_INCREMENT de la tabla `solicitudeprovider_product`
 --
 ALTER TABLE `solicitudeprovider_product`
-  MODIFY `idsolicitudeprovider_product` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=2;
+  MODIFY `idsolicitudeprovider_product` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT de la tabla `solicitudewarehouse`
 --
 ALTER TABLE `solicitudewarehouse`
-  MODIFY `idsolicitudewarehouse` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=4;
+  MODIFY `idsolicitudewarehouse` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT de la tabla `solicitudewarehouse_product`
 --
 ALTER TABLE `solicitudewarehouse_product`
-  MODIFY `idsolicitudewarehouse_product` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=2;
+  MODIFY `idsolicitudewarehouse_product` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT de la tabla `validation`
 --
 ALTER TABLE `validation`
-  MODIFY `idvalidation` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=2;
+  MODIFY `idvalidation` int(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT '0|', AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT de la tabla `vehicle`
@@ -1391,6 +1587,13 @@ ALTER TABLE `service_employee`
   ADD CONSTRAINT `fk_survey_employee_employee1` FOREIGN KEY (`employee_idemployee`) REFERENCES `employee` (`idemployee`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
+-- Filtros para la tabla `service_product`
+--
+ALTER TABLE `service_product`
+  ADD CONSTRAINT `fk_service_has_product_product1` FOREIGN KEY (`product_idproduct`) REFERENCES `product` (`idproduct`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_service_has_product_service1` FOREIGN KEY (`service_idservice`) REFERENCES `service` (`idservice`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
 -- Filtros para la tabla `si_alerta`
 --
 ALTER TABLE `si_alerta`
@@ -1455,7 +1658,8 @@ ALTER TABLE `si_user_rol`
 --
 ALTER TABLE `solicitudeprovider`
   ADD CONSTRAINT `fk_solicitudeprovider_project_service1` FOREIGN KEY (`project_service_idproject_service`) REFERENCES `project_service` (`idproject_service`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_solicitudeprovider_provider1` FOREIGN KEY (`provider_idprovider`) REFERENCES `provider` (`idprovider`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `fk_solicitudeprovider_provider1` FOREIGN KEY (`provider_idprovider`) REFERENCES `provider` (`idprovider`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_solicitudeprovider_warehouse11` FOREIGN KEY (`warehouse_idwarehouse`) REFERENCES `warehouse` (`idwarehouse`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Filtros para la tabla `solicitudeprovider_product`
@@ -1482,8 +1686,7 @@ ALTER TABLE `solicitudewarehouse_product`
 -- Filtros para la tabla `validation`
 --
 ALTER TABLE `validation`
-  ADD CONSTRAINT `fk_service_task_has_service_employee_service_employee1` FOREIGN KEY (`service_employee_idservice_employee`) REFERENCES `service_employee` (`idservice_employee`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_validation_service1` FOREIGN KEY (`service_idservice`) REFERENCES `service` (`idservice`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `fk_service_task_has_service_employee_service_employee1` FOREIGN KEY (`service_employee_idservice_employee`) REFERENCES `service_employee` (`idservice_employee`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 
 --
 -- Filtros para la tabla `vehicle`
