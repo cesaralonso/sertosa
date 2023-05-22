@@ -1,5 +1,7 @@
 const router = require('express').Router();
 const Solicitudewarehouse = require('../models/solicitudewarehouse');
+const Solicitudewarehouse_product = require('../models/solicitudewarehouse_product');
+const Orderout = require('../models/orderout');
 const passport = require('passport');
 const permissions = require('../config/permissions');
 /* const fs = require('fs-extra');
@@ -219,7 +221,49 @@ router
                           };
                           ResponseService.createLog(req, params, () => {
                             ResponseService.sendAlert(req, params, () => {
-                              return Solicitudewarehouse.response(res, error, data);
+
+                                // REVISAR SI DEBE SER VALIDADA LA SOLICITUD PARA EGRESAR DE ALMACEN O 
+                                // APLICA SOBRE LA CREACIÓN DE LA SOLICITUD DE ALAMCEN EL EGRESO DE LA REFACCIÓN
+
+                                // si es validada crear orden de entrada de productos asociados
+                                /* if (_solicitudewarehouse.validated) {
+
+                                    Solicitudewarehouse_product.findByIdSolicitudewarehouse(_solicitudewarehouse.idsolicitudewarehouse, auth_data.user, false, req.mysql, (error, dataSolicitudewarehouse_product) => {
+                                        
+                                        // si encuentra productos asociados
+                                        if (dataSolicitudewarehouse_product && dataSolicitudewarehouse_product.length) {
+                                            let i = 0;
+                                            // por cada producto crear orden de entrada
+                                            dataSolicitudewarehouse_product.forEach(solicitudewarehouse_product => {
+                                                       
+                                                const _orderout = {
+                                                    warehouse_idwarehouse: _solicitudewarehouse.warehouse_idwarehouse,
+                                                    product_idproduct: solicitudewarehouse_product.product_idproduct,
+                                                    quantity: solicitudewarehouse_product.quantity,
+                                                    motive: 'SOLICITADO A PROVEEDOR'
+                                                };
+
+                                                _orderout.created_by = auth_data.user.idsi_user;
+                                                Orderout.insert( _orderout, req.mysql, (error, dataOrderin) => {
+                                                    if (!error) {
+                                                        console.error('Solicitudewarehouse.update validate Orderin.insert', error);
+                                                    } 
+                                                    i++;
+                                                    // sale si ha terminado el ciclo
+                                                    if (i === dataSolicitudewarehouse_product.length) {
+                                                        return Solicitudewarehouse.response(res, error, data);
+                                                    }
+                                                });
+                                            });
+                                        } else {
+                                            return Solicitudewarehouse.response(res, error, data);
+                                        }
+                                    });
+                                } else {
+                                    return Solicitudewarehouse.response(res, error, data);
+                                } */
+                                
+                                return Solicitudewarehouse.response(res, error, data);
                             });
                           });
                       } else {

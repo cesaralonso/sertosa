@@ -200,6 +200,7 @@ Project.insert = (Project, connection, next) => {
 };
 
 Project.update = (Project, created_by, connection, next) => {
+    console.log('Project', Project);
     if( !connection )
         return next('Connection refused');
 

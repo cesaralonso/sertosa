@@ -1,12 +1,45 @@
 const Service_employee = {};
 
+Service_employee.findEstadosByIdServiceemployee = (idServiceemployee, user, only_own, connection, next) => {
+    if( !connection )
+        return next('Connection refused');
+
+    let query = '';
+    let keys = [];
+    query = `SELECT service_employeeestado.*, se.*
+    
+             FROM service_employeeestado 
+             INNER JOIN service_employee as se ON se.idservice_employee = service_employeeestado.service_employee_idservice_employee 
+
+              
+             ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = service_employee.created_by ` : ""} 
+             WHERE service_employeeestado.is_deleted = false 
+                  AND service_employeeestado.service_employee_idservice_employee = ? 
+                  ${user.companyunits_idcompanyunits ? `AND _si_user.companyunits_idcompanyunits = ? ` : ""}
+                  ${only_own ? `AND service_employeeestado.created_by = ?` : ""}`
+        keys = [idServiceemployee];
+        user.companyunits_idcompanyunits ? keys.push(user.companyunits_idcompanyunits) : null;
+        only_own ? keys.push(user.idsi_user) : null;
+
+    connection.query(query, keys, (error, result) => {
+        if(error)
+            return next({ success: false, error: error, message: 'Un error ha ocurrido mientras se encontraba el registro' });
+        else if (result.affectedRows === 0)
+            return next(null, { success: false, result: result, message: 'Solo es posible encontrar registros propios' });
+        else
+            return next(null, { success: true, result: result, message: 'Service_employee encontrad@' });
+    });
+};
+
+
 Service_employee.findByIdProject_service = (idProject_service, user, only_own, connection, next) => {
     if( !connection )
         return next('Connection refused');
 
     let query = '';
     let keys = [];
-    query = `SELECT service_employee.*, _employee_idemployee.name as employee_employee_idemployee , CONCAT(_project_service_idproject_service.idproject_service, ' - ', _project.name, ' - ', _service.name) as project_service_project_service_idproject_service 
+    query = `SELECT service_employee.*,
+    (SELECT TIMESTAMPDIFF(DAY, service_employee.created_at, NOW()) AS dias_transcurridos) as dias_transcurridos, _employee_idemployee.name as employee_employee_idemployee , CONCAT(_project_service_idproject_service.idproject_service, ' - ', _project.name, ' - ', _service.name) as project_service_project_service_idproject_service 
              FROM service_employee 
              INNER JOIN employee as _employee_idemployee ON _employee_idemployee.idemployee = service_employee.employee_idemployee 
              INNER JOIN project_service as _project_service_idproject_service ON _project_service_idproject_service.idproject_service = service_employee.project_service_idproject_service 
@@ -38,7 +71,8 @@ Service_employee.findByIdEmployee = (idEmployee, user, only_own, connection, nex
 
     let query = '';
     let keys = [];
-    query = `SELECT service_employee.*, _employee_idemployee.name as employee_employee_idemployee , CONCAT(_project_service_idproject_service.idproject_service, ' - ', _project.name, ' - ', _service.name) as project_service_project_service_idproject_service 
+    query = `SELECT service_employee.*,
+    (SELECT TIMESTAMPDIFF(DAY, service_employee.created_at, NOW()) AS dias_transcurridos) as dias_transcurridos, _employee_idemployee.name as employee_employee_idemployee , CONCAT(_project_service_idproject_service.idproject_service, ' - ', _project.name, ' - ', _service.name) as project_service_project_service_idproject_service 
              FROM service_employee 
              INNER JOIN employee as _employee_idemployee ON _employee_idemployee.idemployee = service_employee.employee_idemployee 
              INNER JOIN project_service as _project_service_idproject_service ON _project_service_idproject_service.idproject_service = service_employee.project_service_idproject_service 
@@ -70,7 +104,8 @@ Service_employee.findFromTo = (fechaDesde, fechaHasta, user, only_own, connectio
 
     let query = '';
     let keys = [];
-    query = `SELECT service_employee.*, _employee_idemployee.name as employee_employee_idemployee , CONCAT(_project_service_idproject_service.idproject_service, ' - ', _project.name, ' - ', _service.name) as project_service_project_service_idproject_service 
+    query = `SELECT service_employee.*,
+    (SELECT TIMESTAMPDIFF(DAY, service_employee.created_at, NOW()) AS dias_transcurridos) as dias_transcurridos, _employee_idemployee.name as employee_employee_idemployee , CONCAT(_project_service_idproject_service.idproject_service, ' - ', _project.name, ' - ', _service.name) as project_service_project_service_idproject_service 
              FROM service_employee 
              INNER JOIN employee as _employee_idemployee ON _employee_idemployee.idemployee = service_employee.employee_idemployee 
              INNER JOIN project_service as _project_service_idproject_service ON _project_service_idproject_service.idproject_service = service_employee.project_service_idproject_service 
@@ -101,7 +136,9 @@ Service_employee.all = (user, only_own, connection, next) => {
 
     let query = '';
     let keys = [];
-    query = `SELECT service_employee.*, _employee_idemployee.name as employee_employee_idemployee , CONCAT(_project_service_idproject_service.idproject_service, ' - ', _project.name, ' - ', _service.name, ' > ', _employee_idemployee.name) as project_service_project_service_idproject_service 
+    query = `SELECT service_employee.*,
+    (SELECT TIMESTAMPDIFF(DAY, service_employee.created_at, NOW()) AS dias_transcurridos) as dias_transcurridos,
+    _employee_idemployee.name as employee_employee_idemployee , CONCAT(_project_service_idproject_service.idproject_service, ' - ', _project.name, ' - ', _service.name, ' > ', _employee_idemployee.name) as project_service_project_service_idproject_service 
     FROM service_employee 
              INNER JOIN employee as _employee_idemployee ON _employee_idemployee.idemployee = service_employee.employee_idemployee 
              INNER JOIN project_service as _project_service_idproject_service ON _project_service_idproject_service.idproject_service = service_employee.project_service_idproject_service 
@@ -132,7 +169,8 @@ Service_employee.findById = (idService_employee, user, only_own, connection, nex
 
     let query = '';
     let keys = [];
-    query = `SELECT service_employee.*, _employee_idemployee.name as employee_employee_idemployee , CONCAT(_project_service_idproject_service.idproject_service, ' - ', _project.name, ' - ', _service.name) as project_service_project_service_idproject_service 
+    query = `SELECT service_employee.*,
+    (SELECT TIMESTAMPDIFF(DAY, service_employee.created_at, NOW()) AS dias_transcurridos) as dias_transcurridos, _employee_idemployee.name as employee_employee_idemployee , CONCAT(_project_service_idproject_service.idproject_service, ' - ', _project.name, ' - ', _service.name) as project_service_project_service_idproject_service 
              FROM service_employee 
              INNER JOIN employee as _employee_idemployee ON _employee_idemployee.idemployee = service_employee.employee_idemployee 
              INNER JOIN project_service as _project_service_idproject_service ON _project_service_idproject_service.idproject_service = service_employee.project_service_idproject_service 
@@ -228,8 +266,9 @@ Service_employee.update = (Service_employee, created_by, connection, next) => {
             return next({ success: false, error: error, message: 'Un error ha ocurrido mientras se actualizaba el registro' });
         else if (result.affectedRows === 0)
             return next(null, { success: false, result: result, message: 'Solo es posible actualizar registros propios' });
-        else
-            return next(null, { success: true, result: result, message: 'Service_employee actualizad@' });
+        else { 
+            return next(null, { success: true, result: result, message: 'Service_employee modificado' });
+        }
     });
 };
 

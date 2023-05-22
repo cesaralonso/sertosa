@@ -22,6 +22,7 @@ const storage = multer.diskStorage({
     cb(null, DIR);
   },
   filename: (req, file, cb) => {
+    console.log('file', file);
     const fileName = file.originalname.toLowerCase().split(' ').join('-');
     cb(null, fileName)
   }
@@ -217,6 +218,47 @@ router
             });
         })(req, res, next);
     })
+    .patch('/file', upload.single('documento'), (req, res, next) => {
+        passport.authenticate('jwt', { session: true }, (err, auth_data, info) => {
+          if (!auth_data) {
+               return next('auth_data refused');
+          }
+            permissions.module_permission(auth_data.modules, 'employee', auth_data.user.super, 'updateable', (error, permission) => {
+                if (permission.success) {
+                    const _employee = req.body;
+                    const created_by = (permission.only_own) ? auth_data.user.idsi_user : false;
+
+                    // CAPTURA URL DE ARCHIVO
+                    if (req.file && req.file.filename) {
+                        const _url = process.env.HOST || req.protocol + '://' + req.get('host');
+                        const _documento =  _url + '/employee/' + req.file.filename;
+                        _employee.photo = _documento;
+                    }
+
+                    Employee.update(_employee, created_by, req.mysql, (error, data) => {
+                      if (!error && data.result.affectedRows) {
+                          const params = {
+                              accion: 'Registro actualizado',
+                              itemId: _employee.idemployee,
+                              created_by: auth_data.user.idsi_user,
+                              idsi_modulo: 4
+                          };
+                          ResponseService.createLog(req, params, () => {
+                            ResponseService.sendAlert(req, params, () => {
+                              return Employee.response(res, error, data);
+                            });
+                          });
+                      } else {
+                          // ENVIA RESPUESTA
+                          return Employee.response(res, error, data);
+                      }
+                    });
+                } else {
+                    return Employee.response(res, error, permission);
+                }
+            });
+        })(req, res, next);
+    })
     .post('/file', upload.single('documento'), (req, res, next) => {
         passport.authenticate('jwt', { session: true }, (err, auth_data, info) => {
             if (!auth_data) {
@@ -225,13 +267,14 @@ router
             permissions.module_permission(auth_data.modules, 'employee', auth_data.user.super, 'writeable', (error, permission) => {
                 if (permission.success) {
                     const _employee = req.body;
-                    _employee.created_by = auth_data.user.idsi_user;
-
+                    /* _employee.created_by = auth_data.user.idsi_user; */
+                    _employee.created_by = _employee.si_user_idsi_user; // Toma el iduser del empleado como el del creador para permitir leer los propios, usando un permiso
+                    
                     // CAPTURA URL DE ARCHIVO
                     if (req.file && req.file.filename) {
                         const _url = process.env.HOST || req.protocol + '://' + req.get('host');
                         const _documento =  _url + '/employee/' + req.file.filename;
-                        _folio.documento = _documento;
+                        _employee.photo = _documento;
                     }
 
                     Employee.insert( _employee, req.mysql, (error, data) => {
@@ -266,12 +309,13 @@ router
             permissions.module_permission(auth_data.modules, 'employee', auth_data.user.super, 'writeable', (error, permission) => {
                 if (permission.success) {
                     const _employee = req.body;
-                    _employee.created_by = auth_data.user.idsi_user;
+                    /* _employee.created_by = auth_data.user.idsi_user; */
+                    _employee.created_by = _employee.si_user_idsi_user; // Toma el iduser del empleado como el del creador para permitir leer los propios, usando un permiso
                     Employee.insert( _employee, req.mysql, (error, data) => {
                       if (!error) {
                           const params = {
                               accion: 'Registro creado',
-                              itemId: data.result.insertId,
+                              itemId: (data.result.insertId) ? data.result.insertId : 1, // fix temporal, revisar
                               created_by: auth_data.user.idsi_user,
                               idsi_modulo: 4
                           };

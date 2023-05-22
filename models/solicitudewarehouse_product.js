@@ -188,14 +188,82 @@ Solicitudewarehouse_product.insert = (Solicitudewarehouse_product, connection, n
 
     let query = '';
     let keys = [];
-    query = `INSERT INTO solicitudewarehouse_product SET ?`;
-    keys = [Solicitudewarehouse_product];
 
-    connection.query(query, keys, (error, result) => {
+    // debo obtener el almacen de Solicitudewarehouse_product.solicitudewarehouse_idsolicitudewarehouse
+    query = `SELECT * FROM solicitudewarehouse 
+        WHERE idsolicitudewarehouse = ?
+    `;
+    keys = [Solicitudewarehouse_product.solicitudewarehouse_idsolicitudewarehouse];
+
+    connection.query(query, keys, (error, resultSw) => {
         if(error) 
-            return next({ success: false, error: error, message: 'Un error ha ocurrido mientras se creaba el registro' });
-        else
-            return next(null, { success: true, result: result, message: 'Solicitudewarehouse_product cread@' });
+            return next({ success: false, error: error, message: 'Un error ha ocurrido mientras se leía el registro' });
+        else {
+            if (resultSw) {
+                const idwarehouse = resultSw[0].warehouse_idwarehouse;
+                query = `SELECT 
+
+                        (IFNULL(SUM(oi.quantity), 0)) 
+                        -
+                        IFNULL((SELECT SUM(oo.quantity) FROM orderout as oo 
+                        WHERE oo.is_deleted = false 
+                        AND oo.product_idproduct = oi.product_idproduct
+                        AND oo.warehouse_idwarehouse = oi.warehouse_idwarehouse), 0) as quantity
+                            FROM orderin as oi
+                            INNER JOIN product as p ON p.idproduct = oi.product_idproduct
+                            INNER JOIN warehouse as w ON w.idwarehouse = oi.warehouse_idwarehouse
+                            INNER JOIN provider as pr ON pr.idprovider = p.provider_idprovider
+                            WHERE oi.is_deleted = false 
+                                 AND oi.warehouse_idwarehouse = ? 
+                                 AND p.idproduct = ? 
+                             GROUP BY oi.product_idproduct`;
+            
+                keys = [idwarehouse, Solicitudewarehouse_product.product_idproduct];
+                    
+                connection.query(query, keys, (error, result) => {
+                    if(error)
+                        return next({ success: false, error: error, message: 'Un error ha ocurrido mientras se encontraba el registro' });
+                    else if (result.affectedRows === 0)
+                        return next(null, { success: false, result: result, message: 'Solo es posible encontrar registros propios' });
+                    else {
+            
+                        if (result[0]) {
+            
+                            // SI ENCUENTRA COMPARA
+                            // lo que hay en almacen
+                            let quantity = result[0].quantity;
+                            console.log('quantity', quantity);
+                            console.log('Solicitudewarehouse_product.quantity', Solicitudewarehouse_product.quantity);
+            
+                            // saber si lo solicitado se encuentra en lo disponible
+                            if (Solicitudewarehouse_product.quantity <= quantity) {
+            
+                                // procede a crear solicitud
+                                query = `INSERT INTO solicitudewarehouse_product SET ?`;
+                                keys = [Solicitudewarehouse_product];
+                            
+                                connection.query(query, keys, (error, result) => {
+                                    if(error) 
+                                        return next({ success: false, error: error, message: 'Un error ha ocurrido mientras se creaba el registro' });
+                                    else {
+                                        result.idwarehouse = idwarehouse;
+                                        result.quantity = quantity
+                                        
+                                        return next(null, { success: true, result: result, message: 'Solicitude warehouse product creada' });
+                                    }
+                                });
+                            } else {
+                                return next(null, { success: false, result: result, message: 'No hay suficiente producto para cubrir cantidad soliicitada.' });
+                            }
+                        } else {
+                            return next(null, { success: false, result: result, message: 'No hay en existencia la refacción solicitada.' });
+                        }
+                    }
+                });
+            } else {
+                return next({ success: false, error: error, message: 'Un error ha ocurrido mientras se encontraba el almacen' });
+            }
+        }
     });
 };
 

@@ -30,9 +30,6 @@ Orderin.findByIdProduct = (idProduct, user, only_own, connection, next) => {
     });
 };
 
-
-
-
 Orderin.findInventaryByIdWarehouse = (idWarehouse, user, only_own, connection, next) => {
     if( !connection )
         return next('Connection refused');
@@ -40,13 +37,20 @@ Orderin.findInventaryByIdWarehouse = (idWarehouse, user, only_own, connection, n
     let query = '';
     let keys = [];
     query = `
-    SELECT oi.*, p.name as product_product_idproduct, w.name as warehouse_warehouse_idwarehouse, pr.name as provider_provider_idprovider,
+    SELECT oi.*, p.*, p.name as product_product_idproduct, w.name as warehouse_warehouse_idwarehouse, pr.name as provider_provider_idprovider,
         IFNULL(SUM(oi.quantity), 0) as sumquantityin,
 
         IFNULL((SELECT SUM(oo.quantity) FROM orderout as oo 
             WHERE oo.is_deleted = false 
             AND oo.product_idproduct = oi.product_idproduct
-            AND oo.warehouse_idwarehouse = oi.warehouse_idwarehouse  ), 0) as sumquantityout
+            AND oo.warehouse_idwarehouse = oi.warehouse_idwarehouse  ), 0) as sumquantityout,
+
+            (IFNULL(SUM(oi.quantity), 0)) 
+            -
+            IFNULL((SELECT SUM(oo.quantity) FROM orderout as oo 
+            WHERE oo.is_deleted = false 
+            AND oo.product_idproduct = oi.product_idproduct
+            AND oo.warehouse_idwarehouse = oi.warehouse_idwarehouse  ), 0) as quantity
 
                 FROM orderin as oi
                 INNER JOIN product as p ON p.idproduct = oi.product_idproduct
@@ -74,11 +78,6 @@ Orderin.findInventaryByIdWarehouse = (idWarehouse, user, only_own, connection, n
             return next(null, { success: true, result: result, message: 'Orderin encontrado' });
     });
 };
-
-
-
-
-
 
 Orderin.findByIdWarehouse = (idWarehouse, user, only_own, connection, next) => {
     if( !connection )

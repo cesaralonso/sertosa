@@ -8,7 +8,8 @@ Employee.findByIdCompanyunits = (idCompanyunits, user, only_own, connection, nex
     let keys = [];
     query = `SELECT employee.*, _si_user_idsi_user.email as si_user_si_user_idsi_user , _companyunits_idcompanyunits.name as companyunits_companyunits_idcompanyunits 
              FROM employee 
-             INNER JOIN si_user as _si_user_idsi_user ON _si_user_idsi_user.idsi_user = employee.si_user_idsi_user INNER JOIN companyunits as _companyunits_idcompanyunits ON _companyunits_idcompanyunits.idcompanyunits = employee.companyunits_idcompanyunits 
+             INNER JOIN si_user as _si_user_idsi_user ON _si_user_idsi_user.idsi_user = employee.si_user_idsi_user 
+             INNER JOIN companyunits as _companyunits_idcompanyunits ON _companyunits_idcompanyunits.idcompanyunits = employee.companyunits_idcompanyunits 
               
               
              ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = employee.created_by ` : ""} 
@@ -192,9 +193,17 @@ Employee.insert = (Employee, connection, next) => {
     keys = [Employee];
 
     connection.query(query, keys, (error, result) => {
-        if(error) 
-            return next({ success: false, error: error, message: 'Un error ha ocurrido mientras se creaba el registro' });
-        else
+        if ( error ) {
+            // WARNING: To take effect, user table must have the email field as unique column
+            if (error.code === 'ER_DUP_ENTRY') {
+                return next( null, {
+                    success: false,
+                    error: error,
+                    message: 'Este código ya esta en uso'
+                });
+            } else
+                return next({ success: false, error: error, message: 'Un error ha ocurrido mientras se creaba el registro' });
+        } else
             return next(null, { success: true, result: result, message: 'Employee cread@' });
     });
 };

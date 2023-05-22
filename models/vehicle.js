@@ -36,7 +36,12 @@ Vehicle.findByIdCompany = (idCompany, user, only_own, connection, next) => {
 
     let query = '';
     let keys = [];
-    query = `SELECT vehicle.*, _company_idcompany.name as company_company_idcompany 
+    query = `SELECT 
+    LPAD(vehicle.idvehicle,4,'0') AS ID, 
+    (SELECT COUNT(*) as count FROM project WHERE project.vehicle_idvehicle = vehicle.idvehicle) as countReparaciones,
+    
+    vehicle.*, _company_idcompany.name as company_company_idcompany 
+
              FROM vehicle 
              INNER JOIN company as _company_idcompany ON _company_idcompany.idcompany = vehicle.company_idcompany 
               

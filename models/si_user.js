@@ -305,6 +305,284 @@ Si_user.insert = (user, connection, next) => {
     })
     .catch( error => next({ success: false, error: error }) );
 }
+Si_user.authorize = (module, password, connection, next) => {
+    if ( !connection )
+        return next('Connection refused');
+
+    // validar solicitudes proveedor
+    if (password) {
+
+        connection.query(`SELECT su.*
+                            FROM employee 
+                            INNER JOIN si_user as su ON su.idsi_user = employee.si_user_idsi_user
+                            WHERE employee.code = ? 
+                            AND employee.is_deleted = false`, 
+        [password], (error, result) => {
+            if ( error )
+                return next( error );
+    
+            const user =  result[0];
+            if ( user ) {
+
+                let _super = user.super;
+                let _query = '';
+                user.password = null;
+                
+                if (!_super) {
+                    _query = `SELECT m.nombre, p.acceso, m.is_deleted, p.writeable, p.deleteable, p.readable, p.updateable, p.write_own, p.delete_own, p.read_own, p.update_own,
+                        validateServiceEmployee
+                                FROM si_user as u 
+                                INNER JOIN si_rol as r ON r.idsi_rol = u.si_rol_idsi_rol 
+                                INNER JOIN si_permiso as p ON p.si_rol_idsi_rol = r.idsi_rol 
+                                INNER JOIN si_modulo as m ON m.idsi_modulo = p.si_modulo_idsi_modulo 
+                                WHERE u.idsi_user = ? AND m.is_deleted = false
+                                AND m.nombre = ?`;
+                } else {
+                    _query = `SELECT m.nombre FROM si_modulo as m`;
+                }
+
+                connection.query(_query, [user.idsi_user, module], (error, modules) => {
+
+                    if ( error )
+                        return next( error );
+                    else {
+
+                        if (_super) {
+                            modules.forEach(element => {
+                                element.acceso = 1;
+                                element.writeable = 1;
+                                element.deleteable = 1;
+                                element.readable = 1;
+                                element.updateable = 1;
+                                element.write_own = 0;
+                                element.delete_own = 0;
+                                element.read_own = 0;
+                                element.update_own = 0;
+                                element.validateServiceEmployee = 1;
+                            });
+                        }
+
+                        if (modules[0]) {
+
+                            let validated = false;
+
+                            modules.forEach(_module => {
+                                if (_module.nombre === module && _module.validateServiceEmployee) {
+                                    validated = true;
+                                }
+                            });
+
+                            if (validated) {
+                                return next( null, {
+                                    success: true,
+                                    message: 'Usuario Autorizado',
+                                    modules: modules,
+                                    iduser: user.idsi_user,
+                                    idrol: user.si_rol_idsi_rol
+                                });
+        
+                            } else {
+                                return next( null, {
+                                    success: false,
+                                    message: 'Usuario sin permiso',
+                                    modules: modules
+                                });
+                            }
+
+                        } else {
+                            return next( null, {
+                                success: false,
+                                message: 'Usuario Incorrecto',
+                                modules: modules
+                            });
+                        }
+                    }
+                });
+                   
+            } else {
+                return next(null, {
+                    success: false,
+                    message: 'NIP incorrecto'
+                })
+            }
+        });
+    }
+}
+
+Si_user.loginNip = (module, password, connection, next) => {
+    if ( !connection )
+        return next('Connection refused');
+
+    // validar solicitudes proveedor
+    if (password) {
+
+        connection.query(`SELECT su.*
+                            FROM employee 
+                            INNER JOIN si_user as su ON su.idsi_user = employee.si_user_idsi_user
+                            WHERE employee.code = ? 
+                            AND employee.is_deleted = false`, 
+        [password], (error, result) => {
+            if ( error )
+                return next( error );
+    
+            const user =  result[0];
+            
+            if ( user ) {
+
+                let _super = user.super;
+                let _query = '';
+                user.password = null;
+                
+                if (!_super) {
+                    _query = `SELECT m.nombre, p.acceso, m.is_deleted, p.writeable, p.deleteable, p.readable, p.updateable, p.write_own, p.delete_own, p.read_own, p.update_own,
+                        validateServiceEmployee
+                                FROM si_user as u 
+                                INNER JOIN si_rol as r ON r.idsi_rol = u.si_rol_idsi_rol 
+                                INNER JOIN si_permiso as p ON p.si_rol_idsi_rol = r.idsi_rol 
+                                INNER JOIN si_modulo as m ON m.idsi_modulo = p.si_modulo_idsi_modulo 
+                                WHERE u.idsi_user = ? AND m.is_deleted = false`;
+                } else {
+                    _query = `SELECT m.nombre FROM si_modulo as m`;
+                }
+
+                connection.query(_query, [user.idsi_user, module], (error, modules) => {
+                    if ( error )
+                        return next( error );
+                    else {
+
+                        if (_super) {
+                            modules.forEach(element => {
+                                element.acceso = 1;
+                                element.writeable = 1;
+                                element.deleteable = 1;
+                                element.readable = 1;
+                                element.updateable = 1;
+                                element.write_own = 0;
+                                element.delete_own = 0;
+                                element.read_own = 0;
+                                element.update_own = 0;
+                                element.validateServiceEmployee = 1;
+                            });
+                        }
+
+                        if (modules[0]) {
+
+                            let validated = false;
+
+                            modules.forEach(_module => {
+                                if (_module.nombre === module && _module.validateServiceEmployee) {
+                                    validated = true;
+                                }
+                            });
+                            // Si el modulo tiene el permiso de validateServiceEmployee continuar con token y sesión
+                            if (validated) {
+                                
+                                // PASAR DE PENDIENTE A ACTIVO UN USUARIO
+                                let querySesion = `UPDATE si_user SET status = 'ACTIVO'  WHERE idsi_user = ? AND status = 'PENDIENTE'`;
+                                let keys = [user.idsi_user];
+
+                                connection.query(querySesion, keys, (error, result) => {
+                                    
+                                    if(error) 
+                                        return next({ success: false, error: error, message: 'Un error ha ocurrido mientras se modificaba el estado de usuario'});
+                                    else {
+
+                                        // INSERTAR AQUÍ MISMO LA SESIÓN
+                                        querySesion = 'INSERT INTO si_sesion SET si_user_idsi_user = ?, estado=\'CONECTADO\', created_by = ? ON DUPLICATE KEY UPDATE si_user_idsi_user = ?, estado=\'CONECTADO\'';
+                                        keys = [user.idsi_user, user.idsi_user, user.idsi_user];
+
+                                        connection.query(querySesion, keys, (error, result) => {
+                                            
+                                            if(error) 
+                                                return next({ success: false, error: error, message: 'Un error ha ocurrido mientras se creaba el registro de sesión'});
+                                            else {
+
+                                                // TOMAR ID DE SESIÓN...
+                                                querySesion = 'SELECT idsi_sesion FROM si_sesion WHERE si_user_idsi_user = ?';
+                                                keys = [user.idsi_user];
+
+                                                connection.query(querySesion, keys, (error, resultSesion) => {
+                                                    
+                                                    if(error) 
+                                                        return next({ success: false, error: error, message: 'Un error ha ocurrido mientras se creaba el registro de sesión'});
+                                                    else {
+
+                                                        // INSERTAR SESIÓN ESTADO
+                                                        querySesion = `INSERT INTO si_sesionestado SET si_sesion_idsi_sesion = ?, estado = 'CONECTADO', created_by = ?`;
+                                                        connection.query(querySesion, [resultSesion[0].idsi_sesion, user.idsi_user], (error, si_sesion_estado) => {
+
+                                                            if(error) 
+                                                                return next({ success: false, error: error, message: 'Un error ha ocurrido mientras se actualizaba el registro de si_sesion estado'});
+                                                            else {
+
+                                                                const payload = {
+                                                                    idsi_user: user.idsi_user,
+                                                                    usuario: user.nombre,
+                                                                    email: user.email,
+                                                                    idrol: user.si_rol_idsi_rol,
+                                                                    nombre: user.nombre,
+                                                                    idcompanyunits: user.companyunits_idcompanyunits || 0,
+                                                                    companyunits_name: user.companyunits_name,
+                                                                    company_name: user.company_name,
+                                                                    companygroup_name: user.companygroup_name,
+                                                                    super: user.super || 0,
+                                                                    idsesion: resultSesion[0].idsi_sesion
+                                                                };
+
+                                                                // Generate token
+                                                                const token = jwt.sign(payload, mySecretPass, {
+                                                                    expiresIn: 60 * 60 * 24 * 365
+                                                                });
+
+                                                                return next( null, {
+                                                                    success: true,
+                                                                    message: 'Has iniciado sesión correctamente con NIP',
+                                                                    token: token,
+                                                                    modules: modules,
+                                                                    iduser: user.idsi_user,
+                                                                    idrol: user.si_rol_idsi_rol,
+                                                                    email: user.email,
+                                                                    user: user,
+                                                                    nombre: user.nombre,
+                                                                    idsesion: resultSesion[0].idsi_sesion
+                                                                });
+
+                                                            }
+                                                        });
+                                                    }
+                                                });
+                                            }
+                                        });
+                                    }
+                                });
+
+                            } else {
+                                return next( null, {
+                                    success: false,
+                                    message: 'Usuario sin permiso',
+                                    modules: modules
+                                });
+                            }
+
+                        } else {
+                            return next( null, {
+                                success: false,
+                                message: 'Usuario Incorrecto',
+                                modules: modules
+                            });
+                        }
+                    }
+                });
+                   
+            } else {
+                return next(null, {
+                    success: false,
+                    message: 'NIP incorrecto'
+                })
+            }
+        });
+    }
+}
 
 Si_user.login = (email, password, connection, next) => {
     if ( !connection )
@@ -312,9 +590,9 @@ Si_user.login = (email, password, connection, next) => {
 
     connection.query(`SELECT si_user.*, cu.idcompanyunits, c.idcompany, cg.idcompanygroup, cu.name as companyunits_name, c.name as company_name, c.logo as company_logo, cg.name as companygroup_name 
                         FROM si_user 
-                        INNER JOIN companyunits as cu ON cu.idcompanyunits = si_user.companyunits_idcompanyunits
-                        INNER JOIN company as c ON c.idcompany = cu.company_idcompany
-                        INNER JOIN companygroup as cg ON cg.idcompanygroup = c.companygroup_idcompanygroup
+                        LEFT JOIN companyunits as cu ON cu.idcompanyunits = si_user.companyunits_idcompanyunits
+                        LEFT JOIN company as c ON c.idcompany = cu.company_idcompany
+                        LEFT JOIN companygroup as cg ON cg.idcompanygroup = c.companygroup_idcompanygroup
                         WHERE si_user.email = ? AND si_user.status != 'SUSPENDIDO' 
                         AND si_user.is_deleted = false`, 
     [email], (error, result) => {
@@ -359,6 +637,7 @@ Si_user.login = (email, password, connection, next) => {
                                 element.delete_own = 0;
                                 element.read_own = 0;
                                 element.update_own = 0;
+                                element.validateServiceEmployee = 1;
                             });
                         }
 

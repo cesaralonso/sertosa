@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const Project_service = require('../models/project_service');
+const Project = require('../models/project');
 const passport = require('passport');
 const permissions = require('../config/permissions');
 /* const fs = require('fs-extra');
@@ -263,21 +264,53 @@ router
             if (!auth_data) {
                return next('auth_data refused');
             }
+
+            /* 
+            CUANDO SE CREA EL PRIMER SERVICIO AL PROJECT SE DEBE CAMBIAR EL ESTATUS A PROJECT A EN PROCESO.
+            POR CADA VALIDACIÓN DE ORDEN DE TRABAJO SE DEBE CONTABILIZAR TOTAL DE SERVICIOS ASOCIADO EN ESTADO DIFERENTE A EN PROCESO O VACIÓ,
+                PARA MOSTRAR EN UN BOTÓN QUE DIGA "MARCAR COMO COMPLETADA" Y ESTE PERMISO CONFIGURADO CON VALIDAR.
+                EN TEORIA AL VALIDAR TODAS LOS SERVICIOS DEBERÍN PASAR AL ESTATUS DE FINALIZADO. */
+
+
             permissions.module_permission(auth_data.modules, 'project_service', auth_data.user.super, 'writeable', (error, permission) => {
                 if (permission.success) {
                     const _project_service = req.body;
                     _project_service.created_by = auth_data.user.idsi_user;
-                    Project_service.insert( _project_service, req.mysql, (error, data) => {
+                    Project_service.insert( _project_service, req.mysql, (error, dataToReturn) => {
                       if (!error) {
                           const params = {
                               accion: 'Registro creado',
-                              itemId: data.result.insertId,
+                              itemId: dataToReturn.result.insertId,
                               created_by: auth_data.user.idsi_user,
                               idsi_modulo: 10
                           };
                           ResponseService.createLog(req, params, () => {
                             ResponseService.sendAlert(req, params, () => {
-                              return Project_service.response(res, error, data);
+
+
+                                const _project = {
+                                    idproject: _project_service.project_idproject,
+                                    status: 'EN PROCESO'
+                                };
+                                Project.update(_project, false, req.mysql, (error, data) => {
+                                if (!error && data.result.affectedRows) {
+                                    const params = {
+                                        accion: 'Registro actualizado',
+                                        itemId: _project.idproject,
+                                        created_by: auth_data.user.idsi_user,
+                                        idsi_modulo: 9
+                                    };
+                                    ResponseService.createLog(req, params, () => {
+                                        ResponseService.sendAlert(req, params, () => {
+                                        return Project.response(res, error, dataToReturn);
+                                        });
+                                    });
+                                } else {
+                                    // ENVIA RESPUESTA
+                                    return Project.response(res, error, data);
+                                }
+                                });
+
                             });
                           });
                       } else {

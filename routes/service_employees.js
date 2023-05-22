@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const Service_employee = require('../models/service_employee');
+const Service_employeeestado = require('../models/service_employeeestado');
 const passport = require('passport');
 const permissions = require('../config/permissions');
 /* const fs = require('fs-extra');
@@ -50,6 +51,22 @@ router
                     Service_employee.findFromTo(req.params.fechaDesde, req.params.fechaHasta, auth_data.user, permission.only_own, req.mysql, (error, data) => {
                         return Service_employee.response(res, error, data);
                     })
+                } else {
+                    return Service_employee.response(res, error, permission);
+                }
+            });
+        })(req, res, next);
+    })
+    .get('/:idservice_employee/service_employeeestado', (req, res, next) => {
+        passport.authenticate('jwt', { session: true }, (err, auth_data, info) => {
+          if (!auth_data) {
+               return next('auth_data refused');
+          }
+            permissions.module_permission(auth_data.modules, 'service_employee', auth_data.user.super, 'readable', (error, permission) => {
+                if (permission.success) {
+                    Service_employee.findEstadosByIdServiceemployee(req.params.idservice_employee, auth_data.user, permission.only_own, req.mysql, (error, data) => {
+                        return Service_employee.response(res, error, data);
+                    });
                 } else {
                     return Service_employee.response(res, error, permission);
                 }
@@ -192,6 +209,9 @@ router
             permissions.module_permission(auth_data.modules, 'service_employee', auth_data.user.super, 'updateable', (error, permission) => {
                 if (permission.success) {
                     const _service_employee = req.body;
+
+                    // para posteriormente asignarle el estado a usuario creador
+
                     const created_by = (permission.only_own) ? auth_data.user.idsi_user : false;
                     Service_employee.update(_service_employee, created_by, req.mysql, (error, data) => {
                       if (!error && data.result.affectedRows) {
@@ -203,7 +223,23 @@ router
                           };
                           ResponseService.createLog(req, params, () => {
                             ResponseService.sendAlert(req, params, () => {
-                              return Service_employee.response(res, error, data);
+
+                                 // guardar siempre el estado del evento en service_employeeeestado
+                                 const service_employeeestado = {
+                                    service_employee_idservice_employee: _service_employee.idservice_employee,
+                                    estado: _service_employee.status, // ójo, en esta tabla se llama diferente
+                                    created_by: auth_data.user.idsi_user // asignarlo al usuario updateando
+                                };
+
+                                Service_employeeestado.insert( service_employeeestado, req.mysql, (error, data) => {
+                                    if (!error) {
+                                        return Service_employee.response(res, error, data);
+                                    } else {
+                                        // ENVIA RESPUESTA
+                                        return Service_employee.response(res, error, data);
+                                    }
+
+                                });
                             });
                           });
                       } else {
@@ -266,9 +302,12 @@ router
             permissions.module_permission(auth_data.modules, 'service_employee', auth_data.user.super, 'writeable', (error, permission) => {
                 if (permission.success) {
                     const _service_employee = req.body;
-                    _service_employee.created_by = auth_data.user.idsi_user;
+
+                    // se crea al empleado si viene dentro de objeto created_by si no lo asigna al creador normalmente
+                    _service_employee.created_by = (_service_employee.created_by) ? _service_employee.created_by : auth_data.user.idsi_user;
+                    
                     Service_employee.insert( _service_employee, req.mysql, (error, data) => {
-                      if (!error) {
+                      if (!error && data.result.insertId) {
                           const params = {
                               accion: 'Registro creado',
                               itemId: data.result.insertId,
@@ -277,7 +316,23 @@ router
                           };
                           ResponseService.createLog(req, params, () => {
                             ResponseService.sendAlert(req, params, () => {
-                              return Service_employee.response(res, error, data);
+                                
+                                // guardar siempre el estado del evento en service_employeeeestado
+                                const service_employeeestado = {
+                                   service_employee_idservice_employee: data.result.insertId,
+                                   estado: 'SIN INICIAR', // ójo, en esta tabla se llama diferente
+                                   created_by: _service_employee.created_by // asignarlo al usuario
+                               };
+
+                               Service_employeeestado.insert( service_employeeestado, req.mysql, (error, data) => {
+                                   if (!error) {
+                                       return Service_employee.response(res, error, data);
+                                   } else {
+                                       // ENVIA RESPUESTA
+                                       return Service_employee.response(res, error, data);
+                                   }
+                               });
+
                             });
                           });
                       } else {

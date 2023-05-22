@@ -6,14 +6,18 @@ Solicitudewarehouse.findByIdProject = (idProject, user, only_own, connection, ne
 
     let query = '';
     let keys = [];
-    query = `SELECT solicitudewarehouse.*, CONCAT(_project_service_idproject_service.idproject_service, ' - ', _project_idproject.name, ' - ', _service_idservice.name) as project_service_project_service_idproject_service , _warehouse_idwarehouse.name as warehouse_warehouse_idwarehouse 
-             FROM solicitudewarehouse 
-             INNER JOIN project_service as _project_service_idproject_service ON _project_service_idproject_service.idproject_service = solicitudewarehouse.project_service_idproject_service INNER JOIN warehouse as _warehouse_idwarehouse ON _warehouse_idwarehouse.idwarehouse = solicitudewarehouse.warehouse_idwarehouse
-             
-             INNER JOIN project as _project_idproject ON _project_idproject.idproject = _project_service_idproject_service.project_idproject 
-             INNER JOIN service as _service_idservice ON _service_idservice.idservice = _project_service_idproject_service.service_idservice 
-             
-              
+    query = `SELECT CONCAT(user.nombre, ' ', user.appat, ' ', user.apmat) as usuario, p.name as product_product_idproduct, pr.name as provider_provider_idprovider, swp.quantity as quantity, solicitudewarehouse.*, CONCAT(_project_service_idproject_service.idproject_service, ' - ', _project_idproject.name, ' - ', _service_idservice.name) as project_service_project_service_idproject_service , _warehouse_idwarehouse.name as warehouse_warehouse_idwarehouse 
+            FROM solicitudewarehouse 
+            INNER JOIN project_service as _project_service_idproject_service ON _project_service_idproject_service.idproject_service = solicitudewarehouse.project_service_idproject_service INNER JOIN warehouse as _warehouse_idwarehouse ON _warehouse_idwarehouse.idwarehouse = solicitudewarehouse.warehouse_idwarehouse
+            
+            INNER JOIN project as _project_idproject ON _project_idproject.idproject = _project_service_idproject_service.project_idproject 
+            INNER JOIN service as _service_idservice ON _service_idservice.idservice = _project_service_idproject_service.service_idservice
+            
+            LEFT JOIN solicitudewarehouse_product as swp ON swp.solicitudewarehouse_idsolicitudewarehouse = solicitudewarehouse.idsolicitudewarehouse
+            LEFT JOIN product as p ON p.idproduct = swp.product_idproduct            
+            LEFT JOIN provider as pr ON pr.idprovider = p.provider_idprovider  
+
+            INNER JOIN si_user as user ON user.idsi_user = solicitudewarehouse.created_by
               
              ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = solicitudewarehouse.created_by ` : ""} 
              WHERE solicitudewarehouse.is_deleted = false 
@@ -39,14 +43,16 @@ Solicitudewarehouse.findByIdProject_service = (idProject_service, user, only_own
 
     let query = '';
     let keys = [];
-    query = `SELECT solicitudewarehouse.*, CONCAT(_project_service_idproject_service.idproject_service, ' - ', _project_idproject.name, ' - ', _service_idservice.name) as project_service_project_service_idproject_service , _warehouse_idwarehouse.name as warehouse_warehouse_idwarehouse 
-             FROM solicitudewarehouse 
-             INNER JOIN project_service as _project_service_idproject_service ON _project_service_idproject_service.idproject_service = solicitudewarehouse.project_service_idproject_service INNER JOIN warehouse as _warehouse_idwarehouse ON _warehouse_idwarehouse.idwarehouse = solicitudewarehouse.warehouse_idwarehouse
-             
-             INNER JOIN project as _project_idproject ON _project_idproject.idproject = _project_service_idproject_service.project_idproject 
-             INNER JOIN service as _service_idservice ON _service_idservice.idservice = _project_service_idproject_service.service_idservice 
-             
-              
+    query = `SELECT CONCAT(user.nombre, ' ', user.appat, ' ', user.apmat) as usuario, 
+            solicitudewarehouse.*, 
+            CONCAT(_project_service_idproject_service.idproject_service, ' - ', _project_idproject.name, ' - ', _service_idservice.name) as project_service_project_service_idproject_service , 
+            _warehouse_idwarehouse.name as warehouse_warehouse_idwarehouse 
+            FROM solicitudewarehouse 
+            INNER JOIN project_service as _project_service_idproject_service ON _project_service_idproject_service.idproject_service = solicitudewarehouse.project_service_idproject_service INNER JOIN warehouse as _warehouse_idwarehouse ON _warehouse_idwarehouse.idwarehouse = solicitudewarehouse.warehouse_idwarehouse
+            INNER JOIN project as _project_idproject ON _project_idproject.idproject = _project_service_idproject_service.project_idproject 
+            INNER JOIN service as _service_idservice ON _service_idservice.idservice = _project_service_idproject_service.service_idservice  
+
+            INNER JOIN si_user as user ON user.idsi_user = solicitudewarehouse.created_by
               
              ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = solicitudewarehouse.created_by ` : ""} 
              WHERE solicitudewarehouse.is_deleted = false 
@@ -73,14 +79,18 @@ Solicitudewarehouse.findByIdWarehouse = (idWarehouse, user, only_own, connection
 
     let query = '';
     let keys = [];
-    query = `SELECT solicitudewarehouse.*, CONCAT(_project_service_idproject_service.idproject_service, ' - ', _project_idproject.name, ' - ', _service_idservice.name) as project_service_project_service_idproject_service , _warehouse_idwarehouse.name as warehouse_warehouse_idwarehouse 
-             FROM solicitudewarehouse 
-             INNER JOIN project_service as _project_service_idproject_service ON _project_service_idproject_service.idproject_service = solicitudewarehouse.project_service_idproject_service INNER JOIN warehouse as _warehouse_idwarehouse ON _warehouse_idwarehouse.idwarehouse = solicitudewarehouse.warehouse_idwarehouse
-             
-             INNER JOIN project as _project_idproject ON _project_idproject.idproject = _project_service_idproject_service.project_idproject 
-             INNER JOIN service as _service_idservice ON _service_idservice.idservice = _project_service_idproject_service.service_idservice 
-             
-              
+    query = `SELECT CONCAT(user.nombre, ' ', user.appat, ' ', user.apmat) as usuario, p.name as product_product_idproduct, pr.name as provider_provider_idprovider, swp.quantity as quantity, solicitudewarehouse.*, CONCAT(_project_service_idproject_service.idproject_service, ' - ', _project_idproject.name, ' - ', _service_idservice.name) as project_service_project_service_idproject_service , _warehouse_idwarehouse.name as warehouse_warehouse_idwarehouse 
+            FROM solicitudewarehouse 
+            INNER JOIN project_service as _project_service_idproject_service ON _project_service_idproject_service.idproject_service = solicitudewarehouse.project_service_idproject_service INNER JOIN warehouse as _warehouse_idwarehouse ON _warehouse_idwarehouse.idwarehouse = solicitudewarehouse.warehouse_idwarehouse
+            
+            INNER JOIN project as _project_idproject ON _project_idproject.idproject = _project_service_idproject_service.project_idproject 
+            INNER JOIN service as _service_idservice ON _service_idservice.idservice = _project_service_idproject_service.service_idservice
+            
+            LEFT JOIN solicitudewarehouse_product as swp ON swp.solicitudewarehouse_idsolicitudewarehouse = solicitudewarehouse.idsolicitudewarehouse
+            LEFT JOIN product as p ON p.idproduct = swp.product_idproduct            
+            LEFT JOIN provider as pr ON pr.idprovider = p.provider_idprovider  
+
+            INNER JOIN si_user as user ON user.idsi_user = solicitudewarehouse.created_by
               
              ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = solicitudewarehouse.created_by ` : ""} 
              WHERE solicitudewarehouse.is_deleted = false 
@@ -107,14 +117,18 @@ Solicitudewarehouse.findFromTo = (fechaDesde, fechaHasta, user, only_own, connec
 
     let query = '';
     let keys = [];
-    query = `SELECT solicitudewarehouse.*, CONCAT(_project_service_idproject_service.idproject_service, ' - ', _project_idproject.name, ' - ', _service_idservice.name) as project_service_project_service_idproject_service , _warehouse_idwarehouse.name as warehouse_warehouse_idwarehouse 
-             FROM solicitudewarehouse 
-             INNER JOIN project_service as _project_service_idproject_service ON _project_service_idproject_service.idproject_service = solicitudewarehouse.project_service_idproject_service INNER JOIN warehouse as _warehouse_idwarehouse ON _warehouse_idwarehouse.idwarehouse = solicitudewarehouse.warehouse_idwarehouse
-             
-             INNER JOIN project as _project_idproject ON _project_idproject.idproject = _project_service_idproject_service.project_idproject 
-             INNER JOIN service as _service_idservice ON _service_idservice.idservice = _project_service_idproject_service.service_idservice 
-                           INNER JOIN project as _project_idproject ON _project_idproject.idproject = _project_service_idproject_service.project_idproject             INNER JOIN project as _project_idproject ON _project_idproject.idproject = _project_service_idproject_service.project_idproject             INNER JOIN project as _project_idproject ON _project_idproject.idproject = _project_service_idproject_service.project_idproject              INNER JOIN project as _project_idproject ON _project_idproject.idproject = _project_service_idproject_service.project_idproject  
-              
+    query = `SELECT CONCAT(user.nombre, ' ', user.appat, ' ', user.apmat) as usuario, p.name as product_product_idproduct, pr.name as provider_provider_idprovider, swp.quantity as quantity, solicitudewarehouse.*, CONCAT(_project_service_idproject_service.idproject_service, ' - ', _project_idproject.name, ' - ', _service_idservice.name) as project_service_project_service_idproject_service , _warehouse_idwarehouse.name as warehouse_warehouse_idwarehouse 
+            FROM solicitudewarehouse 
+            INNER JOIN project_service as _project_service_idproject_service ON _project_service_idproject_service.idproject_service = solicitudewarehouse.project_service_idproject_service INNER JOIN warehouse as _warehouse_idwarehouse ON _warehouse_idwarehouse.idwarehouse = solicitudewarehouse.warehouse_idwarehouse
+            
+            INNER JOIN project as _project_idproject ON _project_idproject.idproject = _project_service_idproject_service.project_idproject 
+            INNER JOIN service as _service_idservice ON _service_idservice.idservice = _project_service_idproject_service.service_idservice
+            
+            LEFT JOIN solicitudewarehouse_product as swp ON swp.solicitudewarehouse_idsolicitudewarehouse = solicitudewarehouse.idsolicitudewarehouse
+            LEFT JOIN product as p ON p.idproduct = swp.product_idproduct            
+            LEFT JOIN provider as pr ON pr.idprovider = p.provider_idprovider  
+
+            INNER JOIN si_user as user ON user.idsi_user = solicitudewarehouse.created_by
               
              ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = solicitudewarehouse.created_by ` : ""} 
              WHERE solicitudewarehouse.is_deleted = false 
@@ -178,14 +192,18 @@ Solicitudewarehouse.findById = (idSolicitudewarehouse, user, only_own, connectio
 
     let query = '';
     let keys = [];
-    query = `SELECT solicitudewarehouse.*, CONCAT(_project_service_idproject_service.idproject_service, ' - ', _project_idproject.name, ' - ', _service_idservice.name) as project_service_project_service_idproject_service , _warehouse_idwarehouse.name as warehouse_warehouse_idwarehouse 
-             FROM solicitudewarehouse 
-             INNER JOIN project_service as _project_service_idproject_service ON _project_service_idproject_service.idproject_service = solicitudewarehouse.project_service_idproject_service INNER JOIN warehouse as _warehouse_idwarehouse ON _warehouse_idwarehouse.idwarehouse = solicitudewarehouse.warehouse_idwarehouse
-             
-             INNER JOIN project as _project_idproject ON _project_idproject.idproject = _project_service_idproject_service.project_idproject 
-             INNER JOIN service as _service_idservice ON _service_idservice.idservice = _project_service_idproject_service.service_idservice 
-                                                                 
-              
+    query = `SELECT CONCAT(user.nombre, ' ', user.appat, ' ', user.apmat) as usuario, p.name as product_product_idproduct, pr.name as provider_provider_idprovider, swp.quantity as quantity, solicitudewarehouse.*, CONCAT(_project_service_idproject_service.idproject_service, ' - ', _project_idproject.name, ' - ', _service_idservice.name) as project_service_project_service_idproject_service , _warehouse_idwarehouse.name as warehouse_warehouse_idwarehouse 
+            FROM solicitudewarehouse 
+            INNER JOIN project_service as _project_service_idproject_service ON _project_service_idproject_service.idproject_service = solicitudewarehouse.project_service_idproject_service INNER JOIN warehouse as _warehouse_idwarehouse ON _warehouse_idwarehouse.idwarehouse = solicitudewarehouse.warehouse_idwarehouse
+            
+            INNER JOIN project as _project_idproject ON _project_idproject.idproject = _project_service_idproject_service.project_idproject 
+            INNER JOIN service as _service_idservice ON _service_idservice.idservice = _project_service_idproject_service.service_idservice
+            
+            LEFT JOIN solicitudewarehouse_product as swp ON swp.solicitudewarehouse_idsolicitudewarehouse = solicitudewarehouse.idsolicitudewarehouse
+            LEFT JOIN product as p ON p.idproduct = swp.product_idproduct            
+            LEFT JOIN provider as pr ON pr.idprovider = p.provider_idprovider  
+
+            INNER JOIN si_user as user ON user.idsi_user = solicitudewarehouse.created_by
               
              ${user.companyunits_idcompanyunits ? `INNER JOIN si_user as _si_user ON _si_user.idsi_user = solicitudewarehouse.created_by ` : ""} 
              WHERE solicitudewarehouse.is_deleted = false 

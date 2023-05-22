@@ -4,6 +4,20 @@ const passport = require('passport');
 const permissions = require('../config/permissions');
 
 router
+    .post('/login-nip', (req, res, next) => {
+        const module = req.body.module;
+        const password = req.body.password;
+        Si_user.loginNip( module, password, req.mysql, ( error, data ) => {
+            return Si_user.response( res, error, data );
+        });
+    })
+    .post('/authorize', (req, res, next) => {
+        const module = req.body.module;
+        const password = req.body.password;
+        Si_user.authorize( module, password, req.mysql, ( error, data ) => {
+            return Si_user.response( res, error, data );
+        });
+    })
     .post('/login', (req, res, next) => {
         const email = req.body.email;
         const password = req.body.password;

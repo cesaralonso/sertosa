@@ -1,5 +1,7 @@
 const router = require('express').Router();
 const Solicitudeprovider = require('../models/solicitudeprovider');
+const Solicitudeprovider_product = require('../models/solicitudeprovider_product');
+const Orderin = require('../models/orderin');
 const passport = require('passport');
 const permissions = require('../config/permissions');
 /* const fs = require('fs-extra');
@@ -64,6 +66,22 @@ router
             permissions.module_permission(auth_data.modules, 'solicitudeprovider', auth_data.user.super, 'readable', (error, permission) => {
                 if (permission.success) {
                     Solicitudeprovider.findByIdProject_service(req.params.idsolicitudeprovider, auth_data.user, permission.only_own, req.mysql, (error, data) => {
+                        return Solicitudeprovider.response(res, error, data);
+                    });
+                } else {
+                    return Solicitudeprovider.response(res, error, permission);
+                }
+            });
+        })(req, res, next);
+    })
+    .get('/warehouse/:idwarehouse/provider/:idprovider', (req, res, next) => {
+        passport.authenticate('jwt', { session: true }, (err, auth_data, info) => {
+          if (!auth_data) {
+               return next('auth_data refused');
+          }
+            permissions.module_permission(auth_data.modules, 'solicitudeprovider', auth_data.user.super, 'readable', (error, permission) => {
+                if (permission.success) {
+                    Solicitudeprovider.findByIdWarehouseIdProvider(req.params.idwarehouse, req.params.idprovider, auth_data.user, permission.only_own, req.mysql, (error, data) => {
                         return Solicitudeprovider.response(res, error, data);
                     });
                 } else {
@@ -203,7 +221,46 @@ router
                           };
                           ResponseService.createLog(req, params, () => {
                             ResponseService.sendAlert(req, params, () => {
-                              return Solicitudeprovider.response(res, error, data);
+
+                                // si es validada crear orden de entrada de productos asociados
+                                if (_solicitudeprovider.validated) {
+
+                                    Solicitudeprovider_product.findByIdSolicitudeprovider(_solicitudeprovider.idsolicitudeprovider, auth_data.user, false, req.mysql, (error, dataSolicitudeprovider_product) => {
+
+                                        // si encuentra productos asociados
+                                        if (dataSolicitudeprovider_product && dataSolicitudeprovider_product.result.length) {
+                                            let i = 0;
+                                            const _solicitudeprovider_product = dataSolicitudeprovider_product.result;
+                                            // por cada producto crear orden de entrada
+                                            _solicitudeprovider_product.forEach(solicitudeprovider_product => {
+                                                    
+                                                const _orderin = {
+                                                    warehouse_idwarehouse: _solicitudeprovider.warehouse_idwarehouse,
+                                                    product_idproduct: solicitudeprovider_product.product_idproduct,
+                                                    quantity: solicitudeprovider_product.quantity,
+                                                    motive: 'SOLICITADO POR TALLER'
+                                                };
+
+                                                _orderin.created_by = auth_data.user.idsi_user;
+                                                Orderin.insert( _orderin, req.mysql, (error, dataOrderin) => {
+                                                    if (!error) {
+                                                        console.error('Solicitudeprovider.update validate Orderin.insert', error);
+                                                    } 
+                                                    i++;
+                                                    // sale si ha terminado el ciclo
+                                                    if (i === dataSolicitudeprovider_product.result.length) {
+                                                        return Solicitudeprovider.response(res, error, data);
+                                                    }
+                                                });
+                                            });
+                                        } else {
+                                            return Solicitudeprovider.response(res, error, data);
+                                        }
+                                    });
+                                } else {
+                                    return Solicitudeprovider.response(res, error, data);
+                                }
+
                             });
                           });
                       } else {

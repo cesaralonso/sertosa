@@ -22,6 +22,7 @@ const storage = multer.diskStorage({
     cb(null, DIR);
   },
   filename: (req, file, cb) => {
+    console.log('req', req);
     const fileName = file.originalname.toLowerCase().split(' ').join('-');
     cb(null, fileName)
   }
@@ -217,6 +218,47 @@ router
             });
         })(req, res, next);
     })
+    .patch('/file', upload.single('documento'), (req, res, next) => {
+        passport.authenticate('jwt', { session: true }, (err, auth_data, info) => {
+            if (!auth_data) {
+               return next('auth_data refused');
+            }
+            permissions.module_permission(auth_data.modules, 'product', auth_data.user.super, 'writeable', (error, permission) => {
+                if (permission.success) {
+                    const _product = req.body;
+                    const created_by = (permission.only_own) ? auth_data.user.idsi_user : false;
+
+                    // CAPTURA URL DE ARCHIVO
+                    if (req.file && req.file.filename) {
+                        const _url = process.env.HOST || req.protocol + '://' + req.get('host');
+                        const _documento =  _url + '/product/' + req.file.filename;
+                        _product.photo = _documento;
+                    }
+
+                    Product.update(_product, created_by, req.mysql, (error, data) => {
+                        if (!error && data.result.affectedRows) {
+                            const params = {
+                                accion: 'Registro actualizado con archivo adjunto',
+                                itemId: _product.idproduct,
+                                created_by: auth_data.user.idsi_user,
+                                idsi_modulo: 8
+                            };
+                            ResponseService.createLog(req, params, () => {
+                              ResponseService.sendAlert(req, params, () => {
+                                return Product.response(res, error, data);
+                              });
+                            });
+                        } else {
+                            // ENVIA RESPUESTA
+                            return Product.response(res, error, data);
+                        }
+                      });
+                } else {
+                    return Product.response(res, error, permission);
+                }
+            });
+        })(req, res, next);
+    })
     .post('/file', upload.single('documento'), (req, res, next) => {
         passport.authenticate('jwt', { session: true }, (err, auth_data, info) => {
             if (!auth_data) {
@@ -231,7 +273,7 @@ router
                     if (req.file && req.file.filename) {
                         const _url = process.env.HOST || req.protocol + '://' + req.get('host');
                         const _documento =  _url + '/product/' + req.file.filename;
-                        _folio.documento = _documento;
+                        _product.photo = _documento;
                     }
 
                     Product.insert( _product, req.mysql, (error, data) => {
